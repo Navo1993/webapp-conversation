@@ -128,3 +128,44 @@ a {
   background-clip: text;
   text-fill-color: transparent;
 }
+
+/* --- 廣交會展示優化：自定義動畫 --- */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 進入頁面的平滑淡入動畫 */
+.animate-section {
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* 滾動平滑行為 */
+html {
+  scroll-behavior: smooth;
+}
+
+/* 藍色品牌色調優化（參考騰訊藍） */
+.bg-brand-blue {
+  background-color: #0052D9;
+}
+
+.text-brand-blue {
+  color: #0052D9;
+}
+
+/* 卡片懸停效果 */
+.hover-card {
+  transition: all 0.3s ease;
+}
+.hover-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
