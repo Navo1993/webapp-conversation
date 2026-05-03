@@ -234,7 +234,7 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10">
           <div className="text-[13px] text-gray-400 space-y-3">
             <div className="text-[#0052D9] font-black text-xl mb-4 italic">SMART GUARD</div>
-            <p>{t.footer.copy}</p>
+            <p>{t.footer.copy}</p >
             <div className="flex gap-6">
               <span>粵ICP備20260501號</span>
               <span className="flex items-center gap-1">粵公網安備 (演示)</span>
@@ -243,7 +243,7 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
           <div className="flex items-center gap-4">
             <div className="px-4 py-1.5 bg-gray-100 rounded-full text-[11px] font-bold text-gray-500 uppercase tracking-widest">
               {t.footer.demo}
-            </button>
+            </div>
           </div>
         </div>
       </footer>
