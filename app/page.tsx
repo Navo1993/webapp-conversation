@@ -5,7 +5,7 @@ import { Globe, ChevronRight, ArrowRight, Monitor, Cpu, ShieldCheck } from 'luci
 import type { IMainProps } from '@/app/components'
 import Main from '@/app/components'
 
-// --- 國際化與菜單數據字典 ---
+// --- 數據與多語言配置 ---
 const content = {
   zh_cn: {
     nav: [
@@ -32,42 +32,15 @@ const content = {
       ]
     },
     footer: { copy: '© 2026 Smart Guard Project. All Rights Reserved.', demo: '广交会演示专用版本' }
-  },
-  zh_tw: {
-    nav: [
-      { id: 'intro', label: '介紹', columns: [
-        { title: '項目概覽', links: ['智能守護者簡介', '技術演進', '廣交會專題'] },
-        { title: '核心團隊', links: ['研發架構', '合作夥伴'] }
-      ]},
-      { id: 'tech', label: '技術', columns: [
-        { title: '智能引擎', links: ['Dify AI 訓練', '故障預測模型'] },
-        { title: 'IoT 接入', links: ['默納克系統協議', '傳感器融合'] }
-      ]},
-      { id: 'news', label: '動態', columns: [
-        { title: '最新消息', links: ['版本更新', '行業新聞'] }
-      ]}
-    ],
-    common: { start: '立即體驗', langName: '繁', more: '了解更多' },
-    hero: { title1: '連接安全', title2: '預見未來智能', sub: '專為廣交會演示開發。整合 IoT 與 AI，提供實時電梯故障診斷與維護建議。' },
-    features: {
-      title: '重新定義電梯安全',
-      list: [
-        { icon: <Cpu />, t: '秒級響應', d: '基於 Dify 核心，故障碼查詢與解決方案生成僅在瞬息之間。' },
-        { icon: <Monitor />, t: '數字孿生', d: '實時同步電梯運行參數，在虛擬空間構建精準的設備狀態。' },
-        { icon: <ShieldCheck />, t: '主動防禦', d: '智能識別不安全乘梯行為，將隱患消滅在萌芽狀態。' }
-      ]
-    },
-    footer: { copy: '© 2026 Smart Guard Project. All Rights Reserved.', demo: '廣交會演示專用版本' }
   }
 }
 
 const App: React.FC<IMainProps> = ({ params }: any) => {
-  const [lang, setLang] = useState<'zh_cn' | 'zh_tw'>('zh_cn')
   const [isChatting, setIsChatting] = useState(false)
   const [activeMenu, setActiveMenu] = useState<string | null>(null)
   const [scrolled, setScrolled] = useState(false)
   
-  const t = content[lang]
+  const t = content.zh_cn
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50)
@@ -80,10 +53,10 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
   return (
     <div className="min-h-screen bg-white text-[#1d1d1f] font-sans antialiased selection:bg-blue-100 selection:text-blue-700">
       
-      {/* --- 1. 高度精緻導航欄 --- */}
+      {/* --- 1. 騰訊級導航欄 --- */}
       <nav 
         className={`fixed w-full z-[100] transition-all duration-700 ease-in-out ${
-          scrolled || activeMenu ? 'bg-white/90 backdrop-blur-2xl py-4 shadow-sm' : 'bg-transparent py-6'
+          scrolled || activeMenu ? 'bg-white/95 backdrop-blur-2xl py-4 shadow-sm' : 'bg-transparent py-6'
         }`}
         onMouseLeave={() => setActiveMenu(null)}
       >
@@ -112,12 +85,9 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
           </div>
 
           <div className="flex items-center gap-8">
-             <div 
-               className="flex items-center gap-2 text-gray-500 cursor-pointer hover:text-[#0052D9] transition-all"
-               onClick={() => setLang(lang === 'zh_cn' ? 'zh_tw' : 'zh_cn')}
-             >
+             <div className="flex items-center gap-2 text-gray-500 cursor-pointer hover:text-[#0052D9] transition-all">
                 <Globe className="w-4 h-4" />
-                <span className="text-xs font-black uppercase tracking-tighter">{t.common.langName}</span>
+                <span className="text-xs font-black uppercase tracking-tighter">EN</span>
              </div>
              <button 
                 onClick={() => setIsChatting(true)}
@@ -128,7 +98,7 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
           </div>
         </div>
 
-        {/* 騰訊式巨型下拉菜單 */}
+        {/* 巨型菜單動畫 */}
         <AnimatePresence>
           {activeMenu && (
             <motion.div
@@ -136,13 +106,13 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
-              className="absolute top-full left-0 w-full bg-white/95 backdrop-blur-3xl border-t border-gray-100 shadow-2xl overflow-hidden"
+              className="absolute top-full left-0 w-full bg-white/98 backdrop-blur-3xl border-t border-gray-100 shadow-2xl"
             >
-              <div className="max-w-[1600px] mx-auto px-12 py-20 grid grid-cols-4 gap-16">
+              <div className="max-w-[1600px] mx-auto px-12 py-20 grid grid-cols-4 gap-16 text-left">
                 {t.nav.find(n => n.id === activeMenu)?.columns.map((col, idx) => (
                   <div key={idx}>
                     <h3 className="text-[11px] font-black text-gray-400 mb-8 tracking-[0.2em] uppercase">{col.title}</h3>
-                    <ul className="space-y-5">
+                    <ul className="space-y-5 text-left">
                       {col.links.map((link, lIdx) => (
                         <li key={lIdx} className="text-[17px] font-medium text-gray-800 hover:text-[#0052D9] hover:translate-x-2 transition-all cursor-pointer flex items-center group">
                           {link} <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 ml-2 transition-all" />
@@ -157,7 +127,7 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
         </AnimatePresence>
       </nav>
 
-      {/* --- 2. Hero 主視覺 --- */}
+      {/* --- 2. Hero Section --- */}
       <section className="relative h-screen flex items-center justify-center bg-[#F8FAFF] overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[40rem] font-black text-blue-600/[0.02] select-none pointer-events-none">
           GUARD
@@ -186,18 +156,13 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
             </div>
           </motion.div>
         </div>
-
-        <div className="absolute bottom-12 flex flex-col items-center gap-4">
-          <span className="text-[10px] font-black tracking-[0.3em] text-gray-400 uppercase">Scroll to Explore</span>
-          <div className="w-[1px] h-12 bg-gradient-to-b from-blue-600 to-transparent" />
-        </div>
       </section>
 
       {/* --- 3. 核心功能 --- */}
-      <section className="py-48 px-12 max-w-[1600px] mx-auto">
-        <div className="text-center mb-32">
+      <section className="py-48 px-12 max-w-[1600px] mx-auto text-left">
+        <div className="mb-32">
           <h2 className="text-5xl font-[900] tracking-tight mb-6">{t.features.title}</h2>
-          <div className="w-20 h-1.5 bg-[#0052D9] mx-auto rounded-full" />
+          <div className="w-20 h-1.5 bg-[#0052D9] rounded-full" />
         </div>
         
         <div className="grid md:grid-cols-3 gap-10">
@@ -207,77 +172,83 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
               className="group p-16 bg-white rounded-[48px] border border-gray-100 hover:border-blue-100 hover:shadow-[0_40px_80px_rgba(0,0,0,0.04)] transition-all duration-700"
             >
-              <div className="w-20 h-20 bg-blue-50 text-[#0052D9] rounded-[24px] flex items-center justify-center mb-10 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
-                {React.cloneElement(f.icon as React.ReactElement, { size: 32 })}
+              <div className="w-16 h-16 bg-blue-50 text-[#0052D9] rounded-2xl flex items-center justify-center mb-10 transition-all duration-500 group-hover:scale-110">
+                {React.cloneElement(f.icon as React.ReactElement, { size: 28 })}
               </div>
-              <h3 className="text-3xl font-black mb-6 tracking-tight">{f.t}</h3>
+              <h3 className="text-2xl font-black mb-6">{f.t}</h3>
               <p className="text-gray-500 text-lg leading-relaxed font-medium">{f.d}</p>
             </motion.div>
           ))}
         </div>
       </section>
 
-      {/* --- 4. 頁腳 (帶公安徽標細節) --- */}
-      <footer className="bg-[#1b1e23] text-white py-24 px-12">
+      {/* --- 4. 頁腳 (騰訊美學核心修改) --- */}
+      <footer className="bg-[#1b1e23] text-white pt-24 pb-12 px-12">
         <div className="max-w-[1600px] mx-auto">
-          <div className="flex flex-col lg:flex-row justify-between items-start gap-20 border-b border-white/5 pb-16 mb-16">
+          {/* 上部鏈接區 */}
+          <div className="flex flex-col lg:flex-row justify-between items-start gap-20 border-b border-white/5 pb-16 mb-12">
             <div className="space-y-6">
               <div className="text-2xl font-[900] tracking-tighter italic text-[#0052D9] uppercase">
                 Smart Guard AI
               </div>
-              <p className="text-gray-500 max-w-sm text-base leading-relaxed font-medium">
-                致力於通過 AI 與 IoT 技術，為全球電梯用戶提供更安全、高效的垂直交通解決方案。
+              <p className="text-gray-500 max-w-sm text-sm leading-relaxed font-medium">
+                致力於通過人工智能與物聯網技術，打造更安全、更智能的城市垂直交通。
               </p>
             </div>
             
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-16 lg:gap-24">
+            <div className="grid grid-cols-2 gap-24">
               <div className="space-y-6">
-                <h4 className="text-white/30 font-black tracking-[0.2em] text-[11px] uppercase">產品方案</h4>
+                <h4 className="text-white/30 font-black tracking-[0.2em] text-[10px] uppercase font-sans">產品與服務</h4>
                 <ul className="space-y-4 text-gray-400 font-bold text-sm">
-                  <li className="hover:text-[#0052D9] transition-colors cursor-pointer">NICE 3000 接入</li>
-                  <li className="hover:text-[#0052D9] transition-colors cursor-pointer">故障診斷雲</li>
+                  <li className="hover:text-white transition-colors cursor-pointer">故障預測系統</li>
+                  <li className="hover:text-white transition-colors cursor-pointer">IoT 數據接入</li>
                 </ul>
               </div>
               <div className="space-y-6">
-                <h4 className="text-white/30 font-black tracking-[0.2em] text-[11px] uppercase">開發資源</h4>
+                <h4 className="text-white/30 font-black tracking-[0.2em] text-[10px] uppercase font-sans">關於我們</h4>
                 <ul className="space-y-4 text-gray-400 font-bold text-sm">
-                  <li className="hover:text-[#0052D9] transition-colors cursor-pointer">Dify API</li>
-                  <li className="hover:text-[#0052D9] transition-colors cursor-pointer">技術手冊</li>
+                  <li className="hover:text-white transition-colors cursor-pointer">技術演進</li>
+                  <li className="hover:text-white transition-colors cursor-pointer">合作夥伴</li>
                 </ul>
               </div>
             </div>
           </div>
           
-          <div className="flex flex-col xl:flex-row justify-between items-center gap-8">
-            <div className="flex flex-wrap justify-center xl:justify-start items-center gap-x-8 gap-y-4 text-[12px] text-gray-500 font-bold">
-              <span className="hover:text-white transition-colors cursor-pointer">{t.footer.copy}</span>
-              <a href="https://beian.miit.gov.cn/" target="_blank" className="hover:text-white transition-colors">
+          {/* 下部備案區 (騰訊標準樣式) */}
+          <div className="flex flex-col lg:flex-row justify-between items-center gap-8">
+            <div className="flex flex-wrap justify-center lg:justify-start items-center gap-x-8 gap-y-4 text-[12px] text-gray-500 font-medium">
+              <span className="hover:text-gray-300 transition-colors cursor-pointer font-bold">{t.footer.copy}</span>
+              
+              <a href="https://beian.miit.gov.cn/" target="_blank" className="hover:text-gray-300 transition-colors">
                 粵ICP備20260501號
               </a>
               
+              {/* 公安網備 - 使用 public/police.png */}
               <a 
                 href="http://www.beian.gov.cn/" 
                 target="_blank" 
-                className="flex items-center gap-1.5 hover:text-white transition-colors group"
+                className="flex items-center gap-1.5 hover:text-gray-300 transition-colors group"
               >
                 <img 
-                  src="https://imgcache.qq.com/open_proj/proj_qcloud_v2/gateway/portal/pc/static/img/archive.33234472.png" 
-                  alt="police-icon"
-                  className="w-4 h-4 grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all"
+                  src="/police.png" 
+                  alt="公安網備"
+                  className="w-4 h-4 grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300"
                 />
                 <span>粵公網安備 44030502008888號</span>
               </a>
               
-              <span className="hover:text-white transition-colors cursor-pointer">法律聲明</span>
-              <span className="hover:text-white transition-colors cursor-pointer">隱私策略</span>
+              <div className="flex gap-6 border-l border-white/10 pl-8 ml-2">
+                <span className="hover:text-gray-300 cursor-pointer">法律聲明</span>
+                <span className="hover:text-gray-300 cursor-pointer">隱私策略</span>
+              </div>
             </div>
 
+            {/* 右側演示標籤 */}
             <div className="flex items-center gap-4">
-              <div className="px-4 py-1.5 border border-white/10 rounded text-white/30 text-[10px] font-black tracking-widest uppercase flex items-center gap-2">
-                <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse" />
+              <div className="px-3 py-1 border border-white/10 rounded-sm text-white/30 text-[9px] font-black tracking-widest uppercase flex items-center gap-2">
+                <span className="w-1 h-1 bg-blue-500 rounded-full animate-pulse" />
                 {t.footer.demo}
               </div>
             </div>
