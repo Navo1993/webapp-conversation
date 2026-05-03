@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Globe, ChevronRight, ArrowRight, Monitor, Cpu, ShieldCheck } from 'lucide-react'
+import { Globe, ChevronRight, ArrowRight, Monitor, Cpu, ShieldCheck, Plus, Minus } from 'lucide-react'
 import type { IMainProps } from '@/app/components'
 import Main from '@/app/components'
 
@@ -27,7 +27,17 @@ const content = {
       list: [
         { icon: <Cpu />, t: '秒级响应', d: '基于 Dify 核心，故障码查询与解决方案生成仅在瞬息之间。' },
         { icon: <Monitor />, t: '数字孪生', d: '实时同步电梯运行参数，在虚拟空间构建精准的设备状态。' },
-        { icon: <ShieldCheck />, t: '主动防御', d: '智能识别不安全乘梯行为，将隐患消灭在萌芽状态。' }
+        { icon: <ShieldCheck />, t: '主动防御', d: '智能识别不安全乘梯行为，将隐患消滅在萌芽状态。' }
+      ]
+    },
+    faq: {
+      title: '常見問題',
+      subtitle: 'FAQs',
+      items: [
+        { q: 'Smart Guard 如何確保數據的實時性？', a: '我們通過自主研發的 IoT 網關直接對接默納克 NICE 3000 New 控制系統，實現毫秒級的數據採集與雲端同步。' },
+        { q: 'AI 診斷模型是如何訓練的？', a: '模型基於數萬條真實電梯故障日誌，通過 Dify 平台進行檢索增強生成（RAG）訓練，確保技術建議的專業與準確。' },
+        { q: '系統是否支持遠程控制電梯？', a: '出於安全規範，目前系統僅提供監測、預警與診斷建議功能，不直接參與電梯的運行控制決策。' },
+        { q: '如何獲取廣交會演示版的訪問權限？', a: '您可以點擊導航欄的「立即體驗」進入 AI 知識庫網站進行交互演示。' }
       ]
     },
     footer: { copy: '© 2026 Smart Guard Project. All Rights Reserved.', demo: '广交会演示专用版本' }
@@ -54,124 +64,36 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
     <div className="min-h-screen bg-white text-[#1d1d1f] font-sans antialiased selection:bg-blue-100 selection:text-blue-700">
       
       {/* --- 1. 高度精緻導航欄 --- */}
-      <nav 
-        className={`fixed w-full z-[100] transition-all duration-700 ease-in-out ${
-          scrolled || activeMenu ? 'bg-white/95 backdrop-blur-2xl py-4 shadow-sm' : 'bg-transparent py-6'
-        }`}
-        onMouseLeave={() => setActiveMenu(null)}
-      >
+      <nav className={`fixed w-full z-[100] transition-all duration-700 ease-in-out ${scrolled || activeMenu ? 'bg-white/95 backdrop-blur-2xl py-4 shadow-sm' : 'bg-transparent py-6'}`} onMouseLeave={() => setActiveMenu(null)}>
         <div className="max-w-[1400px] mx-auto px-8 lg:px-12 flex justify-between items-center">
           <div className="flex items-center gap-16">
             <div className="text-[20px] font-[900] text-[#0052D9] tracking-tighter uppercase cursor-pointer flex items-center gap-3">
               Smart Guard <span className="w-[1px] h-4 bg-gray-200"></span> <span className="text-[11px] tracking-[0.3em] text-gray-400 font-black">AI</span>
             </div>
-            
             <div className="hidden lg:flex items-center gap-10">
               {t.nav.map((item) => (
-                <div 
-                  key={item.id} 
-                  className="relative cursor-pointer py-2 group"
-                  onMouseEnter={() => setActiveMenu(item.id)}
-                >
-                  <span className={`text-[15px] font-bold transition-all duration-300 ${activeMenu === item.id ? 'text-[#0052D9]' : 'text-gray-600 hover:text-[#0052D9]'}`}>
-                    {item.label}
-                  </span>
-                  {activeMenu === item.id && (
-                    <motion.div layoutId="nav-line" className="absolute -bottom-[22px] left-0 right-0 h-[3px] bg-[#0052D9]" />
-                  )}
+                <div key={item.id} className="relative cursor-pointer py-2 group" onMouseEnter={() => setActiveMenu(item.id)}>
+                  <span className={`text-[15px] font-bold transition-all duration-300 ${activeMenu === item.id ? 'text-[#0052D9]' : 'text-gray-600 hover:text-[#0052D9]'}`}>{item.label}</span>
+                  {activeMenu === item.id && <motion.div layoutId="nav-line" className="absolute -bottom-[22px] left-0 right-0 h-[3px] bg-[#0052D9]" />}
                 </div>
               ))}
             </div>
           </div>
-
-          <div className="flex items-center gap-8">
-             <div className="flex items-center gap-2 text-gray-500 cursor-pointer hover:text-[#0052D9] transition-all">
-                <Globe className="w-4 h-4" />
-                <span className="text-[11px] font-black uppercase tracking-tighter">EN</span>
-             </div>
-             <button 
-                onClick={() => setIsChatting(true)}
-                className="bg-[#0052D9] text-white px-7 py-2.5 rounded-full text-[12px] font-black hover:bg-[#0042b3] hover:shadow-[0_8px_20px_rgba(0,82,217,0.15)] transition-all active:scale-95"
-             >
-               {t.common.start}
-             </button>
-          </div>
+          <button onClick={() => setIsChatting(true)} className="bg-[#0052D9] text-white px-7 py-2.5 rounded-full text-[12px] font-black hover:bg-[#0042b3] hover:shadow-[0_8px_20px_rgba(0,82,217,0.15)] transition-all active:scale-95">{t.common.start}</button>
         </div>
-
-        {/* 騰訊風格下拉菜單 */}
-        <AnimatePresence>
-          {activeMenu && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
-              className="absolute top-full left-0 w-full bg-white border-t border-gray-100 shadow-[0_20px_40px_rgba(0,0,0,0.05)] overflow-hidden"
-            >
-              <div className="max-w-[1400px] mx-auto px-12 py-16 grid grid-cols-12 gap-8">
-                {/* 左側描述空間 (騰訊特色) */}
-                <div className="col-span-3 border-r border-gray-50 pr-8">
-                   <h2 className="text-2xl font-black text-[#0052D9] mb-4">
-                     {t.nav.find(n => n.id === activeMenu)?.label}
-                   </h2>
-                   <p className="text-sm text-gray-400 leading-relaxed font-medium">
-                     探索 Smart Guard 如何利用領先的 AI 技術重塑電梯維保生態。
-                   </p>
-                </div>
-                {/* 鏈接群組 */}
-                <div className="col-span-9 grid grid-cols-3 gap-12 pl-8">
-                  {t.nav.find(n => n.id === activeMenu)?.columns.map((col, idx) => (
-                    <div key={idx}>
-                      <h3 className="text-[10px] font-black text-gray-300 mb-6 tracking-[0.2em] uppercase">{col.title}</h3>
-                      <ul className="space-y-4">
-                        {col.links.map((link, lIdx) => (
-                          <li key={lIdx} className="text-[15px] font-bold text-gray-700 hover:text-[#0052D9] hover:translate-x-1 transition-all cursor-pointer flex items-center group">
-                            {link} <ArrowRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 ml-2 transition-all text-[#0052D9]" />
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </nav>
 
       {/* --- 2. Hero 主視覺 --- */}
       <section className="relative h-screen flex items-center justify-center bg-[#F8FAFF] overflow-hidden">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[40rem] font-black text-blue-600/[0.015] select-none pointer-events-none uppercase">
-          Guard
-        </div>
-        
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[40rem] font-black text-blue-600/[0.015] select-none pointer-events-none uppercase">Guard</div>
         <div className="relative z-10 text-center max-w-6xl px-12 pt-20">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.2, ease: [0.23, 1, 0.32, 1] }}
-          >
-            <h1 className="text-[64px] lg:text-[92px] font-[900] leading-[1.1] tracking-[-0.03em] text-[#1d1d1f] mb-8">
-              {t.hero.title1}<span className="text-[#0052D9]">.</span><br />
-              <span className="text-[#0052D9] italic font-serif opacity-90">{t.hero.title2}</span>
-            </h1>
-            <p className="text-[20px] text-gray-400 font-medium max-w-2xl mx-auto mb-12 leading-relaxed">
-              {t.hero.sub}
-            </p>
+          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2, ease: [0.23, 1, 0.32, 1] }}>
+            <h1 className="text-[64px] lg:text-[92px] font-[900] leading-[1.1] tracking-[-0.03em] text-[#1d1d1f] mb-8">{t.hero.title1}<span className="text-[#0052D9]">.</span><br /><span className="text-[#0052D9] italic font-serif opacity-90">{t.hero.title2}</span></h1>
+            <p className="text-[20px] text-gray-400 font-medium max-w-2xl mx-auto mb-12 leading-relaxed">{t.hero.sub}</p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-              <button onClick={() => setIsChatting(true)} className="bg-[#0052D9] text-white px-10 py-4 rounded-xl text-base font-black hover:shadow-2xl hover:shadow-blue-200 transition-all active:scale-95 flex items-center gap-2">
-                {t.common.start} <ChevronRight className="w-5 h-5" />
-              </button>
-              <button className="text-[#1d1d1f] px-10 py-4 rounded-xl text-base font-black hover:bg-gray-100 transition-all">
-                {t.common.more}
-              </button>
+              <button onClick={() => setIsChatting(true)} className="bg-[#0052D9] text-white px-10 py-4 rounded-xl text-base font-black hover:shadow-2xl hover:shadow-blue-200 transition-all active:scale-95 flex items-center gap-2">{t.common.start} <ChevronRight className="w-5 h-5" /></button>
             </div>
           </motion.div>
-        </div>
-
-        <div className="absolute bottom-12 flex flex-col items-center gap-3">
-          <span className="text-[9px] font-black tracking-[0.4em] text-gray-300 uppercase">Scroll</span>
-          <div className="w-[1px] h-10 bg-gradient-to-b from-[#0052D9] to-transparent" />
         </div>
       </section>
 
@@ -181,20 +103,10 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
           <h2 className="text-4xl lg:text-5xl font-black tracking-tight mb-6">{t.features.title}</h2>
           <div className="w-16 h-1.5 bg-[#0052D9] rounded-full" />
         </div>
-        
         <div className="grid md:grid-cols-3 gap-8">
           {t.features.list.map((f, i) => (
-            <motion.div 
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="group p-12 bg-[#FBFBFC] rounded-[40px] hover:bg-white hover:shadow-[0_30px_60px_rgba(0,0,0,0.03)] transition-all duration-500"
-            >
-              <div className="w-14 h-14 bg-white text-[#0052D9] rounded-2xl flex items-center justify-center mb-8 shadow-sm group-hover:scale-110 group-hover:bg-[#0052D9] group-hover:text-white transition-all duration-500">
-                {React.cloneElement(f.icon as React.ReactElement, { size: 24 })}
-              </div>
+            <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="group p-12 bg-[#FBFBFC] rounded-[40px] hover:bg-white hover:shadow-[0_30px_60px_rgba(0,0,0,0.03)] transition-all duration-500">
+              <div className="w-14 h-14 bg-white text-[#0052D9] rounded-2xl flex items-center justify-center mb-8 shadow-sm group-hover:scale-110 group-hover:bg-[#0052D9] group-hover:text-white transition-all duration-500">{React.cloneElement(f.icon as React.ReactElement, { size: 24 })}</div>
               <h3 className="text-2xl font-black mb-4 tracking-tight text-gray-900">{f.t}</h3>
               <p className="text-gray-400 text-base leading-relaxed font-bold">{f.d}</p>
             </motion.div>
@@ -202,58 +114,91 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
         </div>
       </section>
 
-      {/* --- 4. 頁腳 (對齊錄屏中的極簡專業風格) --- */}
+      {/* --- 4. FAQ Section (騰訊雲/大廠美學風格) --- */}
+      <section className="py-40 bg-gradient-to-b from-white via-[#F8FAFF] to-white relative overflow-hidden">
+        {/* 背景裝飾 */}
+        <div className="absolute top-1/2 left-0 w-full h-[600px] bg-[#0052D9]/[0.02] -skew-y-6 pointer-events-none" />
+
+        <div className="max-w-[1400px] mx-auto px-12 relative z-10">
+          <div className="text-center mb-24">
+            <motion.span initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="text-[#0052D9] text-[10px] font-black tracking-[0.5em] uppercase mb-4 block">{t.faq.subtitle}</motion.span>
+            <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} className="text-[56px] font-black tracking-tight text-gray-900 leading-none">{t.faq.title}</motion.h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {t.faq.items.map((item, idx) => (
+              <motion.div 
+                key={idx}
+                initial={{ opacity: 0, scale: 0.98 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.1 }}
+                whileHover={{ y: -5 }}
+                className="bg-white p-10 lg:p-12 rounded-[32px] border border-gray-100 hover:border-blue-100 shadow-[0_10px_40px_rgba(0,0,0,0.02)] hover:shadow-[0_20px_60px_rgba(0,82,217,0.05)] transition-all duration-500 group cursor-default flex flex-col justify-between"
+              >
+                <div>
+                  <h3 className="text-[20px] lg:text-[22px] font-black text-gray-900 mb-6 leading-snug group-hover:text-[#0052D9] transition-colors duration-300">
+                    {item.q}
+                  </h3>
+                  <p className="text-gray-400 text-base leading-relaxed font-bold opacity-80">
+                    {item.a}
+                  </p>
+                </div>
+                <div className="mt-8 flex justify-end">
+                    <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-[#0052D9] group-hover:text-white transition-all duration-500 transform group-hover:rotate-45">
+                        <Plus size={18} />
+                    </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="mt-20 text-center">
+            <button className="text-gray-400 font-black text-xs tracking-widest uppercase hover:text-[#0052D9] transition-all flex items-center gap-2 mx-auto">
+              查看更多技術文檔 <ArrowRight size={14} />
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* --- 5. 頁腳 --- */}
       <footer className="bg-[#1b1e23] text-white pt-24 pb-12 px-8 lg:px-12">
         <div className="max-w-[1400px] mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 border-b border-white/5 pb-16 mb-12">
             <div className="lg:col-span-4 space-y-6">
               <div className="text-[22px] font-black tracking-tighter italic text-[#0052D9]">SMART GUARD AI</div>
-              <p className="text-gray-500 max-w-xs text-sm leading-relaxed font-medium opacity-80">
-                連接安全，預見未來。我們致力於打造更智能、更透明的城市垂直交通監控體系。
-              </p>
+              <p className="text-gray-500 max-w-xs text-sm leading-relaxed font-medium opacity-80">連接安全，預見未來。我們致力於打造更智能、更透明的城市垂直交通監控體系。</p>
             </div>
             <div className="lg:col-span-8 grid grid-cols-2 sm:grid-cols-3 gap-12">
               <div className="space-y-5">
                 <h4 className="text-white/20 font-black tracking-[0.2em] text-[10px] uppercase">产品中心</h4>
                 <ul className="space-y-3 text-gray-400 font-bold text-sm">
-                  <li className="hover:text-white transition-colors cursor-pointer">故障诊断引擎</li>
-                  <li className="hover:text-white transition-colors cursor-pointer">IoT 监控平台</li>
+                  <li className="hover:text-white cursor-pointer">故障诊断引擎</li>
+                  <li className="hover:text-white cursor-pointer">IoT 监控平台</li>
                 </ul>
               </div>
               <div className="space-y-5">
                 <h4 className="text-white/20 font-black tracking-[0.2em] text-[10px] uppercase">开发者</h4>
                 <ul className="space-y-3 text-gray-400 font-bold text-sm">
-                  <li className="hover:text-white transition-colors cursor-pointer">Dify 接入文档</li>
-                  <li className="hover:text-white transition-colors cursor-pointer">API 接口说明</li>
+                  <li className="hover:text-white cursor-pointer">Dify 接入文档</li>
+                  <li className="hover:text-white cursor-pointer">API 接口说明</li>
                 </ul>
               </div>
             </div>
           </div>
-          
           <div className="flex flex-col lg:flex-row justify-between items-center gap-8">
             <div className="flex flex-wrap justify-center lg:justify-start items-center gap-x-6 gap-y-3 text-[12px] text-gray-500 font-bold">
               <span className="text-gray-600">{t.footer.copy}</span>
-              <a href="#" className="hover:text-white transition-colors">粤ICP备20260501号</a>
-              
-              {/* 公安徽標區域 */}
-              <a href="#" className="flex items-center gap-1.5 hover:text-white transition-colors group">
-                <img 
-                  src="/police.png" 
-                  alt="police" 
-                  className="w-4 h-4 grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 transition-all" 
-                />
+              <a href="#" className="hover:text-white">粤ICP备20260501号</a>
+              <a href="#" className="flex items-center gap-1.5 hover:text-white group">
+                <img src="/police.png" alt="police" className="w-4 h-4 grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 transition-all" />
                 <span>粤公网安备 44030502008888号</span>
               </a>
             </div>
-
             <div className="flex items-center gap-6">
               <div className="px-3 py-1 border border-white/5 rounded text-white/20 text-[9px] font-black tracking-widest uppercase flex items-center gap-2">
                 <span className="w-1 h-1 bg-blue-500 rounded-full animate-pulse" />
                 {t.footer.demo}
-              </div>
-              <div className="flex items-center gap-4 text-gray-500">
-                <Globe className="w-4 h-4" />
-                <span className="text-[11px] font-black uppercase">Mainland China</span>
               </div>
             </div>
           </div>
