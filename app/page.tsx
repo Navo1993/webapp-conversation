@@ -300,11 +300,20 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
               </div>
             </div>
           </div>
-          <div className="flex flex-col lg:flex-row justify-between items-center gap-8 text-[12px] text-gray-500 font-bold">
-            <span>{t.footer.copy}</span>
-            <div className="flex gap-6 uppercase tracking-widest text-[10px]">
-              <span className="text-white/20">{t.footer.demo}</span>
-              <a href="#" className="hover:text-white transition-colors tracking-normal">粤ICP备20260501号</a>
+<div className="flex flex-col lg:flex-row justify-between items-center gap-8">
+            <div className="flex flex-wrap justify-center lg:justify-start items-center gap-x-6 gap-y-3 text-[12px] text-gray-500 font-bold">
+              <span className="text-gray-600">{t.footer.copy}</span>
+              <a href="#" className="hover:text-white">粤ICP备20260501号</a>
+              <a href="#" className="flex items-center gap-1.5 hover:text-white group">
+                <img src="/police.png" alt="police" className="w-4 h-4 grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 transition-all" />
+                <span>粤公网安备 44030502008888号</span>
+              </a>
+            </div>
+            <div className="flex items-center gap-6">
+              <div className="px-3 py-1 border border-white/5 rounded text-white/20 text-[9px] font-black tracking-widest uppercase flex items-center gap-2">
+                <span className="w-1 h-1 bg-blue-500 rounded-full animate-pulse" />
+                {t.footer.demo}
+              </div>
             </div>
           </div>
         </div>
