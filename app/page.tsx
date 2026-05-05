@@ -10,17 +10,19 @@ import {
   ShieldCheck, 
   Plus, 
   Minus,
-  ExternalLink
+  ExternalLink,
+  Gamepad2
 } from 'lucide-react'
 import type { IMainProps } from '@/app/components'
 import Main from '@/app/components'
 
-// 內容配置：包含導航菜單結構、Hero、功能區與 FAQ
+// 內容配置
 const content = {
   zh_cn: {
     nav: [
       { id: 'intro', label: '关于', columns: [
         { title: '项目概览', links: ['智能守护者简介', '技术演进', '广交会专题'] },
+        { title: '互动实验室', links: ['智能维护挑战赛'] }, // 新增互动游戏入口
         { title: '核心团队', links: ['研发架构', '合作伙伴', '加入我们'] }
       ]},
       { id: 'tech', label: '技术', columns: [
@@ -72,13 +74,19 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // 如果進入聊天模式，切換到組件 Main
+  // 处理链接点击逻辑
+  const handleLinkClick = (linkName: string) => {
+    if (linkName === '智能维护挑战赛') {
+      window.open('https://www.coze.cn/store/bot/7361111664188702755', '_blank')
+    }
+  }
+
   if (isChatting) return <Main params={params} />
 
   return (
     <div className="min-h-screen bg-white text-[#1d1d1f] font-sans antialiased selection:bg-blue-100 selection:text-blue-700">
       
-      {/* --- 1. 騰訊風格導航欄 --- */}
+      {/* --- 1. 導航欄 (含互動遊戲跳轉) --- */}
       <nav 
         className={`fixed w-full z-[100] transition-all duration-500 ease-in-out ${
           scrolled || activeMenu ? 'bg-white/95 backdrop-blur-2xl shadow-sm' : 'bg-transparent'
@@ -91,7 +99,6 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
               Smart Guard <span className="w-[1px] h-4 bg-gray-200"></span> <span className="text-[11px] tracking-[0.3em] text-gray-400 font-black">AI</span>
             </div>
             
-            {/* 一級導航項 */}
             <div className="hidden lg:flex items-center gap-10">
               {t.nav.map((item) => (
                 <div 
@@ -104,7 +111,6 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
                   }`}>
                     {item.label}
                   </span>
-                  {/* 選中橫線動畫 */}
                   {activeMenu === item.id && (
                     <motion.div 
                       layoutId="nav-line" 
@@ -124,7 +130,6 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
           </button>
         </div>
 
-        {/* 下拉面板動畫 (仿 Desktop 2026.05.03 - 14.17.25.03_2.mp4) */}
         <AnimatePresence>
           {activeMenu && (
             <motion.div
@@ -150,8 +155,12 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
                       {col.links.map((link, lIdx) => (
                         <li 
                           key={lIdx} 
-                          className="text-[16px] font-bold text-gray-700 hover:text-[#0052D9] cursor-pointer transition-colors flex items-center group"
+                          onClick={() => handleLinkClick(link)}
+                          className={`text-[16px] font-bold transition-colors flex items-center group cursor-pointer ${
+                            link === '智能维护挑战赛' ? 'text-orange-500 hover:text-orange-600' : 'text-gray-700 hover:text-[#0052D9]'
+                          }`}
                         >
+                          {link === '智能维护挑战赛' && <Gamepad2 className="w-4 h-4 mr-2" />}
                           {link}
                           <ChevronRight className="w-4 h-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
                         </li>
@@ -165,18 +174,21 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.2 }}
-                  className="col-span-1 bg-gray-50 rounded-2xl p-8 flex flex-col justify-between border border-gray-100"
+                  className="col-span-1 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-8 flex flex-col justify-between border border-blue-100/50"
                 >
                   <div>
-                    <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center text-[#0052D9] mb-4">
-                      <ExternalLink size={20} />
+                    <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center text-[#0052D9] mb-4 shadow-sm">
+                      <Gamepad2 size={20} />
                     </div>
-                    <p className="text-sm font-bold text-gray-600 leading-relaxed">
-                      探索 Smart Guard 如何利用 Dify RAG 技術提升電梯維修效率。
+                    <p className="text-sm font-bold text-gray-700 leading-relaxed">
+                      准备好展示你的维护技巧了吗？参加“智能维护挑战赛”赢取演示积分。
                     </p>
                   </div>
-                  <div className="text-[#0052D9] font-black text-xs cursor-pointer flex items-center gap-1 hover:gap-2 transition-all">
-                    了解技術細節 <ArrowRight size={14} />
+                  <div 
+                    onClick={() => window.open('https://www.coze.cn/store/bot/7361111664188702755', '_blank')}
+                    className="text-[#0052D9] font-black text-xs cursor-pointer flex items-center gap-1 hover:gap-2 transition-all"
+                  >
+                    立即开始挑战 <ArrowRight size={14} />
                   </div>
                 </motion.div>
               </div>
@@ -235,7 +247,7 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
         </div>
       </section>
 
-      {/* --- 4. FAQ Section (仿截圖 2026-05-03 142105.png) --- */}
+      {/* --- 4. FAQ --- */}
       <section className="py-40 bg-gradient-to-b from-white via-[#F8FAFF] to-white relative overflow-hidden">
         <div className="max-w-[1400px] mx-auto px-12 relative z-10">
           <div className="text-center mb-24">
@@ -255,8 +267,7 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
-                whileHover={{ y: -5 }}
-                className="bg-white p-10 lg:p-12 rounded-[32px] border border-gray-100 hover:border-blue-100 shadow-[0_10px_40px_rgba(0,0,0,0.02)] hover:shadow-[0_20px_60px_rgba(0,82,217,0.05)] transition-all duration-500 group cursor-default"
+                className="bg-white p-10 lg:p-12 rounded-[32px] border border-gray-100 hover:border-blue-100 shadow-[0_10px_40px_rgba(0,0,0,0.02)] transition-all duration-500 group cursor-default"
               >
                 <div className="flex justify-between items-start mb-6">
                   <h3 className="text-[20px] lg:text-[22px] font-black text-gray-900 leading-snug group-hover:text-[#0052D9] transition-colors duration-300">
