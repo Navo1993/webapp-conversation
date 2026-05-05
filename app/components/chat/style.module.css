@@ -1,132 +1,91 @@
-/* ============================================================
-   Chat Component — Enhanced Style Module
-   Design: Crystal Blue — glass, depth, fluid motion
-   ============================================================ */
-
-/* ── Send Button ─────────────────────────────────────────── */
-.sendBtn {
-  background: linear-gradient(145deg, #5B7FFF 0%, #3B5BDB 55%, #2F4AC7 100%);
-  box-shadow:
-    0 2px 8px rgba(59, 91, 219, 0.40),
-    0 1px 2px rgba(59, 91, 219, 0.25),
-    inset 0 1px 0 rgba(255, 255, 255, 0.18);
-  transition:
-    transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1),
-    box-shadow 0.18s ease,
-    background 0.15s ease;
+.answerIcon {
   position: relative;
-  overflow: hidden;
+  background: url(./icons/robot.svg);
 }
 
-.sendBtn::before {
-  content: '';
+.typeingIcon {
   position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.22) 0%,
-    rgba(255, 255, 255, 0.04) 60%,
-    transparent 100%
-  );
-  border-radius: inherit;
-  pointer-events: none;
+  top: 0px;
+  left: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 16px;
+  height: 16px;
+  background: #FFFFFF;
+  box-shadow: 0px 1px 2px rgba(16, 24, 40, 0.05);
+  border-radius: 16px;
 }
 
-/* Ripple shimmer on hover */
-.sendBtn::after {
+
+.questionIcon {
+  background: url(./icons/default-avatar.jpg);
+  background-size: contain;
+  border-radius: 50%;
+}
+
+.answer::before,
+.question::before {
   content: '';
   position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.15) 50%,
-    transparent 100%
-  );
-  transform: translateX(-100%);
-  border-radius: inherit;
-  pointer-events: none;
-  transition: transform 0s;
+  top: 0;
+  width: 8px;
+  height: 12px;
+}
+
+.answer::before {
+  left: 0;
+  background: url(./icons/answer.svg) no-repeat;
+}
+
+.answerWrap .itemOperation {
+  display: none;
+}
+
+.answerWrap:hover .itemOperation {
+  display: flex;
+}
+
+.question::before {
+  right: 0;
+  background: url(./icons/question.svg) no-repeat;
+}
+
+.textArea {
+  padding-top: 13px;
+  padding-bottom: 13px;
+  padding-right: 90px;
+  border-radius: 12px;
+  line-height: 20px;
+  background-color: #fff;
+}
+
+.textArea:hover {
+  background-color: #fff;
+}
+
+/* .textArea:focus {
+  box-shadow: 0px 3px 15px -3px rgba(0, 0, 0, 0.1), 0px 4px 6px rgba(0, 0, 0, 0.05);
+} */
+
+.count {
+  /* display: none; */
+  padding: 0 2px;
+}
+
+.sendBtn {
+  background: url(./icons/send.svg) center center no-repeat;
 }
 
 .sendBtn:hover {
-  transform: translateY(-1.5px) scale(1.06);
-  box-shadow:
-    0 6px 20px rgba(59, 91, 219, 0.50),
-    0 2px 6px rgba(59, 91, 219, 0.30),
-    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  background-image: url(./icons/send-active.svg);
+  background-color: #EBF5FF;
 }
 
-.sendBtn:hover::after {
-  transform: translateX(100%);
-  transition: transform 0.55s ease;
+.textArea:focus+div .count {
+  display: block;
 }
 
-.sendBtn:active {
-  transform: translateY(0) scale(0.95);
-  box-shadow:
-    0 2px 6px rgba(59, 91, 219, 0.30),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
-}
-
-/* ── Character Count Badge ───────────────────────────────── */
-.count {
-  font-variant-numeric: tabular-nums;
-  font-feature-settings: 'tnum';
-  letter-spacing: 0.02em;
-  transition:
-    color 0.25s ease,
-    background-color 0.25s ease,
-    transform 0.15s ease;
-  font-size: 11px !important;
-  font-weight: 500;
-}
-
-/* Warning color when approaching limit */
-.countWarn {
-  color: #D97706 !important;
-  background: #FEF3C7 !important;
-}
-
-/* ── Input Container Glass Effect ────────────────────────── */
-.inputGlass {
-  background: rgba(255, 255, 255, 0.92) !important;
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border: 1.5px solid rgba(209, 219, 255, 0.70) !important;
-  box-shadow:
-    0 4px 24px rgba(59, 91, 219, 0.08),
-    0 1px 4px rgba(59, 91, 219, 0.05),
-    inset 0 1px 0 rgba(255, 255, 255, 0.90);
-  transition:
-    border-color 0.25s ease,
-    box-shadow 0.25s ease;
-}
-
-.inputGlass:focus-within {
-  border-color: rgba(91, 127, 255, 0.60) !important;
-  box-shadow:
-    0 0 0 4px rgba(91, 127, 255, 0.10),
-    0 4px 24px rgba(59, 91, 219, 0.12),
-    0 1px 4px rgba(59, 91, 219, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.95);
-}
-
-/* ── Wrapper Bar Blur Backdrop ───────────────────────────── */
-.inputBar {
-  padding-bottom: 16px !important;
-}
-
-.inputBar::before {
-  content: '';
-  position: absolute;
-  inset: -32px -16px 0;
-  background: linear-gradient(
-    to top,
-    rgba(248, 250, 255, 0.98) 50%,
-    rgba(248, 250, 255, 0.85) 75%,
-    transparent 100%
-  );
-  pointer-events: none;
-  z-index: -1;
+.textArea:focus+div .sendBtn {
+  background-image: url(./icons/send-active.svg);
 }
