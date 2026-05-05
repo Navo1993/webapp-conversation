@@ -1,5 +1,6 @@
 'use client'
 import React, { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation' // 1. 導入路由鉤子
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
   Globe, 
@@ -20,31 +21,31 @@ import Main from '@/app/components'
 const content = {
   zh_cn: {
     nav: [
-      { id: 'intro', label: '关于', columns: [
-        { title: '项目概览', links: ['智能守护者简介', '技术演进', '广交会专题'] },
-        { title: '互动实验室', links: ['智能维护挑战赛'] }, // 新增互动游戏入口
-        { title: '核心团队', links: ['研发架构', '合作伙伴', '加入我们'] }
+      { id: 'intro', label: '關於', columns: [
+        { title: '項目概覽', links: ['智能守護者簡介', '技術演進', '廣交會專題'] },
+        { title: '互動實驗室', links: ['智能維修挑戰賽'] },
+        { title: '核心團隊', links: ['研發架構', '合作夥伴', '加入我們'] }
       ]},
-      { id: 'tech', label: '技术', columns: [
-        { title: '智能引擎', links: ['Dify AI 训练', '故障预测模型', 'RAG 知识库'] },
-        { title: 'IoT 接入', links: ['默纳克系统协议', '传感器融合', 'E-bike 检测'] }
+      { id: 'tech', label: '技術', columns: [
+        { title: '智能引擎', links: ['Dify AI 訓練', '故障預測模型', 'RAG 知識庫'] },
+        { title: 'IoT 接入', links: ['默納克系統協議', '傳感器融合', 'E-bike 檢測'] }
       ]},
-      { id: 'news', label: '动态', columns: [
-        { title: '最新消息', links: ['版本更新', '行业新闻', '展会回顾'] }
+      { id: 'news', label: '動態', columns: [
+        { title: '最新消息', links: ['版本更新', '行業新聞', '展會回顧'] }
       ]}
     ],
-    common: { start: '立即体验', langName: '简', more: '了解更多' },
+    common: { start: '立即體驗', langName: '簡', more: '了解更多' },
     hero: { 
-      title1: '连接安全', 
-      title2: '预见未来智能', 
-      sub: '专为广交会演示开发。整合 IoT 与 AI，提供实时电梯故障诊断与维护建议。' 
+      title1: '連接安全', 
+      title2: '預見未來智能', 
+      sub: '專為廣交會演示開發。整合 IoT 與 AI，提供實時電梯故障診斷與維護建議。' 
     },
     features: {
-      title: '重新定义电梯安全',
+      title: '重新定義電梯安全',
       list: [
-        { icon: <Cpu />, t: '秒级响应', d: '基于 Dify 核心，故障码查询与解决方案生成仅在瞬息之间。' },
-        { icon: <Monitor />, t: '数字孪生', d: '实时同步电梯运行参数，在虚拟空间构建精准的设备状态。' },
-        { icon: <ShieldCheck />, t: '主动防御', d: '智能识别不安全乘梯行为，将隐患消滅在萌芽状态。' }
+        { icon: <Cpu />, t: '秒級響應', d: '基於 Dify 核心，故障碼查詢與解決方案生成僅在瞬息之間。' },
+        { icon: <Monitor />, t: '數字孿生', d: '實時同步電梯運行參數，在虛擬空間構建精準的設備狀態。' },
+        { icon: <ShieldCheck />, t: '主動防禦', d: '智能識別不安全乘梯行為，將隱患消滅在萌芽狀態。' }
       ]
     },
     faq: {
@@ -57,11 +58,12 @@ const content = {
         { q: '如何獲取廣交會演示版的訪問權限？', a: '您可以點擊導航欄的「立即體驗」進入 AI 知識庫網站進行交互演示。' }
       ]
     },
-    footer: { copy: '© 2026 Smart Guard Project. All Rights Reserved.', demo: '广交会演示专用版本' }
+    footer: { copy: '© 2026 Smart Guard Project. All Rights Reserved.', demo: '廣交會演示專用版本' }
   }
 }
 
 const App: React.FC<IMainProps> = ({ params }: any) => {
+  const router = useRouter() // 2. 初始化路由
   const [isChatting, setIsChatting] = useState(false)
   const [activeMenu, setActiveMenu] = useState<string | null>(null)
   const [scrolled, setScrolled] = useState(false)
@@ -74,11 +76,16 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // 处理链接点击逻辑
+  // 3. 修改後的跳轉邏輯
   const handleLinkClick = (linkName: string) => {
-    if (linkName === '智能维护挑战赛') {
+    if (linkName === '智能維修挑戰賽') {
       window.open('https://e4f6fc57-b90c-4aea-9156-248092f8900a.dev.coze.site/', '_blank')
+    } 
+    // 當點擊“智能守護者簡介”時，跳轉到你新建的 /about 頁面
+    else if (linkName === '智能守護者簡介') {
+      router.push('/about')
     }
+    // 你可以在這裡繼續添加其他鏈接的跳轉邏輯
   }
 
   if (isChatting) return <Main params={params} />
@@ -86,7 +93,7 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
   return (
     <div className="min-h-screen bg-white text-[#1d1d1f] font-sans antialiased selection:bg-blue-100 selection:text-blue-700">
       
-      {/* --- 1. 導航欄 (含互動遊戲跳轉) --- */}
+      {/* --- 導航欄 --- */}
       <nav 
         className={`fixed w-full z-[100] transition-all duration-500 ease-in-out ${
           scrolled || activeMenu ? 'bg-white/95 backdrop-blur-2xl shadow-sm' : 'bg-transparent'
@@ -95,7 +102,10 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
       >
         <div className="max-w-[1400px] mx-auto px-8 lg:px-12 flex justify-between items-center relative z-[101] py-6">
           <div className="flex items-center gap-16">
-            <div className="text-[20px] font-[900] text-[#0052D9] tracking-tighter uppercase cursor-pointer flex items-center gap-3">
+            <div 
+              onClick={() => router.push('/')} // 點擊 Logo 回到首頁
+              className="text-[20px] font-[900] text-[#0052D9] tracking-tighter uppercase cursor-pointer flex items-center gap-3"
+            >
               Smart Guard <span className="w-[1px] h-4 bg-gray-200"></span> <span className="text-[11px] tracking-[0.3em] text-gray-400 font-black">AI</span>
             </div>
             
@@ -157,10 +167,10 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
                           key={lIdx} 
                           onClick={() => handleLinkClick(link)}
                           className={`text-[16px] font-bold transition-colors flex items-center group cursor-pointer ${
-                            link === '智能维护挑战赛' ? 'text-orange-500 hover:text-orange-600' : 'text-gray-700 hover:text-[#0052D9]'
+                            link === '智能維修挑戰賽' ? 'text-orange-500 hover:text-orange-600' : 'text-gray-700 hover:text-[#0052D9]'
                           }`}
                         >
-                          {link === '智能维护挑战赛' && <Gamepad2 className="w-4 h-4 mr-2" />}
+                          {link === '智能維修挑戰賽' && <Gamepad2 className="w-4 h-4 mr-2" />}
                           {link}
                           <ChevronRight className="w-4 h-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
                         </li>
@@ -181,14 +191,14 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
                       <Gamepad2 size={20} />
                     </div>
                     <p className="text-sm font-bold text-gray-700 leading-relaxed">
-                      准备好展示你的维护技巧了吗？参加“智能维护挑战赛”赢取演示积分。
+                      準備好展示你的維護技巧了嗎？參加“智能維修挑戰賽”贏取演示積分。
                     </p>
                   </div>
                   <div 
                     onClick={() => window.open('https://e4f6fc57-b90c-4aea-9156-248092f8900a.dev.coze.site/', '_blank')}
                     className="text-[#0052D9] font-black text-xs cursor-pointer flex items-center gap-1 hover:gap-2 transition-all"
                   >
-                    立即开始挑战 <ArrowRight size={14} />
+                    立即開始挑戰 <ArrowRight size={14} />
                   </div>
                 </motion.div>
               </div>
@@ -197,7 +207,7 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
         </AnimatePresence>
       </nav>
 
-      {/* --- 2. Hero 主視覺 --- */}
+      {/* Hero 主視覺 */}
       <section className="relative h-screen flex items-center justify-center bg-[#F8FAFF] overflow-hidden pt-20">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[40rem] font-black text-blue-600/[0.015] select-none pointer-events-none uppercase">Guard</div>
         <div className="relative z-10 text-center max-w-6xl px-12">
@@ -221,7 +231,7 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
         </div>
       </section>
 
-      {/* --- 3. 核心功能 --- */}
+      {/* 核心功能 */}
       <section className="py-40 px-12 max-w-[1400px] mx-auto">
         <div className="flex flex-col items-start mb-24">
           <h2 className="text-4xl lg:text-5xl font-black tracking-tight mb-6">{t.features.title}</h2>
@@ -247,7 +257,7 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
         </div>
       </section>
 
-      {/* --- 4. FAQ --- */}
+      {/* FAQ */}
       <section className="py-40 bg-gradient-to-b from-white via-[#F8FAFF] to-white relative overflow-hidden">
         <div className="max-w-[1400px] mx-auto px-12 relative z-10">
           <div className="text-center mb-24">
@@ -286,7 +296,7 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
         </div>
       </section>
 
-      {/* --- 5. 頁腳 --- */}
+      {/* 頁腳 */}
       <footer className="bg-[#1b1e23] text-white pt-24 pb-12 px-8 lg:px-12">
         <div className="max-w-[1400px] mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 border-b border-white/5 pb-16 mb-12">
@@ -296,17 +306,17 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
             </div>
             <div className="lg:col-span-8 grid grid-cols-2 sm:grid-cols-3 gap-12">
               <div className="space-y-5">
-                <h4 className="text-white/20 font-black tracking-[0.2em] text-[10px] uppercase">产品中心</h4>
+                <h4 className="text-white/20 font-black tracking-[0.2em] text-[10px] uppercase">產品中心</h4>
                 <ul className="space-y-3 text-gray-400 font-bold text-sm">
-                  <li className="hover:text-white cursor-pointer transition-colors">故障诊断引擎</li>
-                  <li className="hover:text-white cursor-pointer transition-colors">IoT 监控平台</li>
+                  <li className="hover:text-white cursor-pointer transition-colors">故障診斷引擎</li>
+                  <li className="hover:text-white cursor-pointer transition-colors">IoT 監控平台</li>
                 </ul>
               </div>
               <div className="space-y-5">
-                <h4 className="text-white/20 font-black tracking-[0.2em] text-[10px] uppercase">开发者</h4>
+                <h4 className="text-white/20 font-black tracking-[0.2em] text-[10px] uppercase">開發者</h4>
                 <ul className="space-y-3 text-gray-400 font-bold text-sm">
-                  <li className="hover:text-white cursor-pointer transition-colors">Dify 接入文档</li>
-                  <li className="hover:text-white cursor-pointer transition-colors">API 接口说明</li>
+                  <li className="hover:text-white cursor-pointer transition-colors">Dify 接入文檔</li>
+                  <li className="hover:text-white cursor-pointer transition-colors">API 接口說明</li>
                 </ul>
               </div>
             </div>
