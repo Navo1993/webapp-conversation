@@ -185,7 +185,7 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
                     </p>
                   </div>
                   <div 
-                    onClick={() => window.open('https://www.coze.cn/store/bot/7361111664188702755', '_blank')}
+                    onClick={() => window.open('https://e4f6fc57-b90c-4aea-9156-248092f8900a.dev.coze.site/', '_blank')}
                     className="text-[#0052D9] font-black text-xs cursor-pointer flex items-center gap-1 hover:gap-2 transition-all"
                   >
                     立即开始挑战 <ArrowRight size={14} />
