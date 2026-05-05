@@ -77,7 +77,7 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
   // 处理链接点击逻辑
   const handleLinkClick = (linkName: string) => {
     if (linkName === '智能维护挑战赛') {
-      window.open('https://www.coze.cn/store/bot/7361111664188702755', '_blank')
+      window.open('https://e4f6fc57-b90c-4aea-9156-248092f8900a.dev.coze.site/', '_blank')
     }
   }
 
