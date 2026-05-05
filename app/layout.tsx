@@ -2,8 +2,6 @@ import { getLocaleOnServer } from '@/i18n/server'
 
 import './styles/globals.css'
 import './styles/markdown.scss'
-// app/layout.tsx
-import '@/app/styles/ui-enhancements.css'   // ← 加这一行
 
 const LocaleLayout = async ({
   children,
