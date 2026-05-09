@@ -1,452 +1,266 @@
 /* ============================================================
-   Global UI Enhancements — Crystal Blue Design System
-   Import this in app/layout.tsx:
-   import '@/app/styles/ui-enhancements.css'
+   Crystal Blue UI Enhancements
+   全局动画、玻璃质感、微交互
    ============================================================ */
 
 /* ── Design Tokens ───────────────────────────────────────── */
 :root {
-  --blue-50:  #EEF2FF;
-  --blue-100: #E0E7FF;
-  --blue-200: #C7D2FE;
-  --blue-400: #818CF8;
-  --blue-500: #6366F1;
-  --blue-600: #4F46E5;
-  --blue-700: #4338CA;
-
-  --brand-primary: #4F6EF7;
-  --brand-glow:    rgba(79, 110, 247, 0.30);
-  --brand-glow-sm: rgba(79, 110, 247, 0.15);
-
-  --surface-glass:  rgba(255, 255, 255, 0.88);
-  --surface-frost:  rgba(248, 250, 255, 0.95);
-  --border-blue:    rgba(199, 210, 254, 0.80);
-  --shadow-blue-sm: 0 2px 8px rgba(79, 110, 247, 0.12);
-  --shadow-blue-md: 0 4px 20px rgba(79, 110, 247, 0.18);
-  --shadow-blue-lg: 0 8px 40px rgba(79, 110, 247, 0.22);
-
-  --ease-spring:  cubic-bezier(0.34, 1.56, 0.64, 1);
-  --ease-out:     cubic-bezier(0.16, 1, 0.30, 1);
-  --ease-in-out:  cubic-bezier(0.65, 0, 0.35, 1);
-  --duration-fast: 150ms;
-  --duration-base: 250ms;
-  --duration-slow: 400ms;
+  --brand-primary:  #4F6EF7;
+  --brand-glow:     rgba(79, 110, 247, 0.30);
+  --brand-glow-sm:  rgba(79, 110, 247, 0.12);
+  --ease-spring:    cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out:       cubic-bezier(0.16, 1, 0.30, 1);
 }
 
-/* ── Keyframe Animations ─────────────────────────────────── */
+/* ── Keyframes ───────────────────────────────────────────── */
 
-/* Message slide in — user messages from right */
-@keyframes messageSlideInRight {
-  from {
-    opacity: 0;
-    transform: translateX(18px) translateY(6px) scale(0.97);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0) translateY(0) scale(1);
-  }
-}
-
-/* Message slide in — bot messages from left */
-@keyframes messageSlideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-18px) translateY(6px) scale(0.97);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0) translateY(0) scale(1);
-  }
-}
-
-/* Gentle upward float for the welcome avatar */
-@keyframes avatarFloat {
-  0%, 100% { transform: translateY(0px) rotate(-1deg); }
-  50%       { transform: translateY(-8px) rotate(1deg); }
-}
-
-/* Subtle pulse for responding indicator */
-@keyframes respondingPulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50%       { opacity: 0.6; transform: scale(0.97); }
-}
-
-/* Typing dots bounce */
-@keyframes typingDot {
-  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
-  30%            { transform: translateY(-6px); opacity: 1; }
-}
-
-/* Sidebar item slide in on hover */
-@keyframes sidebarGlow {
-  from { opacity: 0; transform: scaleX(0); }
-  to   { opacity: 1; transform: scaleX(1); }
-}
-
-/* Input bar entrance from bottom */
-@keyframes inputBarEnter {
-  from {
-    opacity: 0;
-    transform: translateX(-50%) translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
-}
-
-/* Page fade in stagger */
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(12px); }
+  from { opacity: 0; transform: translateY(14px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Shimmer loading sweep */
-@keyframes shimmer {
-  0%   { background-position: -200% center; }
-  100% { background-position: 200% center; }
+@keyframes messageInRight {
+  from { opacity: 0; transform: translateX(16px) translateY(4px) scale(0.97); }
+  to   { opacity: 1; transform: translateX(0) translateY(0) scale(1); }
 }
 
-/* Micro-bounce for interactive elements */
+@keyframes messageInLeft {
+  from { opacity: 0; transform: translateX(-16px) translateY(4px) scale(0.97); }
+  to   { opacity: 1; transform: translateX(0) translateY(0) scale(1); }
+}
+
+@keyframes inputBarEnter {
+  from { opacity: 0; transform: translateX(-50%) translateY(18px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+@keyframes avatarFloat {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-7px); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+
 @keyframes microBounce {
   0%   { transform: scale(1); }
-  40%  { transform: scale(1.08); }
-  70%  { transform: scale(0.96); }
+  40%  { transform: scale(1.10); }
+  70%  { transform: scale(0.94); }
   100% { transform: scale(1); }
 }
 
-/* ── Smooth Scrolling & Selection ────────────────────────── */
+/* ── Base ────────────────────────────────────────────────── */
 
-html {
-  scroll-behavior: smooth;
-}
-
-::selection {
-  background: var(--blue-200);
-  color: var(--blue-700);
-}
-
-/* ── Custom Scrollbar ────────────────────────────────────── */
-
-::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(99, 102, 241, 0.22);
-  border-radius: 999px;
-  transition: background 0.2s;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(99, 102, 241, 0.45);
-}
-
-/* ── Chat Message Animations ─────────────────────────────── */
-
-/* All chat items animate in when added to DOM */
-.space-y-\[30px\] > * {
-  animation: fadeUp var(--duration-slow) var(--ease-out) both;
-}
-
-/* Stagger each child for conversation feel */
-.space-y-\[30px\] > *:nth-child(1)  { animation-delay: 0ms; }
-.space-y-\[30px\] > *:nth-child(2)  { animation-delay: 40ms; }
-.space-y-\[30px\] > *:nth-child(3)  { animation-delay: 80ms; }
-.space-y-\[30px\] > *:nth-child(4)  { animation-delay: 120ms; }
-.space-y-\[30px\] > *:nth-child(n+5) { animation-delay: 0ms; }
-
-/* ── Input Bar ───────────────────────────────────────────── */
-
-/* Entrance animation for the fixed input bar */
-.fixed.bottom-0.left-1\/2 {
-  animation: inputBarEnter 0.50s var(--ease-out) both;
-}
-
-/* The inner white card */
-.fixed.bottom-0.left-1\/2 .bg-white {
-  background: rgba(255, 255, 255, 0.92) !important;
-  backdrop-filter: blur(28px) saturate(160%);
-  -webkit-backdrop-filter: blur(28px) saturate(160%);
-  border: 1.5px solid rgba(209, 213, 255, 0.65) !important;
-  border-radius: 18px !important;
-  box-shadow:
-    0 4px 28px rgba(79, 110, 247, 0.10),
-    0 1px 6px rgba(79, 110, 247, 0.06),
-    0 0 0 0px transparent,
-    inset 0 1px 0 rgba(255, 255, 255, 0.95);
-  transition:
-    border-color 0.25s ease,
-    box-shadow 0.30s ease;
-}
-
-.fixed.bottom-0.left-1\/2 .bg-white:focus-within {
-  border-color: rgba(99, 102, 241, 0.55) !important;
-  box-shadow:
-    0 0 0 4px rgba(99, 102, 241, 0.10),
-    0 6px 32px rgba(79, 110, 247, 0.16),
-    0 2px 8px rgba(79, 110, 247, 0.10),
-    inset 0 1px 0 rgba(255, 255, 255, 1);
-}
-
-/* Gradient fade above input bar */
-.fixed.bottom-0.left-1\/2 {
-  padding-top: 32px;
-}
-
-.fixed.bottom-0.left-1\/2::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 40px;
-  background: linear-gradient(to bottom, transparent, rgba(243, 244, 255, 0.85));
-  pointer-events: none;
-}
-
-/* ── Textarea inside input bar ───────────────────────────── */
-
-.fixed.bottom-0.left-1\/2 textarea {
-  caret-color: var(--brand-primary);
-  transition: opacity 0.15s ease;
-  line-height: 1.6 !important;
-}
-
-.fixed.bottom-0.left-1\/2 textarea::placeholder {
-  color: #A5B4C8;
-  font-style: normal;
-  transition: opacity 0.2s;
-}
-
-.fixed.bottom-0.left-1\/2 textarea:focus::placeholder {
-  opacity: 0.55;
-}
-
-/* ── Main Chat Background ────────────────────────────────── */
-
-/* Subtle dot-grid background for the main area */
-.flex-grow.flex.flex-col {
-  background-image:
-    radial-gradient(circle, rgba(99, 102, 241, 0.055) 1px, transparent 1px);
-  background-size: 28px 28px;
-  background-position: 0 0;
-}
-
-/* ── Sidebar Enhancements ────────────────────────────────── */
-
-/* Sidebar container glass surface */
-.bg-gray-100.flex.rounded-t-2xl ~ * aside,
-aside {
-  border-right: 1px solid rgba(199, 210, 254, 0.50) !important;
-}
-
-/* Conversation item hover state */
-nav li,
-.sidebar-item,
-[class*="conversationItem"],
-[class*="conversation-item"] {
-  transition:
-    background-color 0.18s ease,
-    transform 0.15s var(--ease-spring);
-  border-radius: 10px;
-  position: relative;
-}
-
-/* Smooth hover lift */
-nav li:hover,
-.sidebar-item:hover {
-  transform: translateX(2px);
-}
-
-/* ── Welcome / Empty State ───────────────────────────────── */
-
-/* Float animation for the bot avatar in empty state */
-.flex-grow.flex.flex-col img[class*="avatar"],
-.flex-grow.flex.flex-col [class*="bot-avatar"],
-.flex-grow.flex.flex-col [class*="botAvatar"] {
-  animation: avatarFloat 4s ease-in-out infinite;
-}
-
-/* Animate the welcome area in */
-[class*="welcome"],
-[class*="emptyState"],
-[class*="empty-state"] {
-  animation: fadeUp 0.6s var(--ease-out) 0.1s both;
-}
-
-/* ── Responding Indicator ────────────────────────────────── */
-
-/* The streaming answer pulse */
-[class*="responding"] [class*="content"],
-[class*="isResponding"] {
-  animation: respondingPulse 1.8s ease-in-out infinite;
-}
-
-/* ── Message Bubble Styles ───────────────────────────────── */
-
-/* User message bubble (question) */
-[class*="question"] [class*="bubble"],
-[class*="Question"] > div {
-  background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%) !important;
-  border: 1px solid rgba(165, 180, 252, 0.45) !important;
-  border-radius: 18px 18px 4px 18px !important;
-  box-shadow: 0 2px 12px rgba(99, 102, 241, 0.10) !important;
-  transition: box-shadow 0.2s ease;
-}
-
-[class*="question"] [class*="bubble"]:hover,
-[class*="Question"] > div:hover {
-  box-shadow: 0 4px 18px rgba(99, 102, 241, 0.16) !important;
-}
-
-/* Bot answer bubble */
-[class*="answer"] [class*="bubble"],
-[class*="Answer"] [class*="content"] {
-  background: #FFFFFF !important;
-  border: 1px solid rgba(226, 232, 240, 0.80) !important;
-  border-radius: 4px 18px 18px 18px !important;
-  box-shadow:
-    0 2px 10px rgba(0, 0, 0, 0.05),
-    0 1px 3px rgba(0, 0, 0, 0.04) !important;
-  transition: box-shadow 0.2s ease;
-}
-
-[class*="answer"] [class*="bubble"]:hover,
-[class*="Answer"] [class*="content"]:hover {
-  box-shadow:
-    0 4px 18px rgba(0, 0, 0, 0.08),
-    0 1px 4px rgba(0, 0, 0, 0.05) !important;
-}
-
-/* ── Feedback & Utility Buttons ──────────────────────────── */
-
-/* Thumb up/down and other icon buttons */
-button[class*="feedback"],
-[class*="action-btn"],
-[class*="actionBtn"] {
-  transition:
-    color 0.15s ease,
-    background 0.15s ease,
-    transform 0.15s var(--ease-spring);
-}
-
-button[class*="feedback"]:hover,
-[class*="action-btn"]:hover {
-  transform: scale(1.18);
-}
-
-button[class*="feedback"]:active,
-[class*="action-btn"]:active {
-  transform: scale(0.90);
-  animation: microBounce 0.35s var(--ease-spring) forwards;
-}
-
-/* ── Tooltip Enhancements ────────────────────────────────── */
-
-[class*="tooltip"],
-[class*="Tooltip"] {
-  backdrop-filter: blur(12px);
-  border-radius: 8px !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15) !important;
-  animation: fadeUp 0.18s var(--ease-out) both;
-}
-
-/* ── Voice Recording Button States ──────────────────────── */
-
-/* Idle state — matches the mic button in Chat */
-button[aria-label*="按住"] {
-  transition:
-    background-color 0.2s ease,
-    color 0.2s ease,
-    transform 0.18s var(--ease-spring),
-    box-shadow 0.2s ease;
-}
-
-button[aria-label*="按住"]:hover {
-  transform: scale(1.10);
-  box-shadow: 0 2px 12px rgba(107, 114, 128, 0.25);
-}
-
-button[aria-label*="松开"] {
-  box-shadow: 0 2px 16px rgba(239, 68, 68, 0.50) !important;
-}
-
-/* ── Loading Skeleton Shimmer ────────────────────────────── */
-
-[class*="skeleton"],
-[class*="loading-placeholder"] {
-  background: linear-gradient(
-    90deg,
-    #F1F5FF 0%,
-    #E8EDFF 50%,
-    #F1F5FF 100%
-  );
-  background-size: 200% auto;
-  animation: shimmer 1.8s linear infinite;
-}
-
-/* ── Page Header ─────────────────────────────────────────── */
-
-/* App header subtle polish */
-header,
-[class*="Header"] {
-  border-bottom: 1px solid rgba(199, 210, 254, 0.40) !important;
-  backdrop-filter: blur(12px);
-  background: rgba(255, 255, 255, 0.95) !important;
-  box-shadow: 0 1px 8px rgba(79, 110, 247, 0.06) !important;
-}
-
-/* New chat button */
-button[class*="newChat"],
-[class*="new-chat"],
-a[href*="new"] {
-  transition:
-    background 0.2s ease,
-    border-color 0.2s ease,
-    transform 0.15s var(--ease-spring),
-    box-shadow 0.2s ease;
-}
-
-button[class*="newChat"]:hover,
-[class*="new-chat"]:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 3px 12px rgba(79, 110, 247, 0.22);
-}
-
-/* ── Rounded Layout Polish ───────────────────────────────── */
-
-/* The main white content area */
-.flex.rounded-t-2xl.bg-white {
-  box-shadow:
-    0 -4px 40px rgba(79, 110, 247, 0.07),
-    0 0 0 1px rgba(199, 210, 254, 0.30);
-}
-
-/* ── Responsive Micro-adjustments ────────────────────────── */
-
-@media (max-width: 768px) {
-  .fixed.bottom-0.left-1\/2 .bg-white {
-    border-radius: 14px !important;
-  }
-}
-
-/* ── Focus Ring (Accessibility) ──────────────────────────── */
-
-*:focus-visible {
-  outline: 2px solid rgba(99, 102, 241, 0.65);
-  outline-offset: 2px;
-  border-radius: 6px;
-}
-
-/* ── Smooth Everything ───────────────────────────────────── */
+html { scroll-behavior: smooth; }
 
 * {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: #C7D2FE;
+  color: #3730A3;
+}
+
+/* ── Custom Scrollbar ────────────────────────────────────── */
+
+::-webkit-scrollbar       { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.20);
+  border-radius: 999px;
+  transition: background 0.2s;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(99, 102, 241, 0.42); }
+
+/* ── Chat Messages ───────────────────────────────────────── */
+
+/* 整体淡入 */
+.space-y-\[30px\] > * {
+  animation: fadeUp 0.42s var(--ease-out) both;
+}
+.space-y-\[30px\] > *:nth-child(1) { animation-delay: 0ms; }
+.space-y-\[30px\] > *:nth-child(2) { animation-delay: 45ms; }
+.space-y-\[30px\] > *:nth-child(3) { animation-delay: 90ms; }
+.space-y-\[30px\] > *:nth-child(4) { animation-delay: 135ms; }
+
+/* ── Input Bar ───────────────────────────────────────────── */
+
+/* 进场动画 */
+.fixed.bottom-0 {
+  animation: inputBarEnter 0.52s var(--ease-out) both;
+}
+
+/* 渐变遮罩，把聊天内容柔和过渡到输入栏 */
+.fixed.bottom-0::before {
+  content: '';
+  position: absolute;
+  top: -48px;
+  left: 0;
+  right: 0;
+  height: 48px;
+  background: linear-gradient(to bottom, transparent, rgba(247, 249, 255, 0.90));
+  pointer-events: none;
+}
+
+/* 输入框卡片 —— 磨砂玻璃 */
+.fixed.bottom-0 .bg-white {
+  background: rgba(255, 255, 255, 0.90) !important;
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border: 1.5px solid rgba(209, 213, 255, 0.60) !important;
+  border-radius: 18px !important;
+  box-shadow:
+    0 4px 28px rgba(79, 110, 247, 0.09),
+    0 1px 6px  rgba(79, 110, 247, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  transition: border-color 0.25s ease, box-shadow 0.28s ease;
+}
+
+/* 聚焦时蓝色光晕 */
+.fixed.bottom-0 .bg-white:focus-within {
+  border-color: rgba(99, 102, 241, 0.50) !important;
+  box-shadow:
+    0 0 0 4px rgba(99, 102, 241, 0.09),
+    0 6px 32px rgba(79, 110, 247, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+
+/* Textarea 光标 & placeholder */
+.fixed.bottom-0 textarea {
+  caret-color: var(--brand-primary);
+}
+.fixed.bottom-0 textarea::placeholder {
+  color: #A8B8CC;
+  transition: opacity 0.2s;
+}
+.fixed.bottom-0 textarea:focus::placeholder {
+  opacity: 0.55;
+}
+
+/* ── 主聊天背景 —— 极淡点阵 ────────────────────────────────── */
+
+.flex-grow.flex.flex-col {
+  background-image: radial-gradient(
+    circle,
+    rgba(99, 102, 241, 0.05) 1px,
+    transparent 1px
+  );
+  background-size: 28px 28px;
+}
+
+/* ── 顶部 Header ─────────────────────────────────────────── */
+
+header,
+[class*="Header"] {
+  border-bottom: 1px solid rgba(199, 210, 254, 0.38) !important;
+  background: rgba(255, 255, 255, 0.96) !important;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 1px 8px rgba(79, 110, 247, 0.06) !important;
+}
+
+/* ── 侧边栏 ──────────────────────────────────────────────── */
+
+aside, [class*="sidebar"], [class*="Sidebar"] {
+  border-right: 1px solid rgba(199, 210, 254, 0.45) !important;
+  background: rgba(248, 249, 255, 0.95) !important;
+}
+
+/* 对话项悬停微移 */
+aside li, aside a, aside button {
+  transition:
+    background-color 0.18s ease,
+    transform 0.15s var(--ease-spring);
+  border-radius: 10px;
+}
+aside li:hover, aside a:hover { transform: translateX(2px); }
+
+/* ── 新建对话按钮 ─────────────────────────────────────────── */
+
+aside button[class*="new"],
+aside a[class*="new"] {
+  transition: transform 0.18s var(--ease-spring), box-shadow 0.2s ease;
+}
+aside button[class*="new"]:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 12px rgba(79, 110, 247, 0.22);
+}
+
+/* ── 麦克风按钮 ──────────────────────────────────────────── */
+
+button[aria-label*="按住"],
+button[aria-label*="松开"] {
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease,
+    transform 0.18s var(--ease-spring),
+    box-shadow 0.2s ease;
+}
+button[aria-label*="按住"]:hover {
+  transform: scale(1.10);
+  box-shadow: 0 2px 10px rgba(107, 114, 128, 0.22);
+}
+button[aria-label*="松开"] {
+  box-shadow: 0 2px 16px rgba(239, 68, 68, 0.48) !important;
+}
+
+/* ── 反馈按钮微弹 ────────────────────────────────────────── */
+
+button[class*="feedback"]:hover,
+[class*="actionBtn"]:hover {
+  transform: scale(1.16);
+  transition: transform 0.15s var(--ease-spring);
+}
+button[class*="feedback"]:active {
+  animation: microBounce 0.32s var(--ease-spring) forwards;
+}
+
+/* ── Tooltip ─────────────────────────────────────────────── */
+
+[class*="tooltip"], [class*="Tooltip"] {
+  border-radius: 8px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.14) !important;
+  animation: fadeUp 0.16s var(--ease-out) both;
+}
+
+/* ── 整体容器圆角卡片阴影 ──────────────────────────────────── */
+
+.flex.rounded-t-2xl.bg-white {
+  box-shadow:
+    0 -4px 40px rgba(79, 110, 247, 0.07),
+    0  0   0  1px rgba(199, 210, 254, 0.28);
+}
+
+/* ── 建议问题 Chips ──────────────────────────────────────── */
+
+[class*="suggestion"], [class*="Suggestion"] {
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    transform 0.15s var(--ease-spring),
+    box-shadow 0.18s ease;
+}
+[class*="suggestion"]:hover, [class*="Suggestion"]:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(79, 110, 247, 0.16);
+  border-color: rgba(99, 102, 241, 0.50) !important;
+}
+
+/* ── 焦点可访问性 ────────────────────────────────────────── */
+
+*:focus-visible {
+  outline: 2px solid rgba(99, 102, 241, 0.60);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* ── 手机端适配 ──────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .fixed.bottom-0 .bg-white {
+    border-radius: 14px !important;
+  }
 }
