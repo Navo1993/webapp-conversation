@@ -324,8 +324,15 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
 <div className="flex flex-col lg:flex-row justify-between items-center gap-8">
   <div className="flex flex-wrap justify-center lg:justify-start items-center gap-x-6 gap-y-3 text-[12px] text-gray-500 font-bold">
     <span className="text-gray-600">{t.footer.copy}</span>
-    <a href="#" className="hover:text-white">粤ICP备2026055050号-1</a>
-    {/* 公安备案部分已移除，等备案下来再加回来 */}
+    {/* 已添加跳转链接至工信部官网 */}
+    <a 
+      href="https://beian.miit.gov.cn/" 
+      target="_blank" 
+      rel="noreferrer" 
+      className="hover:text-white"
+    >
+      粤ICP备2026055050号-1
+    </a>
   </div>
   <div className="flex items-center gap-6">
     <div className="px-3 py-1 border border-white/5 rounded text-white/20 text-[9px] font-black tracking-widest uppercase flex items-center gap-2">
