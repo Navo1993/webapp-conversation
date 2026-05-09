@@ -374,12 +374,6 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
                 粤ICP备2026055050号-1
               </a>
 
-              {/* 公安备案预留位 - 必须包含警徽图标（可用Lucide图标模拟或图片） */}
-              <a href="http://www.beian.gov.cn/" target="_blank" rel="noreferrer" className="flex items-center gap-1 hover:text-white transition-colors">
-                <ShieldCheck size={14} className="text-gray-600"/>
-                粤公网安备 44000002000001号
-              </a>
-            </div>
 
             <div className="flex items-center gap-6">
               <div className="px-3 py-1 border border-white/5 rounded text-white/20 text-[9px] font-black tracking-widest uppercase flex items-center gap-2">
