@@ -21,50 +21,57 @@ import { getProcessedFiles } from '@/app/components/base/file-uploader-in-attach
 
 /* ================================================================
    🎙️ 语音输入 Hook
-   独立模块：录音 → 上传 Dify → 触发 onSend
+   录音 → 走 /api 代理上传（避免 CORS）→ 触发 onSend
    ================================================================ */
 function useVoiceInput(
   onSend: (message: string, files: VisionFile[]) => void,
   logError: (msg: string) => void,
 ) {
-  const [isRecording, setIsRecording]       = useState(false)
+  const [isRecording, setIsRecording] = useState(false)
   const [isVoiceUploading, setIsVoiceUploading] = useState(false)
-  const isRecordingRef    = useRef(false)
-  const mediaRecorderRef  = useRef<MediaRecorder | null>(null)
-  const audioChunksRef    = useRef<Blob[]>([])
+  const isRecordingRef   = useRef(false)
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null)
+  const audioChunksRef   = useRef<Blob[]>([])
 
+  /** 上传音频，走 Next.js /api 代理转发，避免浏览器直接请求 Dify 被 CORS 拦截 */
   const uploadAudio = useCallback(async (blob: Blob): Promise<string> => {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL
     const appKey = process.env.NEXT_PUBLIC_APP_KEY
-    if (!apiUrl || !appKey)
-      throw new Error('环境变量 NEXT_PUBLIC_API_URL 或 NEXT_PUBLIC_APP_KEY 未配置')
+    if (!appKey)
+      throw new Error('环境变量 NEXT_PUBLIC_APP_KEY 未配置')
 
     const formData = new FormData()
     formData.append('file', blob, 'recording.webm')
 
-    const res = await fetch(`${apiUrl}/files/upload`, {
+    const res = await fetch('/api/files/upload', {
       method: 'POST',
       headers: { Authorization: `Bearer ${appKey}` },
       body: formData,
     })
+
     if (!res.ok) {
       const errText = await res.text()
       throw new Error(`上传失败 (${res.status}): ${errText}`)
     }
+
     const data = await res.json()
-    if (!data.id) throw new Error('上传响应中未包含 file id')
+    if (!data.id)
+      throw new Error('上传响应中未包含 file id')
+
     return data.id as string
   }, [])
 
+  /** 停止录音 → 收集 chunks → 上传 → 发送 */
   const stopAndSend = useCallback(() => {
     const recorder = mediaRecorderRef.current
-    if (!recorder || recorder.state === 'inactive' || !isRecordingRef.current) return
+    if (!recorder || recorder.state === 'inactive' || !isRecordingRef.current)
+      return
 
     isRecordingRef.current = false
     setIsRecording(false)
 
     recorder.onstop = async () => {
       recorder.stream.getTracks().forEach(t => t.stop())
+
       const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' })
       audioChunksRef.current = []
 
@@ -72,6 +79,7 @@ function useVoiceInput(
         logError('录音时间太短，请按住麦克风后再说话')
         return
       }
+
       setIsVoiceUploading(true)
       try {
         const fileId = await uploadAudio(audioBlob)
@@ -90,24 +98,30 @@ function useVoiceInput(
         setIsVoiceUploading(false)
       }
     }
+
     recorder.stop()
   }, [uploadAudio, onSend, logError])
 
+  /** 请求麦克风权限 → 开始录音 */
   const startRecording = useCallback(async () => {
     if (isRecordingRef.current) return
+
     try {
       const stream   = await navigator.mediaDevices.getUserMedia({ audio: true })
       const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
         ? 'audio/webm;codecs=opus'
         : 'audio/webm'
+
       const recorder = new MediaRecorder(stream, { mimeType })
       audioChunksRef.current = []
+
       recorder.ondataavailable = (e) => {
         if (e.data.size > 0) audioChunksRef.current.push(e.data)
       }
+
       recorder.start(100)
       mediaRecorderRef.current = recorder
-      isRecordingRef.current    = true
+      isRecordingRef.current   = true
       setIsRecording(true)
     }
     catch (err: any) {
@@ -125,11 +139,18 @@ function useVoiceInput(
   return { isRecording, isVoiceUploading, startRecording, stopAndSend }
 }
 
-/* ── 图标 ─────────────────────────────────────────────────── */
+/* ── 图标组件 ─────────────────────────────────────────────── */
 
 const MicIcon: FC<{ className?: string }> = ({ className }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+  <svg
+    className={className}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={2}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
     <path d="M12 2a3 3 0 0 1 3 3v7a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3Z" />
     <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
     <line x1="12" y1="19" x2="12" y2="22" />
@@ -139,10 +160,17 @@ const MicIcon: FC<{ className?: string }> = ({ className }) => (
 
 const SpinnerIcon: FC<{ className?: string }> = ({ className }) => (
   <svg className={cn('animate-spin', className)} viewBox="0 0 24 24" fill="none">
-    <circle className="opacity-25" cx="12" cy="12" r="10"
-      stroke="currentColor" strokeWidth="4" />
-    <path className="opacity-75" fill="currentColor"
-      d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+    <circle
+      className="opacity-25"
+      cx="12" cy="12" r="10"
+      stroke="currentColor"
+      strokeWidth="4"
+    />
+    <path
+      className="opacity-75"
+      fill="currentColor"
+      d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+    />
   </svg>
 )
 
@@ -210,8 +238,13 @@ const Chat: FC<IChatProps> = ({
   }, [controlClearQuery])
 
   const {
-    files, onUpload, onRemove, onReUpload,
-    onImageLinkLoadError, onImageLinkLoadSuccess, onClear,
+    files,
+    onUpload,
+    onRemove,
+    onReUpload,
+    onImageLinkLoadError,
+    onImageLinkLoadSuccess,
+    onClear,
   } = useImageFiles()
 
   const [attachmentFiles, setAttachmentFiles] = React.useState<FileEntity[]>([])
@@ -239,8 +272,10 @@ const Chat: FC<IChatProps> = ({
         upload_file_id: f.fileId,
       }))
 
-    const docAndOtherFiles = getProcessedFiles(attachmentFiles)
-    onSend(queryRef.current, [...imageFiles, ...docAndOtherFiles])
+    const docAndOtherFiles: VisionFile[] = getProcessedFiles(attachmentFiles)
+    const combinedFiles: VisionFile[] = [...imageFiles, ...docAndOtherFiles]
+
+    onSend(queryRef.current, combinedFiles)
 
     if (!files.find(i => i.type === TransferMethod.local_file && !i.fileId)) {
       if (files.length) onClear()
@@ -300,7 +335,11 @@ const Chat: FC<IChatProps> = ({
               id={item.id}
               content={item.content}
               useCurrentUserAvatar={useCurrentUserAvatar}
-              imgSrcs={item.message_files?.length ? item.message_files.map(f => f.url) : []}
+              imgSrcs={
+                item.message_files && item.message_files.length > 0
+                  ? item.message_files.map(f => f.url)
+                  : []
+              }
             />
           )
         })}
@@ -379,7 +418,11 @@ const Chat: FC<IChatProps> = ({
                 selector="voice-input-tip"
                 htmlContent={
                   <div className="text-xs whitespace-nowrap">
-                    {isVoiceUploading ? '正在上传语音...' : isRecording ? '松开 停止录音' : '按住 开始说话'}
+                    {isVoiceUploading
+                      ? '正在上传语音...'
+                      : isRecording
+                        ? '松开 停止录音'
+                        : '按住 开始说话'}
                   </div>
                 }
               >
@@ -395,8 +438,8 @@ const Chat: FC<IChatProps> = ({
                   aria-label={isRecording ? '松开停止录音' : '按住说话'}
                   aria-pressed={isRecording}
                   className={cn(
-                    'relative w-8 h-8 rounded-md flex items-center justify-center select-none outline-none',
-                    'transition-colors duration-150',
+                    'relative w-8 h-8 rounded-md flex items-center justify-center',
+                    'select-none outline-none transition-colors duration-150',
                     isVoiceUploading
                       ? 'bg-gray-100 cursor-wait text-gray-300'
                       : isRecording
@@ -406,8 +449,7 @@ const Chat: FC<IChatProps> = ({
                 >
                   {/* 录音中脉冲光晕 */}
                   {isRecording && (
-                    <span className="absolute inset-0 rounded-md bg-red-400
-                      animate-ping opacity-50 pointer-events-none" />
+                    <span className="absolute inset-0 rounded-md bg-red-400 animate-ping opacity-50 pointer-events-none" />
                   )}
                   {isVoiceUploading
                     ? <SpinnerIcon className="w-4 h-4" />
