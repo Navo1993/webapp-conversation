@@ -342,7 +342,7 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
         </div>
       </section>
 
-      {/* 页脚 - 备案重点优化 */}
+{/* 页脚 - 修复了标签闭合问题 */}
       <footer className="bg-[#1b1e23] text-white pt-24 pb-12 px-8 lg:px-12">
         <div className="max-w-[1400px] mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 border-b border-white/5 pb-16 mb-12">
@@ -373,7 +373,7 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
               <a href="https://beian.miit.gov.cn/" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">
                 粤ICP备2026055050号-1
               </a>
-
+            </div>
 
             <div className="flex items-center gap-6">
               <div className="px-3 py-1 border border-white/5 rounded text-white/20 text-[9px] font-black tracking-widest uppercase flex items-center gap-2">
