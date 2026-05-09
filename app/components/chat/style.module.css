@@ -1,3 +1,5 @@
+/* ── Answer / Question 图标 ───────────────────────────────── */
+
 .answerIcon {
   position: relative;
   background: url(./icons/robot.svg);
@@ -5,18 +7,17 @@
 
 .typeingIcon {
   position: absolute;
-  top: 0px;
-  left: 0px;
+  top: 0;
+  left: 0;
   display: flex;
   justify-content: center;
   align-items: center;
   width: 16px;
   height: 16px;
   background: #FFFFFF;
-  box-shadow: 0px 1px 2px rgba(16, 24, 40, 0.05);
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
   border-radius: 16px;
 }
-
 
 .questionIcon {
   background: url(./icons/default-avatar.jpg);
@@ -38,54 +39,76 @@
   background: url(./icons/answer.svg) no-repeat;
 }
 
-.answerWrap .itemOperation {
-  display: none;
-}
-
-.answerWrap:hover .itemOperation {
-  display: flex;
-}
+.answerWrap .itemOperation { display: none; }
+.answerWrap:hover .itemOperation { display: flex; }
 
 .question::before {
   right: 0;
   background: url(./icons/question.svg) no-repeat;
 }
 
+/* ── Textarea ─────────────────────────────────────────────── */
+
 .textArea {
-  padding-top: 13px;
-  padding-bottom: 13px;
-  padding-right: 90px;
+  padding: 13px 90px 13px 13px;
   border-radius: 12px;
   line-height: 20px;
   background-color: #fff;
+  transition: background-color 0.2s ease;
 }
 
-.textArea:hover {
-  background-color: #fff;
-}
+.textArea:hover { background-color: #fff; }
 
-/* .textArea:focus {
-  box-shadow: 0px 3px 15px -3px rgba(0, 0, 0, 0.1), 0px 4px 6px rgba(0, 0, 0, 0.05);
-} */
+/* ── 字符计数 ─────────────────────────────────────────────── */
 
 .count {
-  /* display: none; */
-  padding: 0 2px;
+  padding: 0 4px;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  transition: color 0.2s ease, background-color 0.2s ease;
 }
+
+/* ── 发送按钮 ─────────────────────────────────────────────── */
 
 .sendBtn {
   background: url(./icons/send.svg) center center no-repeat;
+  /* 渐变蓝背景 + 光泽层 */
+  background-color: #4F6EF7;
+  background-image: url(./icons/send.svg) !important;
+  border-radius: 10px !important;
+
+  /* 立体感阴影 */
+  box-shadow:
+    0 2px 8px  rgba(79, 110, 247, 0.40),
+    0 1px 2px  rgba(79, 110, 247, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+
+  /* 弹簧过渡 */
+  transition:
+    transform    0.18s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow   0.18s ease,
+    background-color 0.15s ease;
+
+  /* 覆盖原图标颜色：使用 active 版本即白色图标 */
+  background-image: url(./icons/send-active.svg) !important;
 }
 
 .sendBtn:hover {
-  background-image: url(./icons/send-active.svg);
-  background-color: #EBF5FF;
+  background-color: #3B5BDB !important;
+  background-image: url(./icons/send-active.svg) !important;
+  transform: translateY(-1.5px) scale(1.07);
+  box-shadow:
+    0 6px 18px rgba(79, 110, 247, 0.50),
+    0 2px 6px  rgba(79, 110, 247, 0.30),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
 }
 
-.textArea:focus+div .count {
-  display: block;
-}
-
-.textArea:focus+div .sendBtn {
-  background-image: url(./icons/send-active.svg);
+.sendBtn:active {
+  transform: translateY(0) scale(0.94);
+  box-shadow:
+    0 2px 6px rgba(79, 110, 247, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
 }
