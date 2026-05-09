@@ -356,49 +356,56 @@ const Main: FC<IMainProps> = () => {
     }
   }
 
-  const handleSend = async (message: string, files?: VisionFile[]) => {
-    if (isResponding) {
-      notify({ type: 'info', message: t('app.errorMessage.waitForResponse') })
-      return
-    }
-    const toServerInputs: Record<string, any> = {}
-    if (currInputs) {
-      Object.keys(currInputs).forEach((key) => {
-        const value = currInputs[key]
-        if (value.supportFileType) { toServerInputs[key] = transformToServerFile(value) }
+const handleSend = async (message: string, files?: VisionFile[]) => {
+  if (isResponding) {
+    notify({ type: 'info', message: t('app.errorMessage.waitForResponse') })
+    return
+  }
 
-        else if (value[0]?.supportFileType) { toServerInputs[key] = value.map((item: any) => transformToServerFile(item)) }
+  // 🎙️ [新增] 识别语音消息
+  const audioFile = files?.find(f => (f.type as string) === 'audio')
+  const isVoiceMessage = !!audioFile
+  const voiceInputs: Record<string, string> = isVoiceMessage
+    ? { input_type: 'voice', voice_file_id: audioFile!.upload_file_id }
+    : {}
+  // 过滤掉 audio，不传给 Dify files 参数
+  const nonAudioFiles = files?.filter(f => (f.type as string) !== 'audio') ?? []
+  // 🎙️ [新增结束]
 
-        else { toServerInputs[key] = value }
-      })
-    }
+  const toServerInputs: Record<string, any> = {}
+  if (currInputs) {
+    Object.keys(currInputs).forEach((key) => {
+      const value = currInputs[key]
+      if (value.supportFileType) { toServerInputs[key] = transformToServerFile(value) }
+      else if (value[0]?.supportFileType) { toServerInputs[key] = value.map((item: any) => transformToServerFile(item)) }
+      else { toServerInputs[key] = value }
+    })
+  }
 
-    const data: Record<string, any> = {
-      inputs: toServerInputs,
-      query: message,
-      conversation_id: isNewConversation ? null : currConversationId,
-    }
+  const data: Record<string, any> = {
+    inputs: { ...toServerInputs, ...voiceInputs },  // 🎙️ 合并 voiceInputs
+    query: message,
+    conversation_id: isNewConversation ? null : currConversationId,
+  }
 
-    if (files && files?.length > 0) {
-      data.files = files.map((item) => {
-        if (item.transfer_method === TransferMethod.local_file) {
-          return {
-            ...item,
-            url: '',
-          }
-        }
-        return item
-      })
-    }
+  // 🎙️ 用 nonAudioFiles 替换原来的 files
+  if (nonAudioFiles.length > 0) {
+    data.files = nonAudioFiles.map((item) => {
+      if (item.transfer_method === TransferMethod.local_file)
+        return { ...item, url: '' }
+      return item
+    })
+  }
 
-    // question
-    const questionId = `question-${Date.now()}`
-    const questionItem = {
-      id: questionId,
-      content: message,
-      isAnswer: false,
-      message_files: (files || []).filter((f: any) => f.type === 'image'),
-    }
+  const questionId = `question-${Date.now()}`
+  const questionItem = {
+    id: questionId,
+    content: isVoiceMessage ? '🎙️ 语音消息' : message,  // 🎙️ 语音消息显示标识
+    isAnswer: false,
+    message_files: nonAudioFiles.filter((f: any) => f.type === 'image'),  // 🎙️ 用 nonAudioFiles
+  }
+
+  // ── 以下全部原样保留，不用改 ──
 
     const placeholderAnswerId = `answer-placeholder-${Date.now()}`
     const placeholderAnswerItem = {
