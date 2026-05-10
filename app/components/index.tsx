@@ -382,20 +382,20 @@ const handleSend = async (message: string, files?: VisionFile[]) => {
     })
   }
 
-  const data: Record<string, any> = {
-    inputs: { ...toServerInputs, ...voiceInputs },  // 🎙️ 合并 voiceInputs
-    query: message,
-    conversation_id: isNewConversation ? null : currConversationId,
-  }
+const data: Record<string, any> = {
+  inputs: toServerInputs,   // ← 去掉 voiceInputs，恢复原样
+  query: message,            // ← 直接用 message，语音已转成文字
+  conversation_id: isNewConversation ? null : currConversationId,
+}
 
-  // 🎙️ 用 nonAudioFiles 替换原来的 files
-  if (nonAudioFiles.length > 0) {
-    data.files = nonAudioFiles.map((item) => {
-      if (item.transfer_method === TransferMethod.local_file)
-        return { ...item, url: '' }
-      return item
-    })
-  }
+// files 也恢复原来的写法
+if (files && files.length > 0) {
+  data.files = files.map((item) => {
+    if (item.transfer_method === TransferMethod.local_file)
+      return { ...item, url: '' }
+    return item
+  })
+}
 
   const questionId = `question-${Date.now()}`
   const questionItem = {
