@@ -19,7 +19,9 @@ export async function POST(request: NextRequest) {
     )
     newFormData.append('user', user)
 
-    const targetUrl = `${API_URL}/audio-to-text`
+    // ✅ 去掉末尾斜杠再拼接，彻底避免双斜杠问题
+    const baseUrl = API_URL.replace(/\/+$/, '')
+    const targetUrl = `${baseUrl}/audio-to-text`
 
     const res = await fetch(targetUrl, {
       method: 'POST',
@@ -29,20 +31,16 @@ export async function POST(request: NextRequest) {
 
     const responseText = await res.text()
 
-    // 🔍 不管成功失败，把所有信息返回前端方便排查
-    return Response.json({
-      debug: {
-        targetUrl,
-        apiKeyPrefix: API_KEY?.slice(0, 8) + '...',  // 只显示前8位
-        fileInfo: { name: file.name, type: file.type, size: file.size },
-        difyStatus: res.status,
-        difyResponse: responseText,
-      },
-      text: res.ok ? JSON.parse(responseText).text : null,
-      error: res.ok ? null : responseText,
-    }, { status: res.ok ? 200 : res.status, headers: setSession(sessionId) })
+    if (!res.ok)
+      return Response.json({ error: responseText }, { status: res.status })
+
+    const data = JSON.parse(responseText)
+    return Response.json(
+      { text: data.text },
+      { headers: setSession(sessionId) },
+    )
   }
   catch (e: any) {
-    return Response.json({ error: e.message, stack: e.stack }, { status: 500 })
+    return Response.json({ error: e.message }, { status: 500 })
   }
 }
