@@ -53,11 +53,11 @@ const res = await fetch('/api/file-upload', {
       throw new Error(`上传失败 (${res.status}): ${errText}`)
     }
 
-    const data = await res.json()
-    if (!data.id)
-      throw new Error('上传响应中未包含 file id')
-
-    return data.id as string
+// ✅ 现在（按纯文本解析）
+const fileId = await res.text()
+if (!fileId)
+  throw new Error('上传响应中未包含 file id')
+return fileId
   }, [])
 
   /** 停止录音 → 收集 chunks → 上传 → 发送 */
