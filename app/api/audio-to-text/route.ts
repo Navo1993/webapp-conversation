@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
       body: newFormData,
     })
 
-    const responseText = await res.text()
+    const responseText = await res.text(
     console.log('dify response:', res.status, responseText)
 
     if (!res.ok)
@@ -46,3 +46,4 @@ export async function POST(request: NextRequest) {
     return Response.json({ error: e.message }, { status: 500 })
   }
 }
+ 
