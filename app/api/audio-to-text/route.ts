@@ -12,10 +12,11 @@ export async function POST(request: NextRequest) {
       return Response.json({ error: '没有收到音频文件' }, { status: 400 })
 
 const newFormData = new FormData()
+// 逐个尝试，先试这个
 newFormData.append(
   'file',
-  new Blob([await file.arrayBuffer()], { type: 'audio/webm' }),
-  'audio.webm',
+  new Blob([await file.arrayBuffer()], { type: 'audio/ogg' }),
+  'audio.ogg',
 )
     newFormData.append('user', user)
 
