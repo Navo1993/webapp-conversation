@@ -637,7 +637,7 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
                 rel="noreferrer"
                 className="hover:text-white transition-colors"
               >
-                粤ICP备2026055050号-1
+                粤ICP备2026055050号
               </a>
             </div>
 
