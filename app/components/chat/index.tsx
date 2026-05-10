@@ -358,39 +358,42 @@ const Chat: FC<IChatProps> = ({
               overflow-hidden
               rounded-2xl
               border
-              border-white/5
-              bg-[#0f1115]
+              border-blue-100
+              bg-[#f8fbff]
               backdrop-blur-xl
               px-5
               py-3
-              shadow-[0_4px_20px_rgba(0,0,0,0.18)]
+              shadow-sm
             "
           >
-            {/* 顶部蓝色渐变线 */}
-            <div className="
-              absolute
-              top-0
-              left-0
-              w-full
-              h-[1px]
-              bg-gradient-to-r
-              from-transparent
-              via-[#3b82f6]
-              to-transparent
-              opacity-70
-            " />
+            {/* 顶部渐变线 */}
+            <div
+              className="
+                absolute
+                top-0
+                left-0
+                w-full
+                h-[1px]
+                bg-gradient-to-r
+                from-transparent
+                via-[#93c5fd]
+                to-transparent
+                opacity-70
+              "
+            />
 
             <div className="flex items-center gap-3">
 
-              {/* AI圆点 */}
-              <div className="
-                w-2.5
-                h-2.5
-                rounded-full
-                bg-[#3b82f6]
-                animate-pulse
-                shadow-[0_0_12px_rgba(59,130,246,0.8)]
-              " />
+              {/* AI状态点 */}
+              <div
+                className="
+                  w-2.5
+                  h-2.5
+                  rounded-full
+                  bg-[#60a5fa]
+                  animate-pulse
+                "
+              />
 
               {/* 提示文字 */}
               <div
@@ -399,7 +402,7 @@ const Chat: FC<IChatProps> = ({
                   md:text-[14px]
                   italic
                   tracking-[0.08em]
-                  text-white/75
+                  text-gray-500
                   font-medium
                 "
               >
