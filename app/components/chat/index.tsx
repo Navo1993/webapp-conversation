@@ -342,37 +342,99 @@ const Chat: FC<IChatProps> = ({
  
   return (
     <div className={cn(!feedbackDisabled && 'px-3.5', 'h-full')}>
-      {/* 消息列表 */}
-      <div className="h-full space-y-[30px]">
-        {chatList.map((item) => {
-          if (item.isAnswer) {
-            const isLast = item.id === chatList[chatList.length - 1].id
-            return (
-              <Answer
-                key={item.id}
-                item={item}
-                feedbackDisabled={feedbackDisabled}
-                onFeedback={onFeedback}
-                isResponding={isResponding && isLast}
-                suggestionClick={suggestionClick}
-              />
-            )
-          }
-          return (
-            <Question
-              key={item.id}
-              id={item.id}
-              content={item.content}
-              useCurrentUserAvatar={useCurrentUserAvatar}
-              imgSrcs={
-                item.message_files && item.message_files.length > 0
-                  ? item.message_files.map(f => f.url)
-                  : []
-              }
-            />
-          )
-        })}
-      </div>
+{/* 消息列表 */}
+<div className="h-full space-y-[30px]">
+  {chatList.map((item) => {
+    if (item.isAnswer) {
+      const isLast = item.id === chatList[chatList.length - 1].id
+
+      return (
+        <div key={item.id} className="space-y-3">
+
+          {/* AI生成提示 */}
+          <div
+            className="
+              relative
+              overflow-hidden
+              rounded-2xl
+              border
+              border-white/5
+              bg-[#0f1115]
+              backdrop-blur-xl
+              px-5
+              py-3
+              shadow-[0_4px_20px_rgba(0,0,0,0.18)]
+            "
+          >
+            {/* 顶部蓝色渐变线 */}
+            <div className="
+              absolute
+              top-0
+              left-0
+              w-full
+              h-[1px]
+              bg-gradient-to-r
+              from-transparent
+              via-[#3b82f6]
+              to-transparent
+              opacity-70
+            " />
+
+            <div className="flex items-center gap-3">
+
+              {/* AI圆点 */}
+              <div className="
+                w-2.5
+                h-2.5
+                rounded-full
+                bg-[#3b82f6]
+                animate-pulse
+                shadow-[0_0_12px_rgba(59,130,246,0.8)]
+              " />
+
+              {/* 提示文字 */}
+              <div
+                className="
+                  text-[13px]
+                  md:text-[14px]
+                  italic
+                  tracking-[0.08em]
+                  text-white/75
+                  font-medium
+                "
+              >
+                本回答由 AI 生成，内容仅供参考，请仔细甄别。
+              </div>
+            </div>
+          </div>
+
+          {/* AI回答 */}
+          <Answer
+            item={item}
+            feedbackDisabled={feedbackDisabled}
+            onFeedback={onFeedback}
+            isResponding={isResponding && isLast}
+            suggestionClick={suggestionClick}
+          />
+        </div>
+      )
+    }
+
+    return (
+      <Question
+        key={item.id}
+        id={item.id}
+        content={item.content}
+        useCurrentUserAvatar={useCurrentUserAvatar}
+        imgSrcs={
+          item.message_files && item.message_files.length > 0
+            ? item.message_files.map(f => f.url)
+            : []
+        }
+      />
+    )
+  })}
+</div>
  
       {/* 输入区域 */}
       {!isHideSendInput && (
