@@ -5,13 +5,24 @@ import { getInfo, setSession } from '@/app/api/utils/common'
 export async function POST(request: NextRequest) {
   try {
     const { user, sessionId } = getInfo(request)
-    const formData = await request.formData()
-    formData.append('user', user)
+
+    // 重新构造 FormData，避免转发时 boundary 丢失
+    const incomingForm = await request.formData()
+    const file = incomingForm.get('file')
+    if (!file)
+      return Response.json({ error: '没有收到音频文件' }, { status: 400 })
+
+    const newFormData = new FormData()
+    newFormData.append('file', file as Blob, 'recording.webm')
+    newFormData.append('user', user)
 
     const res = await fetch(`${API_URL}/audio-to-text`, {
       method: 'POST',
-      headers: { Authorization: `Bearer ${API_KEY}` },
-      body: formData,
+      headers: {
+        Authorization: `Bearer ${API_KEY}`,
+        // 不设置 Content-Type，让 fetch 自动生成带 boundary 的 multipart
+      },
+      body: newFormData,
     })
 
     if (!res.ok) {
