@@ -18,12 +18,58 @@ import { useImageFiles } from '@/app/components/base/image-uploader/hooks'
 import FileUploaderInAttachmentWrapper from '@/app/components/base/file-uploader-in-attachment'
 import type { FileEntity, FileUpload } from '@/app/components/base/file-uploader-in-attachment/types'
 import { getProcessedFiles } from '@/app/components/base/file-uploader-in-attachment/utils'
-import { MediaRecorder as ExtMediaRecorder, register } from 'extendable-media-recorder'
-import { connect } from 'extendable-media-recorder-wav-encoder'
-
-// 标记是否已注册 wav encoder
-let wavEncoderRegistered = false
-
+ 
+/* ================================================================
+   工具函数：把 webm Blob 转成 wav Blob（纯 Web Audio API，零依赖）
+   ================================================================ */
+async function convertWebmToWav(blob: Blob): Promise<Blob> {
+  const arrayBuffer = await blob.arrayBuffer()
+  const audioCtx = new AudioContext({ sampleRate: 16000 })
+  const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer)
+ 
+  const sampleRate = audioBuffer.sampleRate
+  const samples = audioBuffer.getChannelData(0) // 取第一声道（单声道）
+  const length = samples.length
+ 
+  // 构造 WAV 文件（44字节头 + PCM数据）
+  const wavBuffer = new ArrayBuffer(44 + length * 2)
+  const view = new DataView(wavBuffer)
+ 
+  const writeStr = (offset: number, str: string) => {
+    for (let i = 0; i < str.length; i++)
+      view.setUint8(offset + i, str.charCodeAt(i))
+  }
+ 
+  writeStr(0, 'RIFF')
+  view.setUint32(4, 36 + length * 2, true)
+  writeStr(8, 'WAVE')
+  writeStr(12, 'fmt ')
+  view.setUint32(16, 16, true)        // PCM chunk size
+  view.setUint16(20, 1, true)         // PCM format
+  view.setUint16(22, 1, true)         // 单声道
+  view.setUint32(24, sampleRate, true)
+  view.setUint32(28, sampleRate * 2, true)
+  view.setUint16(32, 2, true)         // block align
+  view.setUint16(34, 16, true)        // 16-bit
+  writeStr(36, 'data')
+  view.setUint32(40, length * 2, true)
+ 
+  // 写入 PCM 采样
+  let offset = 44
+  for (let i = 0; i < length; i++) {
+    const s = Math.max(-1, Math.min(1, samples[i]))
+    view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true)
+    offset += 2
+  }
+ 
+  await audioCtx.close()
+  return new Blob([wavBuffer], { type: 'audio/wav' })
+}
+ 
+/* ================================================================
+   🎙️ 语音输入 Hook
+   录音(webm) → 转换(wav) → 上传 → 转录文字 → onSend
+   ================================================================ */
 function useVoiceInput(
   onSend: (message: string, files: VisionFile[]) => void,
   logError: (msg: string) => void,
@@ -31,52 +77,58 @@ function useVoiceInput(
   const [isRecording, setIsRecording] = useState(false)
   const [isVoiceUploading, setIsVoiceUploading] = useState(false)
   const isRecordingRef   = useRef(false)
-  const mediaRecorderRef = useRef<any>(null)
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const audioChunksRef   = useRef<Blob[]>([])
-
+ 
+  /** 上传 wav → 返回转录文字 */
   const transcribeAudio = useCallback(async (blob: Blob): Promise<string> => {
     const formData = new FormData()
     formData.append('file', blob, 'audio.wav')
-
+ 
     const res = await fetch('/api/audio-to-text', {
       method: 'POST',
       body: formData,
     })
-
+ 
     if (!res.ok) {
       const err = await res.text()
       throw new Error(`转录失败 (${res.status}): ${err}`)
     }
-
+ 
     const data = await res.json()
     if (!data.text)
       throw new Error('转录结果为空')
-
+ 
     return data.text as string
   }, [])
-
+ 
+  /** 松开 → 停止录音 → 转换 wav → 上传转录 → 发送 */
   const stopAndSend = useCallback(() => {
     const recorder = mediaRecorderRef.current
     if (!recorder || recorder.state === 'inactive' || !isRecordingRef.current)
       return
-
+ 
     isRecordingRef.current = false
     setIsRecording(false)
-
+ 
     recorder.onstop = async () => {
-      recorder.stream.getTracks().forEach((t: any) => t.stop())
-
-      const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/wav' })
+      recorder.stream.getTracks().forEach(t => t.stop())
+ 
+      const webmBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' })
       audioChunksRef.current = []
-
-      if (audioBlob.size < 3000) {
+ 
+      if (webmBlob.size < 3000) {
         logError('录音时间太短，请按住麦克风后再说话')
         return
       }
-
+ 
       setIsVoiceUploading(true)
       try {
-        const text = await transcribeAudio(audioBlob)
+        // 1. webm → wav
+        const wavBlob = await convertWebmToWav(webmBlob)
+        // 2. 上传给 Dify 转录成文字
+        const text = await transcribeAudio(wavBlob)
+        // 3. 以普通文字消息发送
         onSend(text, [])
       }
       catch (err: any) {
@@ -86,30 +138,27 @@ function useVoiceInput(
         setIsVoiceUploading(false)
       }
     }
-
+ 
     recorder.stop()
   }, [transcribeAudio, onSend, logError])
-
+ 
+  /** 按下 → 请求麦克风 → 开始录音 */
   const startRecording = useCallback(async () => {
     if (isRecordingRef.current) return
-
+ 
     try {
-      // 注册 wav encoder（只需注册一次）
-      if (!wavEncoderRegistered) {
-        await register(await connect())
-        wavEncoderRegistered = true
-      }
-
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-
-      // 使用扩展的 MediaRecorder 录制 wav
-      const recorder = new ExtMediaRecorder(stream, { mimeType: 'audio/wav' })
+      const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+        ? 'audio/webm;codecs=opus'
+        : 'audio/webm'
+ 
+      const recorder = new MediaRecorder(stream, { mimeType })
       audioChunksRef.current = []
-
-      recorder.ondataavailable = (e: any) => {
+ 
+      recorder.ondataavailable = (e) => {
         if (e.data.size > 0) audioChunksRef.current.push(e.data)
       }
-
+ 
       recorder.start(100)
       mediaRecorderRef.current = recorder
       isRecordingRef.current   = true
@@ -120,15 +169,18 @@ function useVoiceInput(
         logError('麦克风权限被拒绝，请在浏览器设置中允许访问')
       else if (err?.name === 'NotFoundError')
         logError('未检测到麦克风设备')
+      else if (err?.name === 'NotSupportedError')
+        logError('当前浏览器不支持录音，建议使用 Chrome')
       else
         logError(`无法启动录音：${err?.message ?? '未知错误'}`)
     }
   }, [logError])
-
+ 
   return { isRecording, isVoiceUploading, startRecording, stopAndSend }
 }
-/* ── 图标组件 ─────────────────────────────────────────────── */
-
+ 
+/* ── 图标 ─────────────────────────────────────────────────── */
+ 
 const MicIcon: FC<{ className?: string }> = ({ className }) => (
   <svg
     className={className}
@@ -145,27 +197,18 @@ const MicIcon: FC<{ className?: string }> = ({ className }) => (
     <line x1="8"  y1="22" x2="16" y2="22" />
   </svg>
 )
-
+ 
 const SpinnerIcon: FC<{ className?: string }> = ({ className }) => (
   <svg className={cn('animate-spin', className)} viewBox="0 0 24 24" fill="none">
-    <circle
-      className="opacity-25"
-      cx="12" cy="12" r="10"
-      stroke="currentColor"
-      strokeWidth="4"
-    />
-    <path
-      className="opacity-75"
-      fill="currentColor"
-      d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-    />
+    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
   </svg>
 )
-
+ 
 /* ================================================================
    Chat 主组件
    ================================================================ */
-
+ 
 export interface IChatProps {
   chatList: ChatItem[]
   feedbackDisabled?: boolean
@@ -179,7 +222,7 @@ export interface IChatProps {
   visionConfig?: VisionSettings
   fileConfig?: FileUpload
 }
-
+ 
 const Chat: FC<IChatProps> = ({
   chatList,
   feedbackDisabled = false,
@@ -196,20 +239,20 @@ const Chat: FC<IChatProps> = ({
   const { t } = useTranslation()
   const { notify } = Toast
   const isUseInputMethod = useRef(false)
-
+ 
   const [query, setQuery] = React.useState('')
   const queryRef = useRef('')
-
+ 
   const handleContentChange = (e: any) => {
     const value = e.target.value
     setQuery(value)
     queryRef.current = value
   }
-
+ 
   const logError = useCallback((message: string) => {
     notify({ type: 'error', message, duration: 3000 })
   }, [notify])
-
+ 
   const valid = () => {
     if (!queryRef.current || queryRef.current.trim() === '') {
       logError(t('app.errorMessage.valueOfVarRequired'))
@@ -217,14 +260,14 @@ const Chat: FC<IChatProps> = ({
     }
     return true
   }
-
+ 
   useEffect(() => {
     if (controlClearQuery) {
       setQuery('')
       queryRef.current = ''
     }
   }, [controlClearQuery])
-
+ 
   const {
     files,
     onUpload,
@@ -234,23 +277,23 @@ const Chat: FC<IChatProps> = ({
     onImageLinkLoadSuccess,
     onClear,
   } = useImageFiles()
-
+ 
   const [attachmentFiles, setAttachmentFiles] = React.useState<FileEntity[]>([])
-
+ 
   /* 🎙️ 语音 Hook */
   const { isRecording, isVoiceUploading, startRecording, stopAndSend } =
     useVoiceInput(onSend, logError)
-
+ 
   const handleSend = () => {
     if (!valid() || (checkCanSend && !checkCanSend())) return
-
+ 
     const hasPendingImg = files.some(f => f.progress !== -1 && f.progress < 100)
     const hasPendingAtt = attachmentFiles.some(f => f.progress !== -1 && f.progress < 100)
     if (hasPendingImg || hasPendingAtt) {
       logError(t('app.errorMessage.waitForFileUpload'))
       return
     }
-
+ 
     const imageFiles: VisionFile[] = files
       .filter(f => f.progress !== -1)
       .map(f => ({
@@ -259,12 +302,10 @@ const Chat: FC<IChatProps> = ({
         url: f.url,
         upload_file_id: f.fileId,
       }))
-
+ 
     const docAndOtherFiles: VisionFile[] = getProcessedFiles(attachmentFiles)
-    const combinedFiles: VisionFile[] = [...imageFiles, ...docAndOtherFiles]
-
-    onSend(queryRef.current, combinedFiles)
-
+    onSend(queryRef.current, [...imageFiles, ...docAndOtherFiles])
+ 
     if (!files.find(i => i.type === TransferMethod.local_file && !i.fileId)) {
       if (files.length) onClear()
       if (!isResponding) {
@@ -275,14 +316,14 @@ const Chat: FC<IChatProps> = ({
     if (!attachmentFiles.find(i => i.transferMethod === TransferMethod.local_file && !i.uploadedId))
       setAttachmentFiles([])
   }
-
+ 
   const handleKeyUp = (e: any) => {
     if (e.code === 'Enter') {
       e.preventDefault()
       if (!e.shiftKey && !isUseInputMethod.current) handleSend()
     }
   }
-
+ 
   const handleKeyDown = (e: any) => {
     isUseInputMethod.current = e.nativeEvent.isComposing
     if (e.code === 'Enter' && !e.shiftKey) {
@@ -292,13 +333,13 @@ const Chat: FC<IChatProps> = ({
       e.preventDefault()
     }
   }
-
+ 
   const suggestionClick = (suggestion: string) => {
     setQuery(suggestion)
     queryRef.current = suggestion
     handleSend()
   }
-
+ 
   return (
     <div className={cn(!feedbackDisabled && 'px-3.5', 'h-full')}>
       {/* 消息列表 */}
@@ -332,16 +373,16 @@ const Chat: FC<IChatProps> = ({
           )
         })}
       </div>
-
+ 
       {/* 输入区域 */}
       {!isHideSendInput && (
         <div className="fixed z-10 bottom-0 left-1/2 transform -translate-x-1/2
           pc:ml-[122px] tablet:ml-[96px] mobile:ml-0
           pc:w-[794px] tablet:w-[794px] max-w-full mobile:w-full px-3.5 pb-3">
-
+ 
           <div className="p-[5.5px] max-h-[150px] bg-white border-[1.5px]
             border-gray-200 rounded-xl overflow-y-auto relative">
-
+ 
             {/* 图片上传 */}
             {visionConfig?.enabled && (
               <>
@@ -364,7 +405,7 @@ const Chat: FC<IChatProps> = ({
                 </div>
               </>
             )}
-
+ 
             {/* 附件上传 */}
             {fileConfig?.enabled && (
               <div className={`${visionConfig?.enabled ? 'pl-[52px]' : ''} mb-1`}>
@@ -375,8 +416,8 @@ const Chat: FC<IChatProps> = ({
                 />
               </div>
             )}
-
-            {/* Textarea：pr 加宽为麦克风按钮腾出空间 */}
+ 
+            {/* Textarea */}
             <Textarea
               className={cn(
                 'block w-full px-2 pr-[158px] py-[7px] leading-5 max-h-none',
@@ -389,25 +430,22 @@ const Chat: FC<IChatProps> = ({
               onKeyDown={handleKeyDown}
               autoSize
             />
-
+ 
             {/* 右下角按钮区 */}
             <div className="absolute bottom-2 right-6 flex items-center gap-1 h-8">
-
+ 
               {/* 字符计数 */}
-              <div className={cn(
-                s.count,
-                'h-5 leading-5 text-sm bg-gray-50 text-gray-500 px-2 rounded',
-              )}>
+              <div className={cn(s.count, 'h-5 leading-5 text-sm bg-gray-50 text-gray-500 px-2 rounded')}>
                 {query.trim().length}
               </div>
-
+ 
               {/* 🎙️ 麦克风按钮 */}
               <Tooltip
                 selector="voice-input-tip"
                 htmlContent={
                   <div className="text-xs whitespace-nowrap">
                     {isVoiceUploading
-                      ? '正在上传语音...'
+                      ? '正在识别语音...'
                       : isRecording
                         ? '松开 停止录音'
                         : '按住 开始说话'}
@@ -435,7 +473,6 @@ const Chat: FC<IChatProps> = ({
                         : 'bg-gray-100 hover:bg-gray-200 text-gray-500 cursor-pointer',
                   )}
                 >
-                  {/* 录音中脉冲光晕 */}
                   {isRecording && (
                     <span className="absolute inset-0 rounded-md bg-red-400 animate-ping opacity-50 pointer-events-none" />
                   )}
@@ -445,7 +482,7 @@ const Chat: FC<IChatProps> = ({
                   }
                 </button>
               </Tooltip>
-
+ 
               {/* 发送按钮 */}
               <Tooltip
                 selector="send-tip"
@@ -468,5 +505,5 @@ const Chat: FC<IChatProps> = ({
     </div>
   )
 }
-
+ 
 export default React.memo(Chat)
