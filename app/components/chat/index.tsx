@@ -42,7 +42,7 @@ function useVoiceInput(
     const formData = new FormData()
     formData.append('file', blob, 'recording.webm')
 
-    const res = await fetch('/api/files/upload', {
+const res = await fetch('/api/file-upload', {
       method: 'POST',
       headers: { Authorization: `Bearer ${appKey}` },
       body: formData,
