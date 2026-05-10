@@ -5,7 +5,6 @@ import { getInfo, setSession } from '@/app/api/utils/common'
 export async function POST(request: NextRequest) {
   try {
     const { user, sessionId } = getInfo(request)
-
     const incomingForm = await request.formData()
     const file = incomingForm.get('file') as File | null
     if (!file)
