@@ -18,26 +18,25 @@ import { useImageFiles } from '@/app/components/base/image-uploader/hooks'
 import FileUploaderInAttachmentWrapper from '@/app/components/base/file-uploader-in-attachment'
 import type { FileEntity, FileUpload } from '@/app/components/base/file-uploader-in-attachment/types'
 import { getProcessedFiles } from '@/app/components/base/file-uploader-in-attachment/utils'
+import { MediaRecorder as ExtMediaRecorder, register } from 'extendable-media-recorder'
+import { connect } from 'extendable-media-recorder-wav-encoder'
 
-/* ================================================================
-   🎙️ 语音输入 Hook
-   录音 → 走 /api 代理上传（避免 CORS）→ 触发 onSend
-   ================================================================ */
+// 标记是否已注册 wav encoder
+let wavEncoderRegistered = false
+
 function useVoiceInput(
   onSend: (message: string, files: VisionFile[]) => void,
   logError: (msg: string) => void,
 ) {
   const [isRecording, setIsRecording] = useState(false)
-  // 新增：转录中状态，区别于之前的上传中
-  const [isTranscribing, setIsTranscribing] = useState(false)
+  const [isVoiceUploading, setIsVoiceUploading] = useState(false)
   const isRecordingRef   = useRef(false)
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null)
+  const mediaRecorderRef = useRef<any>(null)
   const audioChunksRef   = useRef<Blob[]>([])
 
-  /** 上传音频到 Dify audio-to-text，返回转录文字 */
   const transcribeAudio = useCallback(async (blob: Blob): Promise<string> => {
     const formData = new FormData()
-    formData.append('file', blob, 'recording.webm')
+    formData.append('file', blob, 'audio.wav')
 
     const res = await fetch('/api/audio-to-text', {
       method: 'POST',
@@ -65,9 +64,9 @@ function useVoiceInput(
     setIsRecording(false)
 
     recorder.onstop = async () => {
-      recorder.stream.getTracks().forEach(t => t.stop())
+      recorder.stream.getTracks().forEach((t: any) => t.stop())
 
-      const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' })
+      const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/wav' })
       audioChunksRef.current = []
 
       if (audioBlob.size < 3000) {
@@ -75,17 +74,16 @@ function useVoiceInput(
         return
       }
 
-      setIsTranscribing(true)
+      setIsVoiceUploading(true)
       try {
-        // 转录成文字，直接作为普通消息发送
         const text = await transcribeAudio(audioBlob)
-        onSend(text, [])  // 就是普通文字消息，不需要任何特殊处理
+        onSend(text, [])
       }
       catch (err: any) {
         logError(`语音识别失败：${err?.message ?? '请重试'}`)
       }
       finally {
-        setIsTranscribing(false)
+        setIsVoiceUploading(false)
       }
     }
 
@@ -94,16 +92,24 @@ function useVoiceInput(
 
   const startRecording = useCallback(async () => {
     if (isRecordingRef.current) return
+
     try {
-      const stream   = await navigator.mediaDevices.getUserMedia({ audio: true })
-      const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
-        ? 'audio/webm;codecs=opus'
-        : 'audio/webm'
-      const recorder = new MediaRecorder(stream, { mimeType })
+      // 注册 wav encoder（只需注册一次）
+      if (!wavEncoderRegistered) {
+        await register(await connect())
+        wavEncoderRegistered = true
+      }
+
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+
+      // 使用扩展的 MediaRecorder 录制 wav
+      const recorder = new ExtMediaRecorder(stream, { mimeType: 'audio/wav' })
       audioChunksRef.current = []
-      recorder.ondataavailable = (e) => {
+
+      recorder.ondataavailable = (e: any) => {
         if (e.data.size > 0) audioChunksRef.current.push(e.data)
       }
+
       recorder.start(100)
       mediaRecorderRef.current = recorder
       isRecordingRef.current   = true
@@ -119,10 +125,8 @@ function useVoiceInput(
     }
   }, [logError])
 
-  // isVoiceUploading 改名为 isTranscribing，对外保持同名兼容
-  return { isRecording, isVoiceUploading: isTranscribing, startRecording, stopAndSend }
+  return { isRecording, isVoiceUploading, startRecording, stopAndSend }
 }
-
 /* ── 图标组件 ─────────────────────────────────────────────── */
 
 const MicIcon: FC<{ className?: string }> = ({ className }) => (
