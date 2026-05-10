@@ -28,39 +28,34 @@ function useVoiceInput(
   logError: (msg: string) => void,
 ) {
   const [isRecording, setIsRecording] = useState(false)
-  const [isVoiceUploading, setIsVoiceUploading] = useState(false)
+  // 新增：转录中状态，区别于之前的上传中
+  const [isTranscribing, setIsTranscribing] = useState(false)
   const isRecordingRef   = useRef(false)
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const audioChunksRef   = useRef<Blob[]>([])
 
-  /** 上传音频，走 Next.js /api 代理转发，避免浏览器直接请求 Dify 被 CORS 拦截 */
-  const uploadAudio = useCallback(async (blob: Blob): Promise<string> => {
-    const appKey = process.env.NEXT_PUBLIC_APP_KEY
-    if (!appKey)
-      throw new Error('环境变量 NEXT_PUBLIC_APP_KEY 未配置')
-
+  /** 上传音频到 Dify audio-to-text，返回转录文字 */
+  const transcribeAudio = useCallback(async (blob: Blob): Promise<string> => {
     const formData = new FormData()
     formData.append('file', blob, 'recording.webm')
 
-const res = await fetch('/api/file-upload', {
+    const res = await fetch('/api/audio-to-text', {
       method: 'POST',
-      headers: { Authorization: `Bearer ${appKey}` },
       body: formData,
     })
 
     if (!res.ok) {
-      const errText = await res.text()
-      throw new Error(`上传失败 (${res.status}): ${errText}`)
+      const err = await res.text()
+      throw new Error(`转录失败 (${res.status}): ${err}`)
     }
 
-// ✅ 现在（按纯文本解析）
-const fileId = await res.text()
-if (!fileId)
-  throw new Error('上传响应中未包含 file id')
-return fileId
+    const data = await res.json()
+    if (!data.text)
+      throw new Error('转录结果为空')
+
+    return data.text as string
   }, [])
 
-  /** 停止录音 → 收集 chunks → 上传 → 发送 */
   const stopAndSend = useCallback(() => {
     const recorder = mediaRecorderRef.current
     if (!recorder || recorder.state === 'inactive' || !isRecordingRef.current)
@@ -80,45 +75,35 @@ return fileId
         return
       }
 
-      setIsVoiceUploading(true)
+      setIsTranscribing(true)
       try {
-        const fileId = await uploadAudio(audioBlob)
-        const audioVisionFile: VisionFile = {
-          type: 'audio' as any,
-          transfer_method: TransferMethod.local_file,
-          url: '',
-          upload_file_id: fileId,
-        }
-        onSend('', [audioVisionFile])
+        // 转录成文字，直接作为普通消息发送
+        const text = await transcribeAudio(audioBlob)
+        onSend(text, [])  // 就是普通文字消息，不需要任何特殊处理
       }
       catch (err: any) {
-        logError(`语音上传失败：${err?.message ?? '未知错误，请重试'}`)
+        logError(`语音识别失败：${err?.message ?? '请重试'}`)
       }
       finally {
-        setIsVoiceUploading(false)
+        setIsTranscribing(false)
       }
     }
 
     recorder.stop()
-  }, [uploadAudio, onSend, logError])
+  }, [transcribeAudio, onSend, logError])
 
-  /** 请求麦克风权限 → 开始录音 */
   const startRecording = useCallback(async () => {
     if (isRecordingRef.current) return
-
     try {
       const stream   = await navigator.mediaDevices.getUserMedia({ audio: true })
       const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
         ? 'audio/webm;codecs=opus'
         : 'audio/webm'
-
       const recorder = new MediaRecorder(stream, { mimeType })
       audioChunksRef.current = []
-
       recorder.ondataavailable = (e) => {
         if (e.data.size > 0) audioChunksRef.current.push(e.data)
       }
-
       recorder.start(100)
       mediaRecorderRef.current = recorder
       isRecordingRef.current   = true
@@ -126,17 +111,16 @@ return fileId
     }
     catch (err: any) {
       if (err?.name === 'NotAllowedError' || err?.name === 'PermissionDeniedError')
-        logError('麦克风权限被拒绝，请在浏览器地址栏设置中允许访问')
+        logError('麦克风权限被拒绝，请在浏览器设置中允许访问')
       else if (err?.name === 'NotFoundError')
-        logError('未检测到麦克风设备，请检查硬件连接')
-      else if (err?.name === 'NotSupportedError')
-        logError('当前浏览器不支持录音，建议使用 Chrome')
+        logError('未检测到麦克风设备')
       else
         logError(`无法启动录音：${err?.message ?? '未知错误'}`)
     }
   }, [logError])
 
-  return { isRecording, isVoiceUploading, startRecording, stopAndSend }
+  // isVoiceUploading 改名为 isTranscribing，对外保持同名兼容
+  return { isRecording, isVoiceUploading: isTranscribing, startRecording, stopAndSend }
 }
 
 /* ── 图标组件 ─────────────────────────────────────────────── */
