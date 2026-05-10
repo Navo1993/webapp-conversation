@@ -11,14 +11,16 @@ export async function POST(request: NextRequest) {
     if (!file)
       return Response.json({ error: '没有收到音频文件' }, { status: 400 })
 
-    // 🔍 打印看看实际收到的文件信息
     console.log('file name:', file.name)
     console.log('file type:', file.type)
     console.log('file size:', file.size)
 
-    // 强制用 mp4 容器 + 正确文件名，Dify 对格式要求严格
     const newFormData = new FormData()
-    newFormData.append('file', new Blob([await file.arrayBuffer()], { type: 'audio/mp4' }), 'recording.mp4')
+    newFormData.append(
+      'file',
+      new Blob([await file.arrayBuffer()], { type: 'audio/mp4' }),
+      'recording.mp4',
+    )
     newFormData.append('user', user)
 
     console.log('sending to:', `${API_URL}/audio-to-text`)
@@ -29,7 +31,7 @@ export async function POST(request: NextRequest) {
       body: newFormData,
     })
 
-    const responseText = await res.text(
+    const responseText = await res.text()
     console.log('dify response:', res.status, responseText)
 
     if (!res.ok)
@@ -46,4 +48,3 @@ export async function POST(request: NextRequest) {
     return Response.json({ error: e.message }, { status: 500 })
   }
 }
- 
