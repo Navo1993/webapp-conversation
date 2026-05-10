@@ -76,106 +76,59 @@ function useVoiceInput(
 ) {
   const [isRecording, setIsRecording] = useState(false)
   const [isVoiceUploading, setIsVoiceUploading] = useState(false)
-  const isRecordingRef   = useRef(false)
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null)
-  const audioChunksRef   = useRef<Blob[]>([])
- 
-  /** 上传 wav → 返回转录文字 */
-  const transcribeAudio = useCallback(async (blob: Blob): Promise<string> => {
-    const formData = new FormData()
-    formData.append('file', blob, 'audio.wav')
- 
-    const res = await fetch('/api/audio-to-text', {
-      method: 'POST',
-      body: formData,
-    })
- 
-    if (!res.ok) {
-      const err = await res.text()
-      throw new Error(`转录失败 (${res.status}): ${err}`)
-    }
- 
-    const data = await res.json()
-    if (!data.text)
-      throw new Error('转录结果为空')
- 
-    return data.text as string
-  }, [])
- 
-  /** 松开 → 停止录音 → 转换 wav → 上传转录 → 发送 */
-  const stopAndSend = useCallback(() => {
-    const recorder = mediaRecorderRef.current
-    if (!recorder || recorder.state === 'inactive' || !isRecordingRef.current)
-      return
- 
-    isRecordingRef.current = false
-    setIsRecording(false)
- 
-    recorder.onstop = async () => {
-      recorder.stream.getTracks().forEach(t => t.stop())
- 
-      const webmBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' })
-      audioChunksRef.current = []
- 
-      if (webmBlob.size < 3000) {
-        logError('录音时间太短，请按住麦克风后再说话')
-        return
-      }
- 
-      setIsVoiceUploading(true)
-      try {
-        // 1. webm → wav
-        const wavBlob = await convertWebmToWav(webmBlob)
-        // 2. 上传给 Dify 转录成文字
-        const text = await transcribeAudio(wavBlob)
-        // 3. 以普通文字消息发送
-        onSend(text, [])
-      }
-      catch (err: any) {
-        logError(`语音识别失败：${err?.message ?? '请重试'}`)
-      }
-      finally {
-        setIsVoiceUploading(false)
-      }
-    }
- 
-    recorder.stop()
-  }, [transcribeAudio, onSend, logError])
- 
-  /** 按下 → 请求麦克风 → 开始录音 */
+  const recognitionRef = useRef<any>(null)
+
   const startRecording = useCallback(async () => {
-    if (isRecordingRef.current) return
- 
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-      const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
-        ? 'audio/webm;codecs=opus'
-        : 'audio/webm'
- 
-      const recorder = new MediaRecorder(stream, { mimeType })
-      audioChunksRef.current = []
- 
-      recorder.ondataavailable = (e) => {
-        if (e.data.size > 0) audioChunksRef.current.push(e.data)
-      }
- 
-      recorder.start(100)
-      mediaRecorderRef.current = recorder
-      isRecordingRef.current   = true
+    if (isRecording) return
+
+    const SpeechRecognition = (window as any).SpeechRecognition
+      || (window as any).webkitSpeechRecognition
+
+    if (!SpeechRecognition) {
+      logError('当前浏览器不支持语音识别，建议使用 Chrome')
+      return
+    }
+
+    const recognition = new SpeechRecognition()
+    recognition.lang = 'zh-CN'
+    recognition.continuous = false
+    recognition.interimResults = false
+
+    recognition.onstart = () => {
       setIsRecording(true)
     }
-    catch (err: any) {
-      if (err?.name === 'NotAllowedError' || err?.name === 'PermissionDeniedError')
-        logError('麦克风权限被拒绝，请在浏览器设置中允许访问')
-      else if (err?.name === 'NotFoundError')
-        logError('未检测到麦克风设备')
-      else if (err?.name === 'NotSupportedError')
-        logError('当前浏览器不支持录音，建议使用 Chrome')
-      else
-        logError(`无法启动录音：${err?.message ?? '未知错误'}`)
+
+    recognition.onresult = (event: any) => {
+      const text = event.results[0][0].transcript
+      if (text) onSend(text, [])
     }
-  }, [logError])
- 
+
+    recognition.onerror = (event: any) => {
+      if (event.error === 'not-allowed')
+        logError('麦克风权限被拒绝，请在浏览器设置中允许访问')
+      else if (event.error === 'no-speech')
+        logError('没有检测到语音，请重试')
+      else
+        logError(`语音识别失败：${event.error}`)
+      setIsRecording(false)
+    }
+
+    recognition.onend = () => {
+      setIsRecording(false)
+    }
+
+    recognitionRef.current = recognition
+    recognition.start()
+  }, [isRecording, onSend, logError])
+
+  const stopAndSend = useCallback(() => {
+    if (recognitionRef.current) {
+      recognitionRef.current.stop()
+      recognitionRef.current = null
+    }
+    setIsRecording(false)
+  }, [])
+
   return { isRecording, isVoiceUploading, startRecording, stopAndSend }
 }
  
