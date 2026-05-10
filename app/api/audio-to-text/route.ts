@@ -12,26 +12,21 @@ export async function POST(request: NextRequest) {
       return Response.json({ error: '没有收到音频文件' }, { status: 400 })
 
     const newFormData = new FormData()
-    // ✅ 强制指定 type=audio/webm，文件名带 .webm 后缀
     newFormData.append(
       'file',
-      new Blob([await file.arrayBuffer()], { type: 'audio/webm' }),
-      'audio.webm',
+      new Blob([await file.arrayBuffer()], { type: 'audio/wav' }),
+      'audio.wav',
     )
     newFormData.append('user', user)
 
     const baseUrl = API_URL.replace(/\/+$/, '')
     const res = await fetch(`${baseUrl}/audio-to-text`, {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${API_KEY}`,
-        // ✅ 不设置 Content-Type，让 fetch 自动生成正确的 boundary
-      },
+      headers: { Authorization: `Bearer ${API_KEY}` },
       body: newFormData,
     })
 
     const responseText = await res.text()
-
     if (!res.ok)
       return Response.json({ error: responseText }, { status: res.status })
 
