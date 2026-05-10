@@ -11,12 +11,12 @@ export async function POST(request: NextRequest) {
     if (!file)
       return Response.json({ error: '没有收到音频文件' }, { status: 400 })
 
-    const newFormData = new FormData()
-    newFormData.append(
-      'file',
-      new Blob([await file.arrayBuffer()], { type: 'audio/mp4' }),
-      'recording.mp4',
-    )
+const newFormData = new FormData()
+newFormData.append(
+  'file',
+  new Blob([await file.arrayBuffer()], { type: 'audio/webm' }),
+  'audio.webm',
+)
     newFormData.append('user', user)
 
     // ✅ 去掉末尾斜杠再拼接，彻底避免双斜杠问题
