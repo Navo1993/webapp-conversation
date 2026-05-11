@@ -125,9 +125,12 @@ function useTTS() {
       await audio.play()
       setTtsState('playing')
     }
-    catch {
-      setTtsState('idle')
-    }
+      // ✅ 加上错误提示
+catch (err: any) {
+  setTtsState('idle')
+  // 临时 alert 看看错误是什么
+  alert(`TTS 错误: ${err?.message ?? '未知'}`)
+}
   }, [ttsState, stopAudio])
 
   return { ttsState, playTTS, stopAudio }
