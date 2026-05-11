@@ -18,18 +18,17 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify({ message_id, text, user }),
     })
 
-    if (!res.ok) {
-      const err = await res.text()
-      return new Response(err, { status: res.status })
-    }
-
-    // 把音频流直接转发给前端
     const audioBuffer = await res.arrayBuffer()
-    return new Response(audioBuffer, {
-      status: 200,
+
+    // 🔍 临时调试：把 Dify 原始响应直接返回给前端
+    const decoder = new TextDecoder()
+    const responseText = decoder.decode(audioBuffer)
+
+    return new Response(responseText, {
+      status: res.status,
       headers: {
         ...setSession(sessionId),
-        'Content-Type': res.headers.get('Content-Type') || 'audio/wav',
+        'Content-Type': 'text/plain',
       },
     })
   }
