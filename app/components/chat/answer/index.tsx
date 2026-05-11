@@ -82,34 +82,50 @@ function useTTS() {
     setTtsState('idle')
   }, [])
 
-  const playTTS = useCallback(async (messageId: string, text: string) => {
-    if (ttsState === 'playing' || ttsState === 'loading') {
-      stopAudio()
-      return
+const playTTS = useCallback(async (messageId: string, text: string) => {
+  if (ttsState === 'playing' || ttsState === 'loading') {
+    stopAudio()
+    return
+  }
+
+  setTtsState('loading')
+  try {
+    const res = await fetch('/api/text-to-speech', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message_id: messageId, text }),
+    })
+
+    if (!res.ok)
+      throw new Error(`TTS 请求失败 (${res.status})`)
+
+    const blob = await res.blob()
+    const url = URL.createObjectURL(blob)
+
+    const audio = new Audio(url)
+    audioRef.current = audio
+
+    audio.oncanplaythrough = async () => {
+      await audio.play()
+      setTtsState('playing')
     }
 
-    setTtsState('loading')
-    try {
-      const res = await fetch('/api/text-to-speech', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message_id: messageId, text }),
-      })
-
-      // 🔍 调试：读取响应内容
-      const responseText = await res.text()
-      alert(`Dify TTS 返回：\n状态码: ${res.status}\n内容: ${responseText.slice(0, 300)}`)
-
+    audio.onended = () => {
+      URL.revokeObjectURL(url)
       setTtsState('idle')
     }
-    catch (err: any) {
-      alert(`TTS 错误: ${err?.message ?? '未知'}`)
+
+    audio.onerror = () => {
+      URL.revokeObjectURL(url)
       setTtsState('idle')
     }
-  }, [ttsState, stopAudio])
 
-  return { ttsState, playTTS, stopAudio }
-}
+    audio.load()
+  }
+  catch (err: any) {
+    setTtsState('idle')
+  }
+}, [ttsState, stopAudio])
 
 interface IAnswerProps {
   item: ChatItem
