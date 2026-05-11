@@ -39,9 +39,6 @@ function OperationBtn({
 const RatingIcon: FC<{ isLike: boolean }> = ({ isLike }) =>
   isLike ? <HandThumbUpIcon className="w-4 h-4" /> : <HandThumbDownIcon className="w-4 h-4" />
 
-/* ── 🔊 TTS 图标 ──────────────────────────────────────────── */
-
-/** 播放（喇叭）图标 */
 const SpeakerIcon: FC<{ className?: string }> = ({ className }) => (
   <svg className={className} viewBox="0 0 24 24" fill="none"
     stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
@@ -51,14 +48,12 @@ const SpeakerIcon: FC<{ className?: string }> = ({ className }) => (
   </svg>
 )
 
-/** 停止图标 */
 const StopIcon: FC<{ className?: string }> = ({ className }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor">
     <rect x="4" y="4" width="16" height="16" rx="2" />
   </svg>
 )
 
-/** 加载 Spinner */
 const SpinnerIcon: FC<{ className?: string }> = ({ className }) => (
   <svg className={`animate-spin ${className ?? ''}`} viewBox="0 0 24 24" fill="none">
     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
@@ -71,8 +66,6 @@ const IconWrapper: FC<{ children: React.ReactNode }> = ({ children }) => (
     {children}
   </div>
 )
-
-/* ── 🔊 useTTS Hook ───────────────────────────────────────── */
 
 type TTSState = 'idle' | 'loading' | 'playing'
 
@@ -90,7 +83,6 @@ function useTTS() {
   }, [])
 
   const playTTS = useCallback(async (messageId: string, text: string) => {
-    // 如果正在播放，点击则停止
     if (ttsState === 'playing' || ttsState === 'loading') {
       stopAudio()
       return
@@ -99,50 +91,25 @@ function useTTS() {
     setTtsState('loading')
     try {
       const res = await fetch('/api/text-to-speech', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ message_id: messageId, text }),
-})
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message_id: messageId, text }),
+      })
 
-alert(`状态码: ${res.status}, Content-Type: ${res.headers.get('Content-Type')}`)
+      // 🔍 调试：读取响应内容
+      const responseText = await res.text()
+      alert(`Dify TTS 返回：\n状态码: ${res.status}\n内容: ${responseText.slice(0, 300)}`)
 
-if (!res.ok) {
-  const errText = await res.text()
-  throw new Error(`TTS 请求失败 (${res.status}): ${errText}`)
-}
-
-const blob = await res.blob()
-alert(`blob size: ${blob.size}, type: ${blob.type}`)
-      
-      const url  = URL.createObjectURL(blob)
-
-      const audio = new Audio(url)
-      audioRef.current = audio
-
-      audio.onended = () => {
-        URL.revokeObjectURL(url)
-        setTtsState('idle')
-      }
-      audio.onerror = () => {
-        URL.revokeObjectURL(url)
-        setTtsState('idle')
-      }
-
-      await audio.play()
-      setTtsState('playing')
+      setTtsState('idle')
     }
-      // ✅ 加上错误提示
-catch (err: any) {
-  setTtsState('idle')
-  // 临时 alert 看看错误是什么
-  alert(`TTS 错误: ${err?.message ?? '未知'}`)
-}
+    catch (err: any) {
+      alert(`TTS 错误: ${err?.message ?? '未知'}`)
+      setTtsState('idle')
+    }
   }, [ttsState, stopAudio])
 
   return { ttsState, playTTS, stopAudio }
 }
-
-/* ── Answer 主组件 ────────────────────────────────────────── */
 
 interface IAnswerProps {
   item: ChatItem
@@ -164,8 +131,6 @@ const Answer: FC<IAnswerProps> = ({
   const { id, content, feedback, agent_thoughts, workflowProcess, suggestedQuestions = [] } = item
   const isAgentMode = !!agent_thoughts && agent_thoughts.length > 0
   const { t } = useTranslation()
-
-  // 🔊 TTS
   const { ttsState, playTTS } = useTTS()
 
   const renderFeedbackRating = (rating: MessageRating | undefined) => {
@@ -193,32 +158,24 @@ const Answer: FC<IAnswerProps> = ({
   }
 
   const renderItemOperation = () => {
-    const userOperation = () => {
-      return feedback?.rating
-        ? null
-        : (
-          <div className="flex gap-1">
-            <Tooltip selector={`user-feedback-${randomString(16)}`} content={t('common.operation.like') as string}>
-              {OperationBtn({
-                innerContent: <IconWrapper><RatingIcon isLike={true} /></IconWrapper>,
-                onClick: () => onFeedback?.(id, { rating: 'like' }),
-              })}
-            </Tooltip>
-            <Tooltip selector={`user-feedback-${randomString(16)}`} content={t('common.operation.dislike') as string}>
-              {OperationBtn({
-                innerContent: <IconWrapper><RatingIcon isLike={false} /></IconWrapper>,
-                onClick: () => onFeedback?.(id, { rating: 'dislike' }),
-              })}
-            </Tooltip>
-          </div>
-        )
-    }
-
-    return (
-      <div className={`${s.itemOperation} flex gap-2`}>
-        {userOperation()}
-      </div>
-    )
+    return feedback?.rating
+      ? null
+      : (
+        <div className={`${s.itemOperation} flex gap-1`}>
+          <Tooltip selector={`user-feedback-${randomString(16)}`} content={t('common.operation.like') as string}>
+            {OperationBtn({
+              innerContent: <IconWrapper><RatingIcon isLike={true} /></IconWrapper>,
+              onClick: () => onFeedback?.(id, { rating: 'like' }),
+            })}
+          </Tooltip>
+          <Tooltip selector={`user-feedback-${randomString(16)}`} content={t('common.operation.dislike') as string}>
+            {OperationBtn({
+              innerContent: <IconWrapper><RatingIcon isLike={false} /></IconWrapper>,
+              onClick: () => onFeedback?.(id, { rating: 'dislike' }),
+            })}
+          </Tooltip>
+        </div>
+      )
   }
 
   const getImgs = (list?: VisionFile[]) => {
@@ -246,7 +203,6 @@ const Answer: FC<IAnswerProps> = ({
     </div>
   )
 
-  // 🔊 TTS 按钮（回答完成后才显示）
   const renderTTSButton = () => {
     if (isResponding || !content) return null
 
@@ -313,12 +269,9 @@ const Answer: FC<IAnswerProps> = ({
                 </div>
               )}
             </div>
-
-            {/* 操作按钮区：点赞/点踩 + 🔊 朗读 */}
             <div className="absolute top-[-14px] right-[-14px] flex flex-row justify-end gap-1">
               {!feedbackDisabled && !item.feedbackDisabled && renderItemOperation()}
               {!feedbackDisabled && renderFeedbackRating(feedback?.rating)}
-              {/* 🔊 TTS 按钮，始终显示（不受 feedbackDisabled 影响） */}
               {renderTTSButton()}
             </div>
           </div>
