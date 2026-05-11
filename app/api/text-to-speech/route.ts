@@ -28,8 +28,7 @@ export async function POST(request: NextRequest) {
       status: 200,
       headers: {
         ...setSession(sessionId),
-        'Content-Type': res.headers.get('Content-Type') || 'audio/wav',
-        'Transfer-Encoding': 'chunked',
+'Content-Type': res.headers.get('Content-Type') || 'audio/mpeg',
       },
     })
   }
