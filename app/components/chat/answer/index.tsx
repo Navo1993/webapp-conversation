@@ -99,15 +99,21 @@ function useTTS() {
     setTtsState('loading')
     try {
       const res = await fetch('/api/text-to-speech', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message_id: messageId, text }),
-      })
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ message_id: messageId, text }),
+})
 
-      if (!res.ok)
-        throw new Error(`TTS 请求失败 (${res.status})`)
+alert(`状态码: ${res.status}, Content-Type: ${res.headers.get('Content-Type')}`)
 
-      const blob = await res.blob()
+if (!res.ok) {
+  const errText = await res.text()
+  throw new Error(`TTS 请求失败 (${res.status}): ${errText}`)
+}
+
+const blob = await res.blob()
+alert(`blob size: ${blob.size}, type: ${blob.type}`)
+      
       const url  = URL.createObjectURL(blob)
 
       const audio = new Audio(url)
