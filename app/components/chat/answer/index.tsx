@@ -68,8 +68,6 @@ const IconWrapper: FC<{ children: React.ReactNode }> = ({ children }) => (
 )
  
 /* ── TTS Hook ─────────────────────────────────────────────── */
- 
-```ts
 type TTSState = 'idle' | 'loading' | 'playing'
 
 function useTTS() {
