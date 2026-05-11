@@ -69,12 +69,13 @@ const IconWrapper: FC<{ children: React.ReactNode }> = ({ children }) => (
  
 /* ── TTS Hook ─────────────────────────────────────────────── */
  
+```ts
 type TTSState = 'idle' | 'loading' | 'playing'
- 
+
 function useTTS() {
   const [ttsState, setTtsState] = useState<TTSState>('idle')
   const audioRef = useRef<HTMLAudioElement | null>(null)
- 
+
   const stopAudio = useCallback(() => {
     if (audioRef.current) {
       audioRef.current.pause()
@@ -83,75 +84,82 @@ function useTTS() {
     }
     setTtsState('idle')
   }, [])
- 
-const playTTS = useCallback(async (messageId: string, text: string) => {
-  if (ttsState === 'playing' || ttsState === 'loading') {
-    stopAudio()
-    return
-  }
 
-  setTtsState('loading')
-
-  try {
-    const res = await fetch('/api/text-to-speech', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        message_id: messageId,
-        text,
-      }),
-    })
-
-    if (!res.ok) {
-      throw new Error(`TTS 请求失败: ${res.status}`)
+  const playTTS = useCallback(async (messageId: string, text: string) => {
+    if (ttsState === 'playing' || ttsState === 'loading') {
+      stopAudio()
+      return
     }
 
-    const blob = await res.blob()
-
-    console.log('TTS blob:', blob)
-    console.log('TTS type:', blob.type)
-    console.log('TTS size:', blob.size)
-
-    if (blob.size === 0) {
-      throw new Error('音频为空')
-    }
-
-    const audioUrl = URL.createObjectURL(blob)
-
-    const audio = new Audio()
-
-    audioRef.current = audio
-
-    audio.src = audioUrl
-    audio.preload = 'auto'
-
-    audio.onended = () => {
-      URL.revokeObjectURL(audioUrl)
-      setTtsState('idle')
-    }
-
-    audio.onerror = (e) => {
-      console.error('audio error', e)
-      URL.revokeObjectURL(audioUrl)
-      setTtsState('idle')
-    }
+    setTtsState('loading')
 
     try {
-      await audio.play()
-      setTtsState('playing')
+      const res = await fetch('/api/text-to-speech', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message_id: messageId,
+          text,
+        }),
+      })
+
+      if (!res.ok) {
+        throw new Error(`TTS 请求失败: ${res.status}`)
+      }
+
+      const blob = await res.blob()
+
+      console.log('TTS blob:', blob)
+      console.log('TTS type:', blob.type)
+      console.log('TTS size:', blob.size)
+
+      if (blob.size === 0) {
+        throw new Error('音频为空')
+      }
+
+      const audioUrl = URL.createObjectURL(blob)
+
+      const audio = new Audio()
+
+      audioRef.current = audio
+
+      audio.src = audioUrl
+      audio.preload = 'auto'
+
+      audio.onended = () => {
+        URL.revokeObjectURL(audioUrl)
+        setTtsState('idle')
+      }
+
+      audio.onerror = (e) => {
+        console.error('audio error', e)
+        URL.revokeObjectURL(audioUrl)
+        setTtsState('idle')
+      }
+
+      try {
+        await audio.play()
+        setTtsState('playing')
+      }
+      catch (err) {
+        console.error('play failed', err)
+        setTtsState('idle')
+      }
     }
     catch (err) {
-      console.error('play failed', err)
+      console.error(err)
       setTtsState('idle')
     }
+  }, [ttsState, stopAudio])
+
+  return {
+    ttsState,
+    playTTS,
+    stopAudio,
   }
-  catch (err) {
-    console.error(err)
-    setTtsState('idle')
-  }
-}, [ttsState, stopAudio])
+}
  
 /* ── Answer 主组件 ────────────────────────────────────────── */
  
