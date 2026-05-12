@@ -15,7 +15,7 @@ import ImageGallery from '../../base/image-gallery'
 import LoadingAnim from '../loading-anim'
 import s from '../style.module.css'
 import Thought from '../thought'
- 
+
 function OperationBtn({
   innerContent,
   onClick,
@@ -35,10 +35,10 @@ function OperationBtn({
     </div>
   )
 }
- 
+
 const RatingIcon: FC<{ isLike: boolean }> = ({ isLike }) =>
   isLike ? <HandThumbUpIcon className="w-4 h-4" /> : <HandThumbDownIcon className="w-4 h-4" />
- 
+
 const SpeakerIcon: FC<{ className?: string }> = ({ className }) => (
   <svg className={className} viewBox="0 0 24 24" fill="none"
     stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
@@ -47,27 +47,28 @@ const SpeakerIcon: FC<{ className?: string }> = ({ className }) => (
     <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
   </svg>
 )
- 
+
 const StopIcon: FC<{ className?: string }> = ({ className }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor">
     <rect x="4" y="4" width="16" height="16" rx="2" />
   </svg>
 )
- 
+
 const SpinnerIcon: FC<{ className?: string }> = ({ className }) => (
   <svg className={`animate-spin ${className ?? ''}`} viewBox="0 0 24 24" fill="none">
     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
   </svg>
 )
- 
+
 const IconWrapper: FC<{ children: React.ReactNode }> = ({ children }) => (
   <div className="rounded-lg h-6 w-6 flex items-center justify-center hover:bg-gray-100">
     {children}
   </div>
 )
- 
+
 /* ── TTS Hook ─────────────────────────────────────────────── */
+
 type TTSState = 'idle' | 'loading' | 'playing'
 
 function useTTS() {
@@ -90,77 +91,49 @@ function useTTS() {
     }
 
     setTtsState('loading')
-
     try {
       const res = await fetch('/api/text-to-speech', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message_id: messageId,
-          text,
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message_id: messageId, text }),
       })
 
-      if (!res.ok) {
-        throw new Error(`TTS 请求失败: ${res.status}`)
-      }
+      if (!res.ok)
+        throw new Error(`TTS 请求失败 (${res.status})`)
 
       const blob = await res.blob()
+      const url = URL.createObjectURL(blob)
 
-      console.log('TTS blob:', blob)
-      console.log('TTS type:', blob.type)
-      console.log('TTS size:', blob.size)
-
-      if (blob.size === 0) {
-        throw new Error('音频为空')
-      }
-
-      const audioUrl = URL.createObjectURL(blob)
-
-      const audio = new Audio()
-
+      const audio = new Audio(url)
       audioRef.current = audio
 
-      audio.src = audioUrl
-      audio.preload = 'auto'
-
-      audio.onended = () => {
-        URL.revokeObjectURL(audioUrl)
-        setTtsState('idle')
-      }
-
-      audio.onerror = (e) => {
-        console.error('audio error', e)
-        URL.revokeObjectURL(audioUrl)
-        setTtsState('idle')
-      }
-
-      try {
+      audio.oncanplaythrough = async () => {
         await audio.play()
         setTtsState('playing')
       }
-      catch (err) {
-        console.error('play failed', err)
+
+      audio.onended = () => {
+        URL.revokeObjectURL(url)
         setTtsState('idle')
       }
+
+      audio.onerror = () => {
+        URL.revokeObjectURL(url)
+        setTtsState('idle')
+      }
+
+      audio.load()
     }
-    catch (err) {
-      console.error(err)
+    catch {
       setTtsState('idle')
     }
   }, [ttsState, stopAudio])
 
-  return {
-    ttsState,
-    playTTS,
-    stopAudio,
-  }
+  return { ttsState, playTTS, stopAudio }
 }
- 
+
 /* ── Answer 主组件 ────────────────────────────────────────── */
- 
+
 interface IAnswerProps {
   item: ChatItem
   feedbackDisabled: boolean
@@ -169,7 +142,7 @@ interface IAnswerProps {
   allToolIcons?: Record<string, string | Emoji>
   suggestionClick?: (suggestion: string) => void
 }
- 
+
 const Answer: FC<IAnswerProps> = ({
   item,
   feedbackDisabled = false,
@@ -182,7 +155,7 @@ const Answer: FC<IAnswerProps> = ({
   const isAgentMode = !!agent_thoughts && agent_thoughts.length > 0
   const { t } = useTranslation()
   const { ttsState, playTTS } = useTTS()
- 
+
   const renderFeedbackRating = (rating: MessageRating | undefined) => {
     if (!rating) return null
     const isLike = rating === 'like'
@@ -206,7 +179,7 @@ const Answer: FC<IAnswerProps> = ({
       </Tooltip>
     )
   }
- 
+
   const renderItemOperation = () => {
     return feedback?.rating
       ? null
@@ -227,12 +200,12 @@ const Answer: FC<IAnswerProps> = ({
         </div>
       )
   }
- 
+
   const getImgs = (list?: VisionFile[]) => {
     if (!list) return []
     return list.filter(file => file.type === 'image' && file.belongs_to === 'assistant')
   }
- 
+
   const agentModeAnswer = (
     <div>
       {agent_thoughts?.map((item, index) => (
@@ -252,22 +225,22 @@ const Answer: FC<IAnswerProps> = ({
       ))}
     </div>
   )
- 
+
   const renderTTSButton = () => {
     if (isResponding || !content) return null
- 
+
     const tooltipText = ttsState === 'playing'
       ? '停止播放'
       : ttsState === 'loading'
         ? '加载中...'
         : '朗读回答'
- 
+
     const icon = ttsState === 'loading'
       ? <SpinnerIcon className="w-4 h-4" />
       : ttsState === 'playing'
         ? <StopIcon className="w-3.5 h-3.5 text-blue-500" />
         : <SpeakerIcon className="w-4 h-4" />
- 
+
     return (
       <Tooltip selector={`tts-${id}`} content={tooltipText}>
         {OperationBtn({
@@ -278,7 +251,7 @@ const Answer: FC<IAnswerProps> = ({
       </Tooltip>
     )
   }
- 
+
   return (
     <div key={id}>
       <div className="flex items-start">
@@ -330,5 +303,6 @@ const Answer: FC<IAnswerProps> = ({
     </div>
   )
 }
- 
+
 export default React.memo(Answer)
+
