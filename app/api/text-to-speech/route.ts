@@ -9,50 +9,59 @@ export async function POST(request: NextRequest) {
     if (!text)
       return new Response('text is required', { status: 400 })
 
-    // Step 1: 获取免费 token
-    const tokenRes = await fetch(
-      'https://azure.org/cognitiveservices/voices/list',
-      {
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-        },
+    const appId = process.env.VOLC_TTS_APP_ID
+    const token = process.env.VOLC_TTS_TOKEN
+
+    if (!appId || !token)
+      return new Response('TTS 环境变量未配置', { status: 500 })
+
+    const res = await fetch('https://openspeech.bytedance.com/api/v1/tts', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer;${token}`,
       },
-    )
-
-    // 直接用 edge-tts 的公开端点获取 token
-    const authRes = await fetch(
-      'https://azure.org/cognitiveservices/v1/synthesis/authorization',
-      {
-        method: 'GET',
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+      body: JSON.stringify({
+        app: {
+          appid: appId,
+          token,
+          cluster: 'volcano_tts',
         },
-      },
-    )
-
-    // 使用公开可用的 Azure TTS 端点（edge-tts 包内部用的方式）
-    const voice = 'zh-CN-XiaoxiaoNeural'
-    const ssml = `<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='zh-CN'><voice name='${voice}'><prosody rate='0%' pitch='0%'>${text}</prosody></voice></speak>`
-
-    const ttsRes = await fetch(
-      'https://eastus.tts.speech.microsoft.com/cognitiveservices/v1',
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${await getEdgeToken()}`,
-          'Content-Type': 'application/ssml+xml',
-          'X-Microsoft-OutputFormat': 'audio-16khz-128kbitrate-mono-mp3',
-          'User-Agent': 'Mozilla/5.0',
+        user: { uid: 'webapp_user' },
+        audio: {
+          voice_type: 'zh_female_yuanqinvyou_moon_bigtts',
+          encoding: 'mp3',
+          speed_ratio: 1.0,
+          volume_ratio: 1.0,
+          pitch_ratio: 1.0,
         },
-        body: ssml,
-      },
-    )
+        request: {
+          reqid: `req_${Date.now()}`,
+          text,
+          text_type: 'plain',
+          operation: 'query',
+          with_frontend: 1,
+          frontend_type: 'unitTson',
+        },
+      }),
+    })
 
-    if (!ttsRes.ok)
-      return new Response(`TTS 失败: ${await ttsRes.text()}`, { status: 500 })
+    if (!res.ok) {
+      const err = await res.text()
+      return new Response(`火山 TTS 失败: ${err}`, { status: 500 })
+    }
 
-    const audio = await ttsRes.arrayBuffer()
-    return new Response(audio, {
+    const data = await res.json()
+
+    // 火山返回 base64 编码的音频
+    if (!data?.data) {
+      return new Response(`TTS 返回为空: ${JSON.stringify(data)}`, { status: 500 })
+    }
+
+    const audioBuffer = Buffer.from(data.data, 'base64')
+
+    return new Response(audioBuffer, {
+      status: 200,
       headers: {
         ...setSession(sessionId),
         'Content-Type': 'audio/mpeg',
@@ -62,17 +71,4 @@ export async function POST(request: NextRequest) {
   catch (e: any) {
     return new Response(e.message, { status: 500 })
   }
-}
-
-async function getEdgeToken(): Promise<string> {
-  const res = await fetch(
-    'https://azure.org/cognitiveservices/v1/synthesis/authorization',
-    {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0',
-      },
-    },
-  )
-  const data = await res.json()
-  return data.token || data.access_token || ''
 }
