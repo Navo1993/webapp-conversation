@@ -270,11 +270,6 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
 
   /* ---------- 合规登录 ---------- */
 
-  const [showLogin, setShowLogin] = useState(false)
-  const [password, setPassword] = useState('')
-  const [loginError, setLoginError] = useState(false)
-
-  const DEMO_PASSWORD = 'SG2026'
 
   const t = content[lang]
 
@@ -434,7 +429,7 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
             {/* 开始按钮 */}
 
             <button
-              onClick={() => setShowLogin(true)}
+onClick={() => setIsChatting(true)}
               className="bg-[#0052D9] text-white px-7 py-2.5 rounded-full text-[12px] font-black hover:bg-[#0042b3] transition-all"
             >
               {t.common.start}
@@ -516,7 +511,7 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
             </p>
 
             <button
-              onClick={() => setShowLogin(true)}
+onClick={() => setIsChatting(true)}
               className="bg-[#0052D9] text-white px-10 py-4 rounded-xl text-base font-black hover:shadow-2xl transition-all flex items-center gap-2 mx-auto"
             >
               {t.common.start}
@@ -651,81 +646,4 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
           </div>
         </div>
       </footer>
-
-      {/* ---------------- 登录弹窗 ---------------- */}
-
-      <AnimatePresence>
-        {showLogin && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[200] bg-black/50 backdrop-blur-sm flex items-center justify-center px-6"
-          >
-
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white rounded-3xl p-8 w-full max-w-md shadow-2xl"
-            >
-
-              <div className="flex items-center gap-3 mb-6">
-                <Lock className="text-[#0052D9]" />
-                <h3 className="text-2xl font-black">
-                  演示访问验证
-                </h3>
-              </div>
-
-              <p className="text-sm text-gray-500 leading-relaxed mb-6">
-                本系统当前为广交会及技术展示用途，
-                仅向受邀访客开放演示访问。
-              </p>
-
-              <input
-                type="password"
-                placeholder="请输入访问密码"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-[#0052D9]"
-              />
-
-              {loginError && (
-                <div className="text-red-500 text-sm mt-3">
-                  密码错误
-                </div>
-              )}
-
-              <div className="flex gap-4 mt-8">
-
-                <button
-                  onClick={() => setShowLogin(false)}
-                  className="flex-1 py-3 rounded-xl bg-gray-100 font-bold"
-                >
-                  取消
-                </button>
-
-                <button
-                  onClick={() => {
-                    if (password === DEMO_PASSWORD) {
-                      setIsChatting(true)
-                      setShowLogin(false)
-                      setLoginError(false)
-                    } else {
-                      setLoginError(true)
-                    }
-                  }}
-                  className="flex-1 py-3 rounded-xl bg-[#0052D9] text-white font-black"
-                >
-                  进入系统
-                </button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  )
-}
-
 export default React.memo(App)
