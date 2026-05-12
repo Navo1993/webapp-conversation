@@ -1,59 +1,74 @@
 import type { NextRequest } from 'next/server'
-import { API_KEY, API_URL } from '@/config'
 import { getInfo, setSession } from '@/app/api/utils/common'
 
 export async function POST(request: NextRequest) {
   try {
-    const { user, sessionId } = getInfo(request)
+    const { sessionId } = getInfo(request)
+
     const incomingForm = await request.formData()
     const file = incomingForm.get('file') as File | null
     if (!file)
       return Response.json({ error: '没有收到音频文件' }, { status: 400 })
 
-    const wavBuffer = await file.arrayBuffer()
-    const baseUrl = API_URL.replace(/\/+$/, '')
+    const appId = process.env.VOLC_TTS_APP_ID
+    const token = process.env.VOLC_TTS_TOKEN
+    if (!appId || !token)
+      return Response.json({ error: '火山引擎环境变量未配置' }, { status: 500 })
 
-    // 最多重试 3 次，每次间隔 1.5 秒
-    let lastError = ''
-    for (let attempt = 1; attempt <= 3; attempt++) {
-      const newFormData = new FormData()
-      newFormData.append(
-        'file',
-        new Blob([wavBuffer], { type: 'audio/wav' }),
-        'audio.wav',
-      )
-      newFormData.append('user', user)
+    // 把 wav 转成 base64
+    const audioBuffer = await file.arrayBuffer()
+    const base64Audio = Buffer.from(audioBuffer).toString('base64')
 
-      const res = await fetch(`${baseUrl}/audio-to-text`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${API_KEY}` },
-        body: newFormData,
-      })
+    const res = await fetch('https://openspeech.bytedance.com/api/v3/asr', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer;${token}`,
+      },
+      body: JSON.stringify({
+        app: {
+          appid: appId,
+          token,
+          cluster: 'volcengine_streaming_common',
+        },
+        user: { uid: 'webapp_user' },
+        audio: {
+          format: 'wav',
+          encode: 'base64',
+          data: base64Audio,
+          sample_rate: 16000,
+          bits: 16,
+          channel: 1,
+        },
+        request: {
+          reqid: `req_${Date.now()}`,
+          workflow: 'audio_in,resample,partition,vad,fe,decode',
+          result_type: 'full',
+          sequence: -1,
+        },
+      }),
+    })
 
-      const responseText = await res.text()
-
-      if (res.ok) {
-        const data = JSON.parse(responseText)
-        return Response.json(
-          { text: data.text },
-          { headers: setSession(sessionId) },
-        )
-      }
-
-      lastError = responseText
-
-      // 如果是负载饱和错误，等待后重试
-      if (responseText.includes('饱和') || responseText.includes('count_token_failed')) {
-        if (attempt < 3)
-          await new Promise(resolve => setTimeout(resolve, 1500 * attempt))
-        continue
-      }
-
-      // 其他错误直接返回，不重试
-      break
+    if (!res.ok) {
+      const err = await res.text()
+      return Response.json({ error: `火山 ASR 失败: ${err}` }, { status: 500 })
     }
 
-    return Response.json({ error: lastError }, { status: 400 })
+    const data = await res.json()
+
+    // 提取识别文字
+    const text = data?.result?.text
+      || data?.result?.[0]?.text
+      || data?.utterances?.[0]?.text
+      || ''
+
+    if (!text)
+      return Response.json({ error: `识别结果为空: ${JSON.stringify(data)}` }, { status: 500 })
+
+    return Response.json(
+      { text },
+      { headers: setSession(sessionId) },
+    )
   }
   catch (e: any) {
     return Response.json({ error: e.message }, { status: 500 })
