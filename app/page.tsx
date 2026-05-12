@@ -646,4 +646,8 @@ onClick={() => setIsChatting(true)}
           </div>
         </div>
       </footer>
+          </div>  // <- 关闭最外层 div
+  );       // <- 关闭 return
+};         // <- 关闭 App 函数组件
+
 export default React.memo(App);
