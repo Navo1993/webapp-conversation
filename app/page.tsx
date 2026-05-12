@@ -626,14 +626,36 @@ onClick={() => setIsChatting(true)}
 
               <span>{t.footer.copy}</span>
 
-              <a
-                href="https://beian.miit.gov.cn/"
-                target="_blank"
-                rel="noreferrer"
-                className="hover:text-white transition-colors"
-              >
-                粤ICP备2026055050号
-              </a>
+<div className="flex flex-wrap items-center gap-4">
+
+  {/* 工信部备案 */}
+  <a
+    href="https://beian.miit.gov.cn/"
+    target="_blank"
+    rel="noreferrer"
+    className="hover:text-white transition-colors"
+  >
+    粤ICP备2026055050号
+  </a>
+
+  {/* 公安联网备案 */}
+  <a
+    href="https://beian.mps.gov.cn/#/query/webSearch?code=44010602009999"
+    target="_blank"
+    rel="noreferrer"
+    className="flex items-center gap-2 hover:text-white transition-colors"
+  >
+    <img
+      src="https://beian.mps.gov.cn/web/assets/logo01.6189a29f.png"
+      alt="公安备案"
+      className="w-4 h-4 object-contain opacity-80"
+    />
+
+    <span>
+      粤公网安备 44010502004025号
+    </span>
+  </a>
+</div>
             </div>
 
             <div className="flex items-center gap-6">
