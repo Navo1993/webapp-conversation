@@ -646,4 +646,4 @@ onClick={() => setIsChatting(true)}
           </div>
         </div>
       </footer>
-export default React.memo(App)
+export default React.memo(App);
