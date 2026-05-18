@@ -155,7 +155,19 @@ const Answer: FC<IAnswerProps> = ({
   const isAgentMode = !!agent_thoughts && agent_thoughts.length > 0
   const { t } = useTranslation()
   const { ttsState, playTTS } = useTTS()
-
+// 分离 <think> 内容和实际回答
+const parseThinkContent = (raw: string) => {
+  const match = raw.match(/^<think>([\s\S]*?)<\/think>([\s\S]*)$/s)
+  if (!match) return { thinkContent: '', answerContent: raw }
+  return {
+    thinkContent: match[1].trim(),
+    answerContent: match[2].trim(),
+  }
+}
+  
+const { thinkContent, answerContent } = parseThinkContent(content || '')
+const [thinkExpanded, setThinkExpanded] = useState(false)
+  
   const renderFeedbackRating = (rating: MessageRating | undefined) => {
     if (!rating) return null
     const isLike = rating === 'like'
@@ -245,7 +257,7 @@ const Answer: FC<IAnswerProps> = ({
       <Tooltip selector={`tts-${id}`} content={tooltipText}>
         {OperationBtn({
           innerContent: <IconWrapper>{icon}</IconWrapper>,
-          onClick: () => playTTS(id, content),
+          onClick: () => playTTS(id, answerContent || content),
           className: ttsState === 'playing' ? 'text-blue-500' : '',
         })}
       </Tooltip>
@@ -276,7 +288,30 @@ const Answer: FC<IAnswerProps> = ({
                 )
                 : (isAgentMode
                   ? agentModeAnswer
-                  : <StreamdownMarkdown content={content} />
+                  : (
+  <div>
+    {thinkContent && (
+      <div className="mb-2">
+        <button
+          onClick={() => setThinkExpanded(v => !v)}
+          className="flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600 transition-colors"
+        >
+          <svg className={`w-3 h-3 transition-transform ${thinkExpanded ? 'rotate-90' : ''}`}
+            viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+            <path d="M9 18l6-6-6-6" />
+          </svg>
+          {thinkExpanded ? '收起思考过程' : '查看思考过程'}
+        </button>
+        {thinkExpanded && (
+          <div className="mt-1 pl-3 border-l-2 border-gray-200 text-xs text-gray-400 leading-relaxed">
+            <StreamdownMarkdown content={thinkContent} />
+          </div>
+        )}
+      </div>
+    )}
+    <StreamdownMarkdown content={answerContent || content} />
+  </div>
+)
                 )}
               {suggestedQuestions.length > 0 && (
                 <div className="mt-3">
