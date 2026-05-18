@@ -281,6 +281,10 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+useEffect(() => {
+  document.title = 'Smart Guard - 连接安全 · 预见未来智能'
+}, [])
+  
   const handleLinkClick = (linkName: string) => {
     if (
       ['智能维修挑战赛', '智能維修挑戰賽', 'Maintenance Challenge'].includes(
