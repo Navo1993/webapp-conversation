@@ -1028,28 +1028,19 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
         </div>
       </section>
 
-      {/* ============================================================
-          Dify 内嵌聊天机器人 (Beta)
-          config + embed 合并在同一脚本内顺序执行
-          /dify-beta/* 由 next.config.js rewrites 代理到
-          http://159.75.185.246，解决 Mixed Content 问题
-      ============================================================ */}
-      <Script id="dify-chatbot" strategy="afterInteractive">{`
-        window.difyChatbotConfig = {
-          token: 'uYxYNUj5uBiqYwhE',
-          baseUrl: window.location.origin + '/dify-beta',
-          inputs: {},
-          systemVariables: {},
-          userVariables: {},
-        };
-        (function() {
-          var s = document.createElement('script');
-          s.src = window.location.origin + '/dify-beta/embed.min.js';
-          s.id = 'uYxYNUj5uBiqYwhE';
-          s.defer = true;
-          document.head.appendChild(s);
-        })();
-      \`}</Script>
+      {/* Dify 聊天气泡 (Beta) — dangerouslySetInnerHTML 避免模板字符串编译问题 */}
+      <Script
+        id="dify-chatbot"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html:
+            "window.difyChatbotConfig={token:'uYxYNUj5uBiqYwhE',baseUrl:window.location.origin+'/dify-beta',inputs:{},systemVariables:{},userVariables:{}};" +
+            "(function(){var s=document.createElement('script');" +
+            "s.src=window.location.origin+'/dify-beta/embed.min.js';" +
+            "s.id='uYxYNUj5uBiqYwhE';s.defer=true;" +
+            "document.head.appendChild(s);})()",
+        }}
+      />
 
 
       {/* ============================================================
