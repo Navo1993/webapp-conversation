@@ -17,6 +17,16 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   output: 'standalone',
+ 
+  async rewrites() {
+    return [
+      {
+        // Vercel 服务端将 /dify-beta/* 转发到 http://159.75.185.246/*
+        // 浏览器只看到 https 域名，解决 Mixed Content 问题
+        source: '/dify-beta/:path*',
+        destination: 'http://159.75.185.246/:path*',
+      },
+    ]
+  },
 }
-
 module.exports = nextConfig
