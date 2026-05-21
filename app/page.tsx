@@ -1037,7 +1037,7 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
           document.head.appendChild(s);
         })();
       \`}</Script>
-      <style>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         #dify-chatbot-bubble-button {
           background-color: #0052D9 !important;
         }
@@ -1045,7 +1045,7 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
           width: 24rem !important;
           height: 40rem !important;
         }
-      `}</style>
+      ` }} />
 
       {/* ============================================================
           页脚
