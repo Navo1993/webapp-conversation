@@ -463,16 +463,32 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
 
   useEffect(() => { document.title = 'Smart Guard - 连接安全 · 预见未来智能' }, [])
 
-  // 注入 Dify 气泡样式，避免 JSX 模板字符串解析问题
+  // 注入 Dify 气泡：config → style → script 严格顺序，保证 id 属性正确挂载
   useEffect(() => {
-    const el = document.createElement('style')
-    el.id = 'dify-bubble-style'
-    el.textContent = [
-      'div[id="dify-chatbot-bubble-button"]{background-color:#0052D9!important}',
-      'div[id="dify-chatbot-bubble-window"]{width:24rem!important;height:40rem!important}',
-    ].join(' ')
+    // 1. 样式
     if (!document.getElementById('dify-bubble-style')) {
-      document.head.appendChild(el)
+      const style = document.createElement('style')
+      style.id = 'dify-bubble-style'
+      style.textContent =
+        '#dify-chatbot-bubble-button{background-color:#0052D9!important}' +
+        '#dify-chatbot-bubble-window{width:24rem!important;height:40rem!important}'
+      document.head.appendChild(style)
+    }
+    // 2. config（embed 脚本读取 window.difyChatbotConfig）
+    ;(window as any).difyChatbotConfig = {
+      token: 'uYxYNUj5uBiqYwhE',
+      baseUrl: window.location.origin + '/dify-beta',
+      inputs: {},
+      systemVariables: {},
+      userVariables: {},
+    }
+    // 3. 注入 embed script，id 必须与 token 一致（Dify embed 读自身 id）
+    if (!document.getElementById('uYxYNUj5uBiqYwhE')) {
+      const s = document.createElement('script')
+      s.src = window.location.origin + '/dify-beta/embed.min.js'
+      s.id = 'uYxYNUj5uBiqYwhE'
+      s.async = true
+      document.head.appendChild(s)
     }
   }, [])
 
@@ -1028,19 +1044,7 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
         </div>
       </section>
 
-      {/* Dify 聊天气泡 (Beta) — dangerouslySetInnerHTML 避免模板字符串编译问题 */}
-      <Script
-        id="dify-chatbot"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html:
-            "window.difyChatbotConfig={token:'uYxYNUj5uBiqYwhE',baseUrl:window.location.origin+'/dify-beta',inputs:{},systemVariables:{},userVariables:{}};" +
-            "(function(){var s=document.createElement('script');" +
-            "s.src=window.location.origin+'/dify-beta/embed.min.js';" +
-            "s.id='uYxYNUj5uBiqYwhE';s.defer=true;" +
-            "document.head.appendChild(s);})()",
-        }}
-      />
+      {/* Dify 气泡由下方 useEffect 注入 */}
 
 
       {/* ============================================================
