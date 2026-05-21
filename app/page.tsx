@@ -463,6 +463,19 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
 
   useEffect(() => { document.title = 'Smart Guard - 连接安全 · 预见未来智能' }, [])
 
+  // 注入 Dify 气泡样式，避免 JSX 模板字符串解析问题
+  useEffect(() => {
+    const el = document.createElement('style')
+    el.id = 'dify-bubble-style'
+    el.textContent = [
+      'div[id="dify-chatbot-bubble-button"]{background-color:#0052D9!important}',
+      'div[id="dify-chatbot-bubble-window"]{width:24rem!important;height:40rem!important}',
+    ].join(' ')
+    if (!document.getElementById('dify-bubble-style')) {
+      document.head.appendChild(el)
+    }
+  }, [])
+
   /* 轮播计时 + 进度条 */
   const startCarousel = useCallback(() => {
     if (progressTimer.current) clearInterval(progressTimer.current)
@@ -1037,15 +1050,7 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
           document.head.appendChild(s);
         })();
       \`}</Script>
-      <style dangerouslySetInnerHTML={{ __html: `
-        #dify-chatbot-bubble-button {
-          background-color: #0052D9 !important;
-        }
-        #dify-chatbot-bubble-window {
-          width: 24rem !important;
-          height: 40rem !important;
-        }
-      ` }} />
+
 
       {/* ============================================================
           页脚
