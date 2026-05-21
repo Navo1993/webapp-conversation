@@ -463,7 +463,7 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
 
   useEffect(() => { document.title = 'Smart Guard - 连接安全 · 预见未来智能' }, [])
 
-  // 注入 Dify 气泡：config → style → script 严格顺序，保证 id 属性正确挂载
+  // 注入 Dify 气泡
   useEffect(() => {
     // 1. 样式
     if (!document.getElementById('dify-bubble-style')) {
@@ -474,7 +474,7 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
         '#dify-chatbot-bubble-window{width:24rem!important;height:40rem!important}'
       document.head.appendChild(style)
     }
-    // 2. config（embed 脚本读取 window.difyChatbotConfig）
+    // 2. config
     ;(window as any).difyChatbotConfig = {
       token: 'uYxYNUj5uBiqYwhE',
       baseUrl: window.location.origin + '/dify-beta',
@@ -482,13 +482,18 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
       systemVariables: {},
       userVariables: {},
     }
-    // 3. 注入 embed script，id 必须与 token 一致（Dify embed 读自身 id）
+    // 3. 用 fetch 把脚本内容取回来当 inline script 执行
+    //    这样 document.currentScript 不为 null，Dify 能正确读到 id
     if (!document.getElementById('uYxYNUj5uBiqYwhE')) {
-      const s = document.createElement('script')
-      s.src = window.location.origin + '/dify-beta/embed.min.js'
-      s.id = 'uYxYNUj5uBiqYwhE'
-      s.async = true
-      document.head.appendChild(s)
+      fetch(window.location.origin + '/dify-beta/embed.min.js')
+        .then((r) => r.text())
+        .then((code) => {
+          const s = document.createElement('script')
+          s.id = 'uYxYNUj5uBiqYwhE'
+          s.textContent = code
+          document.head.appendChild(s)
+        })
+        .catch((e) => console.error('[Dify] embed load failed', e))
     }
   }, [])
 
