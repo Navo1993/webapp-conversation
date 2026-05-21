@@ -1016,13 +1016,16 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
       </section>
 
       {/* ============================================================
-          Dify 内嵌聊天机器人
+          Dify 内嵌聊天机器人 (Beta)
+          baseUrl / src 均走 /dify-beta 代理路径，
+          由 Vercel rewrites 转发到 http://159.75.185.246，
+          避免浏览器 Mixed Content 拦截。
       ============================================================ */}
       <Script id="dify-config" strategy="beforeInteractive">
         {`
           window.difyChatbotConfig = {
             token: 'uYxYNUj5uBiqYwhE',
-            baseUrl: 'http://159.75.185.246',
+            baseUrl: '/dify-beta',
             inputs: {},
             systemVariables: {},
             userVariables: {},
@@ -1030,7 +1033,7 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
         `}
       </Script>
       <Script
-        src="http://159.75.185.246/embed.min.js"
+        src="/dify-beta/embed.min.js"
         id="uYxYNUj5uBiqYwhE"
         strategy="afterInteractive"
         defer
