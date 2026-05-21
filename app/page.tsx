@@ -15,6 +15,8 @@ import {
   Activity, Database, Zap, Users,
 } from 'lucide-react'
 
+import Script from 'next/script'
+
 import type { IMainProps } from '@/app/components'
 import Main from '@/app/components'
 
@@ -1012,6 +1014,36 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
           </StaggerGrid>
         </div>
       </section>
+
+      {/* ============================================================
+          Dify 内嵌聊天机器人
+      ============================================================ */}
+      <Script id="dify-config" strategy="beforeInteractive">
+        {`
+          window.difyChatbotConfig = {
+            token: 'uYxYNUj5uBiqYwhE',
+            baseUrl: 'http://159.75.185.246',
+            inputs: {},
+            systemVariables: {},
+            userVariables: {},
+          }
+        `}
+      </Script>
+      <Script
+        src="http://159.75.185.246/embed.min.js"
+        id="uYxYNUj5uBiqYwhE"
+        strategy="afterInteractive"
+        defer
+      />
+      <style>{`
+        #dify-chatbot-bubble-button {
+          background-color: #0052D9 !important;
+        }
+        #dify-chatbot-bubble-window {
+          width: 24rem !important;
+          height: 40rem !important;
+        }
+      `}</style>
 
       {/* ============================================================
           页脚
