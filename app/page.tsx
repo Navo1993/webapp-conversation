@@ -1017,27 +1017,26 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
 
       {/* ============================================================
           Dify 内嵌聊天机器人 (Beta)
-          baseUrl / src 均走 /dify-beta 代理路径，
-          由 Vercel rewrites 转发到 http://159.75.185.246，
-          避免浏览器 Mixed Content 拦截。
+          config + embed 合并在同一脚本内顺序执行
+          /dify-beta/* 由 next.config.js rewrites 代理到
+          http://159.75.185.246，解决 Mixed Content 问题
       ============================================================ */}
-      <Script id="dify-config" strategy="beforeInteractive">
-        {`
-          window.difyChatbotConfig = {
-            token: 'uYxYNUj5uBiqYwhE',
-            baseUrl: '/dify-beta',
-            inputs: {},
-            systemVariables: {},
-            userVariables: {},
-          }
-        `}
-      </Script>
-      <Script
-        src="/dify-beta/embed.min.js"
-        id="uYxYNUj5uBiqYwhE"
-        strategy="afterInteractive"
-        defer
-      />
+      <Script id="dify-chatbot" strategy="afterInteractive">{`
+        window.difyChatbotConfig = {
+          token: 'uYxYNUj5uBiqYwhE',
+          baseUrl: window.location.origin + '/dify-beta',
+          inputs: {},
+          systemVariables: {},
+          userVariables: {},
+        };
+        (function() {
+          var s = document.createElement('script');
+          s.src = window.location.origin + '/dify-beta/embed.min.js';
+          s.id = 'uYxYNUj5uBiqYwhE';
+          s.defer = true;
+          document.head.appendChild(s);
+        })();
+      \`}</Script>
       <style>{`
         #dify-chatbot-bubble-button {
           background-color: #0052D9 !important;
