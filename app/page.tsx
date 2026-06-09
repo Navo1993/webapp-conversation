@@ -438,18 +438,11 @@ const StatCard = ({ icon, value, suffix, prefix, label }: {
   const { val, ref } = useCountUp(value, 1.8)
   return (
     <motion.div ref={ref} variants={staggerItem}
-      className="group flex flex-col items-center gap-4 px-6 py-10 rounded-2xl
-        bg-white/[0.04] hover:bg-white/[0.07]
-        border border-white/[0.06] hover:border-[#0052D9]/25
-        transition-all duration-500 cursor-default
-        hover:shadow-[0_8px_40px_rgba(0,82,217,0.15)]"
+      className="group flex flex-col items-center gap-4 px-6 py-10 rounded-2xl bg-white/[0.04] hover:bg-white/[0.07] border border-white/[0.06] hover:border-[#0052D9]/25 transition-all duration-500 cursor-default hover:shadow-[0_8px_40px_rgba(0,82,217,0.15)]"
     >
       <motion.div
         whileHover={{ rotate: 10, scale: 1.1 }}
-        className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#0052D9]/25 to-[#0052D9]/10
-          text-[#6baeff] flex items-center justify-center
-          group-hover:from-[#0052D9]/40 group-hover:to-[#0052D9]/20 group-hover:text-white
-          transition-all duration-400"
+        className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#0052D9]/25 to-[#0052D9]/10 text-[#6baeff] flex items-center justify-center group-hover:from-[#0052D9]/40 group-hover:to-[#0052D9]/20 group-hover:text-white transition-all duration-400"
       >
         {React.cloneElement(icon as React.ReactElement, { size: 20 })}
       </motion.div>
@@ -864,11 +857,7 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
           {t.features.list.map((f, i) => (
             <motion.div key={i} variants={staggerItem}>
               <TiltCard intensity={6} className="group h-full">
-                <div className="relative h-full p-10 rounded-2xl
-                  bg-white border border-[#E2E8F0]
-                  hover:border-[#0052D9]/20 hover:bg-white
-                  hover:shadow-[0_16px_60px_rgba(0,82,217,0.08)]
-                  transition-all duration-500 cursor-pointer overflow-hidden"
+                <div className="relative h-full p-10 rounded-2xl bg-white border border-[#E2E8F0] hover:border-[#0052D9]/20 hover:bg-white hover:shadow-[0_16px_60px_rgba(0,82,217,0.08)] transition-all duration-500 cursor-pointer overflow-hidden"
                 >
                   {/* 顶部渐变条 */}
                   <div className="absolute top-0 left-8 right-8 h-[2px] rounded-full bg-gradient-to-r from-transparent via-[#0052D9]/0 to-transparent group-hover:via-[#0052D9]/40 transition-all duration-700" />
@@ -881,10 +870,7 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
                   <motion.div
                     whileHover={{ y: -4, rotate: 8 }}
                     transition={{ type: 'spring', stiffness: 300, damping: 18 }}
-                    className="w-14 h-14 bg-gradient-to-br from-[#EDF2FD] to-[#F8FAFC] rounded-2xl flex items-center justify-center mb-7
-                      text-[#0052D9] group-hover:bg-gradient-to-br group-hover:from-[#0052D9] group-hover:to-[#2563EB]
-                      group-hover:text-white group-hover:shadow-[0_8px_30px_rgba(0,82,217,0.3)]
-                      transition-all duration-400 border border-[#E2E8F0] group-hover:border-transparent"
+                    className="w-14 h-14 bg-gradient-to-br from-[#EDF2FD] to-[#F8FAFC] rounded-2xl flex items-center justify-center mb-7 text-[#0052D9] group-hover:bg-gradient-to-br group-hover:from-[#0052D9] group-hover:to-[#2563EB] group-hover:text-white group-hover:shadow-[0_8px_30px_rgba(0,82,217,0.3)] transition-all duration-400 border border-[#E2E8F0] group-hover:border-transparent"
                     style={{ transformStyle: 'preserve-3d', translateZ: 25 }}
                   >
                     {React.cloneElement(f.icon as React.ReactElement, { size: 22 })}
