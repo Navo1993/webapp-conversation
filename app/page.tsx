@@ -12,7 +12,8 @@ import {
 import {
   Globe, ChevronRight, Monitor, Cpu, ShieldCheck,
   FileText, Lock, ArrowRight, Calendar, ArrowLeft,
-  Activity, Database, Zap, Users,
+  Activity, Database, Zap, Users, Sparkles, ArrowUpRight,
+  Layers, Wifi, Radio, BarChart3, Gauge, BrainCircuit,
 } from 'lucide-react'
 
 import Script from 'next/script'
@@ -21,7 +22,7 @@ import type { IMainProps } from '@/app/components'
 import Main from '@/app/components'
 
 /* ================================================================
-   多语言内容 (unchanged from previous version)
+   多语言内容
 ================================================================ */
 const content = {
   zh_cn: {
@@ -61,19 +62,19 @@ const content = {
     business: {
       label: '核心平台',
       tabs: [
-        { id: 'iot', title: '连接设备与感知', sub: '构建城市垂直交通的神经网络', cards: [{ label: 'IoT 传感器接入' }, { label: '数字孪生平台' }, { label: '实时运行监控' }, { label: '边缘计算节点' }] },
-        { id: 'ai', title: '连接 AI 与决策', sub: '让每一行日志都产生价值', cards: [{ label: 'Dify 智能引擎' }, { label: 'RAG 知识库' }, { label: '故障预测模型' }, { label: '智能诊断报告' }] },
-        { id: 'safety', title: '连接人与安全', sub: '将风险消灭在萌芽状态', cards: [{ label: '行为识别系统' }, { label: '主动预警推送' }, { label: '维保工单流程' }, { label: '合规存档管理' }] },
+        { id: 'iot', title: '连接设备与感知', sub: '构建城市垂直交通的神经网络', cards: [{ label: 'IoT 传感器接入', icon: <Radio /> }, { label: '数字孪生平台', icon: <Layers /> }, { label: '实时运行监控', icon: <BarChart3 /> }, { label: '边缘计算节点', icon: <Gauge /> }] },
+        { id: 'ai', title: '连接 AI 与决策', sub: '让每一行日志都产生价值', cards: [{ label: 'Dify 智能引擎', icon: <BrainCircuit /> }, { label: 'RAG 知识库', icon: <Database /> }, { label: '故障预测模型', icon: <Activity /> }, { label: '智能诊断报告', icon: <FileText /> }] },
+        { id: 'safety', title: '连接人与安全', sub: '将风险消灭在萌芽状态', cards: [{ label: '行为识别系统', icon: <Monitor /> }, { label: '主动预警推送', icon: <Zap /> }, { label: '维保工单流程', icon: <FileText /> }, { label: '合规存档管理', icon: <Lock /> }] },
       ],
     },
     esg: { eyebrow: '责任与信任', title: '连接责任\n与未来', sub: '以技术促进城市安全，构建可持续的智慧楼宇生态，让每座建筑都能被更安全地守护。' },
-    entrances: [{ label: '解决方案' }, { label: '技术生态' }, { label: '办公据点' }],
+    entrances: [{ label: '解决方案', icon: <Sparkles /> }, { label: '技术生态', icon: <Cpu /> }, { label: '办公据点', icon: <Globe /> }],
     features: {
       title: '重新定义电梯安全',
       list: [
         { icon: <Cpu />, t: '秒级响应', d: '基于 Dify 核心，故障码查询与解决方案生成仅在瞬息之间。', accent: '#0052D9' },
-        { icon: <Monitor />, t: '数字孪生', d: '实时同步电梯运行参数，在虚拟空间构建精准的设备状态。', accent: '#0066ff' },
-        { icon: <ShieldCheck />, t: '主动防御', d: '智能识别不安全乘梯行为，将事故隐患消灭在萌芽状态。', accent: '#0080ff' },
+        { icon: <Monitor />, t: '数字孪生', d: '实时同步电梯运行参数，在虚拟空间构建精准的设备状态。', accent: '#2563EB' },
+        { icon: <ShieldCheck />, t: '主动防御', d: '智能识别不安全乘梯行为，将事故隐患消灭在萌芽状态。', accent: '#3B82F6' },
       ],
     },
     news: {
@@ -110,19 +111,19 @@ const content = {
     business: {
       label: '核心平台',
       tabs: [
-        { id: 'iot', title: '連接設備與感知', sub: '構建城市垂直交通的神經網絡', cards: [{ label: 'IoT 傳感器接入' }, { label: '數字孿生平台' }, { label: '實時運行監控' }, { label: '邊緣計算節點' }] },
-        { id: 'ai', title: '連接 AI 與決策', sub: '讓每一行日誌都產生價值', cards: [{ label: 'Dify 智能引擎' }, { label: 'RAG 知識庫' }, { label: '故障預測模型' }, { label: '智能診斷報告' }] },
-        { id: 'safety', title: '連接人與安全', sub: '將風險消滅在萌芽狀態', cards: [{ label: '行為識別系統' }, { label: '主動預警推送' }, { label: '維保工單流程' }, { label: '合規存檔管理' }] },
+        { id: 'iot', title: '連接設備與感知', sub: '構建城市垂直交通的神經網絡', cards: [{ label: 'IoT 傳感器接入', icon: <Radio /> }, { label: '數字孿生平台', icon: <Layers /> }, { label: '實時運行監控', icon: <BarChart3 /> }, { label: '邊緣計算節點', icon: <Gauge /> }] },
+        { id: 'ai', title: '連接 AI 與決策', sub: '讓每一行日誌都產生價值', cards: [{ label: 'Dify 智能引擎', icon: <BrainCircuit /> }, { label: 'RAG 知識庫', icon: <Database /> }, { label: '故障預測模型', icon: <Activity /> }, { label: '智能診斷報告', icon: <FileText /> }] },
+        { id: 'safety', title: '連接人與安全', sub: '將風險消滅在萌芽狀態', cards: [{ label: '行為識別系統', icon: <Monitor /> }, { label: '主動預警推送', icon: <Zap /> }, { label: '維保工單流程', icon: <FileText /> }, { label: '合規存檔管理', icon: <Lock /> }] },
       ],
     },
     esg: { eyebrow: '責任與信任', title: '連接責任\n與未來', sub: '以技術促進城市安全，構建可持續的智慧樓宇生態。' },
-    entrances: [{ label: '解決方案' }, { label: '技術生態' }, { label: '辦公據點' }],
+    entrances: [{ label: '解決方案', icon: <Sparkles /> }, { label: '技術生態', icon: <Cpu /> }, { label: '辦公據點', icon: <Globe /> }],
     features: {
       title: '重新定義電梯安全',
       list: [
         { icon: <Cpu />, t: '秒級響應', d: '基於 Dify 核心，故障碼查詢與解決方案生成僅在瞬息之間。', accent: '#0052D9' },
-        { icon: <Monitor />, t: '數字孿生', d: '實時同步電梯運行參數，在虛擬空間構建精準的設備狀態。', accent: '#0066ff' },
-        { icon: <ShieldCheck />, t: '主動防禦', d: '智能識別不安全乘梯行為，將事故隱患消滅在萌芽狀態。', accent: '#0080ff' },
+        { icon: <Monitor />, t: '數字孿生', d: '實時同步電梯運行參數，在虛擬空間構建精準的設備狀態。', accent: '#2563EB' },
+        { icon: <ShieldCheck />, t: '主動防禦', d: '智能識別不安全乘梯行為，將事故隱患消滅在萌芽狀態。', accent: '#3B82F6' },
       ],
     },
     news: {
@@ -141,6 +142,8 @@ const content = {
   en: {
     nav: [
       { id: 'intro', label: 'About', columns: [{ title: 'Project', links: ['Introduction', 'Evolution', 'Canton Fair'] }, { title: 'Lab', links: ['Maintenance Challenge'] }, { title: 'Team', links: ['Architecture', 'Partners', 'Join Us'] }] },
+      { id: 'tech', label: 'Tech', columns: [{ title: 'AI Engine', links: ['Dify AI Training', 'Fault Prediction', 'RAG Knowledge Base'] }, { title: 'IoT Integration', links: ['Monarch Protocol', 'Sensor Fusion', 'Digital Upgrade'] }] },
+      { id: 'news', label: 'News', columns: [{ title: 'Latest', links: ['Releases', 'Industry News', 'Expo Recap'] }] },
     ],
     common: { start: 'Get Started', langName: 'English', more: 'Learn More', learnMore: 'Learn More' },
     carousel: [
@@ -157,19 +160,19 @@ const content = {
     business: {
       label: 'Core Platform',
       tabs: [
-        { id: 'iot', title: 'Connect Devices & Sensing', sub: 'Building the neural network of urban vertical transit', cards: [{ label: 'IoT Sensor Integration' }, { label: 'Digital Twin Platform' }, { label: 'Real-time Monitoring' }, { label: 'Edge Computing Nodes' }] },
-        { id: 'ai', title: 'Connect AI & Decision', sub: 'Making every log line count', cards: [{ label: 'Dify AI Engine' }, { label: 'RAG Knowledge Base' }, { label: 'Fault Prediction Model' }, { label: 'Smart Diagnostic Reports' }] },
-        { id: 'safety', title: 'Connect People & Safety', sub: 'Eliminating risk before it escalates', cards: [{ label: 'Behavior Detection' }, { label: 'Proactive Alert System' }, { label: 'Maintenance Workflow' }, { label: 'Compliance Archiving' }] },
+        { id: 'iot', title: 'Connect Devices & Sensing', sub: 'Building the neural network of urban vertical transit', cards: [{ label: 'IoT Sensor Integration', icon: <Radio /> }, { label: 'Digital Twin Platform', icon: <Layers /> }, { label: 'Real-time Monitoring', icon: <BarChart3 /> }, { label: 'Edge Computing Nodes', icon: <Gauge /> }] },
+        { id: 'ai', title: 'Connect AI & Decision', sub: 'Making every log line count', cards: [{ label: 'Dify AI Engine', icon: <BrainCircuit /> }, { label: 'RAG Knowledge Base', icon: <Database /> }, { label: 'Fault Prediction Model', icon: <Activity /> }, { label: 'Smart Diagnostic Reports', icon: <FileText /> }] },
+        { id: 'safety', title: 'Connect People & Safety', sub: 'Eliminating risk before it escalates', cards: [{ label: 'Behavior Detection', icon: <Monitor /> }, { label: 'Proactive Alert System', icon: <Zap /> }, { label: 'Maintenance Workflow', icon: <FileText /> }, { label: 'Compliance Archiving', icon: <Lock /> }] },
       ],
     },
     esg: { eyebrow: 'Responsibility & Trust', title: 'Connecting\nResponsibility & Future', sub: 'Harnessing technology to advance urban safety and build a sustainable smart building ecosystem.' },
-    entrances: [{ label: 'Solutions' }, { label: 'Ecosystem' }, { label: 'Locations' }],
+    entrances: [{ label: 'Solutions', icon: <Sparkles /> }, { label: 'Ecosystem', icon: <Cpu /> }, { label: 'Locations', icon: <Globe /> }],
     features: {
       title: 'Redefining Safety',
       list: [
         { icon: <Cpu />, t: 'Instant Response', d: 'Fault queries and solutions generated in milliseconds via Dify.', accent: '#0052D9' },
-        { icon: <Monitor />, t: 'Digital Twin', d: 'Real-time synchronization of parameters for precise status mapping.', accent: '#0066ff' },
-        { icon: <ShieldCheck />, t: 'Proactive Defense', d: 'AI-driven identification of unsafe behaviors to prevent risks.', accent: '#0080ff' },
+        { icon: <Monitor />, t: 'Digital Twin', d: 'Real-time synchronization of parameters for precise status mapping.', accent: '#2563EB' },
+        { icon: <ShieldCheck />, t: 'Proactive Defense', d: 'AI-driven identification of unsafe behaviors to prevent risks.', accent: '#3B82F6' },
       ],
     },
     news: {
@@ -192,17 +195,17 @@ type LangType = 'zh_cn' | 'zh_tw' | 'en'
    动画辅助 Hook
 ================================================================ */
 
-/** 数字滚动计数器 */
-function useCountUp(target: number, duration = 1.8) {
+/** 数字滚动计数器 — 腾讯风格缓动 */
+function useCountUp(target: number, duration = 2.0) {
   const [val, setVal] = useState(0)
   const ref = useRef(null)
-  const inView = useInView(ref, { once: true, margin: '-40px' })
+  const inView = useInView(ref, { once: true, margin: '-60px' })
 
   useEffect(() => {
     if (!inView) return
     const controls = animate(0, target, {
       duration,
-      ease: [0.22, 1, 0.36, 1],
+      ease: [0.25, 0.46, 0.45, 0.94],
       onUpdate: (v) => setVal(target % 1 !== 0 ? +v.toFixed(1) : Math.round(v)),
     })
     return controls.stop
@@ -211,17 +214,15 @@ function useCountUp(target: number, duration = 1.8) {
   return { val, ref }
 }
 
-/** 3D 倾斜卡片 */
+/** 3D 倾斜卡片 — 腾讯风格柔和倾斜 */
 const TiltCard = ({
-  children, className = '', intensity = 10,
+  children, className = '', intensity = 8,
 }: { children: React.ReactNode; className?: string; intensity?: number }) => {
   const ref = useRef<HTMLDivElement>(null)
   const x = useMotionValue(0)
   const y = useMotionValue(0)
-  const rotateX = useSpring(useTransform(y, [-0.5, 0.5], [intensity, -intensity]), { stiffness: 260, damping: 28 })
-  const rotateY = useSpring(useTransform(x, [-0.5, 0.5], [-intensity, intensity]), { stiffness: 260, damping: 28 })
-  const glowX = useTransform(x, [-0.5, 0.5], ['30%', '70%'])
-  const glowY = useTransform(y, [-0.5, 0.5], ['30%', '70%'])
+  const rotateX = useSpring(useTransform(y, [-0.5, 0.5], [intensity, -intensity]), { stiffness: 200, damping: 24 })
+  const rotateY = useSpring(useTransform(x, [-0.5, 0.5], [-intensity, intensity]), { stiffness: 200, damping: 24 })
 
   const handleMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!ref.current) return
@@ -233,105 +234,118 @@ const TiltCard = ({
 
   return (
     <motion.div ref={ref} onMouseMove={handleMove} onMouseLeave={handleLeave}
-      style={{ rotateX, rotateY, transformStyle: 'preserve-3d', transformPerspective: 800 }}
+      style={{ rotateX, rotateY, transformStyle: 'preserve-3d', perspective: 1000 }}
       className={`relative ${className}`}
     >
-      {/* 动态光晕 */}
-      <motion.div className="pointer-events-none absolute inset-0 rounded-[inherit] opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-        style={{ background: useTransform([glowX, glowY], ([gx, gy]) => `radial-gradient(circle at ${gx} ${gy}, rgba(0,82,217,0.12) 0%, transparent 65%)`) }}
-      />
       {children}
     </motion.div>
   )
 }
 
 /* ================================================================
-   SVG 占位图
+   SVG 背景视觉 — 腾讯科技感深色背景
 ================================================================ */
 const CarouselBg = ({ visual }: { visual: 'iot' | 'ai' | 'expo' }) => {
   if (visual === 'iot') return (
-    <div className="absolute inset-0">
-      <svg viewBox="0 0 1400 800" className="w-full h-full" preserveAspectRatio="xMidYMid slice">
-        <defs>
-          <radialGradient id="cg1" cx="65%" cy="50%" r="65%">
-            <stop offset="0%" stopColor="#162654" /><stop offset="100%" stopColor="#060a14" />
-          </radialGradient>
-        </defs>
-        <rect width="1400" height="800" fill="url(#cg1)" />
-        {Array.from({ length: 22 }).map((_, i) => <rect key={i} x={i * 64} y="0" width="1.5" height="800" fill="white" opacity="0.025" />)}
-        <rect x="680" y="60" width="240" height="680" rx="5" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="1.5" />
-        <rect x="700" y="130" width="200" height="150" rx="3" fill="rgba(0,82,217,0.18)" stroke="rgba(0,82,217,0.45)" strokeWidth="1" />
-        {[[360,190],[990,280],[310,470],[1060,510],[560,590]].map(([x,y],i) => (
+    <div className="absolute inset-0 overflow-hidden">
+      {/* 腾讯蓝深色渐变 */}
+      <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, #060b1a 0%, #0a1430 30%, #0d1a3e 60%, #0f2048 100%)' }} />
+      {/* 网格 */}
+      <div className="absolute inset-0 opacity-[0.03]"
+        style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px)', backgroundSize: '80px 80px' }} />
+      {/* 发光圆 */}
+      <div className="absolute top-[20%] right-[15%] w-[500px] h-[500px] rounded-full blur-[120px] opacity-20" style={{ background: 'radial-gradient(circle, #0052D9, transparent)' }} />
+      <div className="absolute bottom-[10%] left-[10%] w-[350px] h-[350px] rounded-full blur-[100px] opacity-10" style={{ background: 'radial-gradient(circle, #3B82F6, transparent)' }} />
+      {/* IoT 节点连线 */}
+      <svg viewBox="0 0 1400 800" className="absolute inset-0 w-full h-full" preserveAspectRatio="xMidYMid slice">
+        {[[320,160],[960,240],[280,440],[1020,490],[540,580],[760,200],[680,420],[900,350]].map(([x,y],i) => (
           <g key={i}>
-            <circle cx={x} cy={y} r="5" fill="#0052D9" opacity="0.9" />
-            <circle cx={x} cy={y} r="18" fill="none" stroke="#0052D9" strokeWidth="1" opacity="0.3" />
-            <circle cx={x} cy={y} r="36" fill="none" stroke="#0052D9" strokeWidth="0.5" opacity="0.15" />
+            <motion.circle cx={x} cy={y} r="4" fill="#0052D9" opacity="0.9"
+              animate={{ opacity: [0.4, 0.9, 0.4] }} transition={{ duration: 2 + i * 0.3, repeat: Infinity, ease: 'easeInOut' }} />
+            <circle cx={x} cy={y} r="16" fill="none" stroke="#0052D9" strokeWidth="0.8" opacity="0.25" />
+            <circle cx={x} cy={y} r="32" fill="none" stroke="#0052D9" strokeWidth="0.4" opacity="0.1" />
           </g>
         ))}
-        {[[360,190,700,200],[990,280,880,200],[310,470,700,360],[1060,510,880,360],[560,590,700,560]].map(([x1,y1,x2,y2],i) => (
-          <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="rgba(0,82,217,0.2)" strokeWidth="1" strokeDasharray="5 4" />
+        {[[320,160,680,420],[320,160,760,200],[960,240,680,420],[960,240,900,350],[280,440,680,420],[1020,490,900,350],[540,580,680,420]].map(([x1,y1,x2,y2],i) => (
+          <motion.line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="rgba(0,82,217,0.12)" strokeWidth="0.8" strokeDasharray="4 4"
+            animate={{ strokeDashoffset: [0, -16] }} transition={{ duration: 3, repeat: Infinity, ease: 'linear' }} />
         ))}
       </svg>
-      <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/35 to-transparent" />
     </div>
   )
   if (visual === 'ai') return (
-    <div className="absolute inset-0">
-      <svg viewBox="0 0 1400 800" className="w-full h-full" preserveAspectRatio="xMidYMid slice">
-        <defs>
-          <radialGradient id="cg2" cx="55%" cy="55%" r="65%">
-            <stop offset="0%" stopColor="#120c28" /><stop offset="100%" stopColor="#040610" />
-          </radialGradient>
-        </defs>
-        <rect width="1400" height="800" fill="url(#cg2)" />
-        {[[180,180],[180,400],[180,620],[460,130],[460,340],[460,560],[740,240],[740,460],[1020,350],[1220,350]].map(([x,y],i) => (
-          <circle key={i} cx={x} cy={y} r={i>7?10:6} fill={i>7?'#0052D9':'rgba(80,120,255,0.6)'} />
+    <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, #0a0820 0%, #0e1035 30%, #111845 60%, #0f1838 100%)' }} />
+      <div className="absolute inset-0 opacity-[0.02]"
+        style={{ backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.3) 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
+      <div className="absolute top-[30%] right-[20%] w-[450px] h-[450px] rounded-full blur-[140px] opacity-15" style={{ background: 'radial-gradient(circle, #7C3AED, transparent)' }} />
+      <div className="absolute bottom-[20%] left-[25%] w-[300px] h-[300px] rounded-full blur-[100px] opacity-12" style={{ background: 'radial-gradient(circle, #0052D9, transparent)' }} />
+      {/* 神经网络 */}
+      <svg viewBox="0 0 1400 800" className="absolute inset-0 w-full h-full" preserveAspectRatio="xMidYMid slice">
+        {[[160,180],[160,400],[160,620],[440,140],[440,360],[440,580],[720,250],[720,470],[1000,340],[1220,340]].map(([x,y],i) => (
+          <motion.circle key={i} cx={x} cy={y} r={i>7?7:5} fill={i>7?'#0052D9':'rgba(99,102,241,0.5)'}
+            animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 2.5 + i * 0.2, repeat: Infinity, ease: 'easeInOut' }} />
         ))}
-        {[[180,180,460,130],[180,180,460,340],[180,400,460,130],[180,400,460,340],[180,400,460,560],[180,620,460,340],[180,620,460,560],[460,130,740,240],[460,340,740,240],[460,340,740,460],[460,560,740,460],[740,240,1020,350],[740,460,1020,350],[1020,350,1220,350]].map(([x1,y1,x2,y2],i) => (
-          <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="rgba(0,82,217,0.15)" strokeWidth="1" />
+        {[[160,180,440,140],[160,180,440,360],[160,400,440,140],[160,400,440,360],[160,400,440,580],[160,620,440,360],[160,620,440,580],[440,140,720,250],[440,360,720,250],[440,360,720,470],[440,580,720,470],[720,250,1000,340],[720,470,1000,340],[1000,340,1220,340]].map(([x1,y1,x2,y2],i) => (
+          <motion.line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="rgba(0,82,217,0.1)" strokeWidth="0.8"
+            animate={{ opacity: [0.06, 0.15, 0.06] }} transition={{ duration: 3 + i * 0.15, repeat: Infinity, ease: 'easeInOut' }} />
         ))}
-        <circle cx="1020" cy="350" r="80" fill="none" stroke="rgba(0,82,217,0.18)" strokeWidth="2" />
-        <circle cx="1020" cy="350" r="140" fill="none" stroke="rgba(0,82,217,0.08)" strokeWidth="1.5" />
+        <circle cx="1000" cy="340" r="70" fill="none" stroke="rgba(0,82,217,0.15)" strokeWidth="1.5" />
+        <circle cx="1000" cy="340" r="120" fill="none" stroke="rgba(0,82,217,0.06)" strokeWidth="1" />
       </svg>
-      <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/35 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent" />
     </div>
   )
   return (
-    <div className="absolute inset-0">
-      <svg viewBox="0 0 1400 800" className="w-full h-full" preserveAspectRatio="xMidYMid slice">
-        <defs>
-          <linearGradient id="cg3" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#0c1520" /><stop offset="100%" stopColor="#081230" />
-          </linearGradient>
-        </defs>
-        <rect width="1400" height="800" fill="url(#cg3)" />
-        {[[980,700,65,280],[1055,700,52,240],[1125,700,72,310],[1220,700,58,195],[1295,700,48,270],[870,700,60,175],[790,700,75,235]].map(([x,y,w,h],i) => (
-          <rect key={i} x={x} y={y-h} width={w} height={h} fill={`rgba(255,255,255,${0.04+i*0.007})`} rx="2" />
+    <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, #060b18 0%, #0c1a30 40%, #081535 100%)' }} />
+      <div className="absolute inset-0 opacity-[0.02]"
+        style={{ backgroundImage: 'linear-gradient(45deg, rgba(255,255,255,0.2) 1px, transparent 1px), linear-gradient(-45deg, rgba(255,255,255,0.15) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
+      <div className="absolute top-[10%] right-[10%] w-[400px] h-[400px] rounded-full blur-[130px] opacity-12" style={{ background: 'radial-gradient(circle, #F59E0B, transparent)' }} />
+      <div className="absolute bottom-[15%] left-[20%] w-[350px] h-[350px] rounded-full blur-[100px] opacity-15" style={{ background: 'radial-gradient(circle, #0052D9, transparent)' }} />
+      <svg viewBox="0 0 1400 800" className="absolute inset-0 w-full h-full" preserveAspectRatio="xMidYMid slice">
+        {/* 城市天际线 */}
+        {[[980,700,55,260],[1050,700,48,220],[1110,700,65,290],[1200,700,52,180],[1280,700,44,250],[860,700,58,170],[780,700,70,210]].map(([x,y,w,h],i) => (
+          <rect key={i} x={x} y={y-h} width={w} height={h} fill={`rgba(255,255,255,${0.03+i*0.006})`} rx="2" />
         ))}
-        {Array.from({ length: 24 }).map((_, i) => (
-          <circle key={i} cx={840+(i%6)*82+Math.sin(i)*18} cy={585-Math.floor(i/6)*38} r="1.5" fill="rgba(255,200,100,0.32)" />
+        {/* 灯光 */}
+        {Array.from({ length: 20 }).map((_, i) => (
+          <motion.circle key={i} cx={830+(i%5)*78+Math.sin(i)*16} cy={580-Math.floor(i/5)*35} r="1.2" fill="rgba(255,200,100,0.25)"
+            animate={{ opacity: [0.1, 0.35, 0.1] }} transition={{ duration: 2 + (i % 3), repeat: Infinity, ease: 'easeInOut', delay: i * 0.1 }} />
         ))}
-        <rect x="180" y="380" width="480" height="320" rx="8" fill="rgba(0,82,217,0.07)" stroke="rgba(0,82,217,0.2)" strokeWidth="1" />
-        <text x="420" y="555" textAnchor="middle" fill="rgba(255,255,255,0.05)" fontSize="56" fontWeight="900" fontFamily="sans-serif">EXPO</text>
+        <rect x="160" y="370" width="500" height="340" rx="10" fill="rgba(0,82,217,0.04)" stroke="rgba(0,82,217,0.15)" strokeWidth="1" />
       </svg>
-      <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/35 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent" />
     </div>
   )
 }
 
-const BusinessCardBg = ({ label, idx }: { label: string; idx: number }) => {
-  const palettes = [['#0a2050','#163880'],['#0e1e3a','#0a3068'],['#18103a','#2a1a5c'],['#0a2020','#0e3434']]
+const BusinessCardBg = ({ label, icon, idx }: { label: string; icon: React.ReactNode; idx: number }) => {
+  const palettes = [
+    ['#0c1d40', '#14306e'],
+    ['#0d1b38', '#0f2a5c'],
+    ['#141035', '#221855'],
+    ['#0a1c2c', '#0d2d45'],
+  ]
   const [c1, c2] = palettes[idx % 4]
   return (
-    <div className="relative w-full h-full overflow-hidden" style={{ background: `linear-gradient(135deg,${c1},${c2})` }}>
-      <svg viewBox="0 0 400 300" className="absolute inset-0 w-full h-full opacity-12" preserveAspectRatio="xMidYMid slice">
-        <circle cx="320" cy="60" r="90" fill="none" stroke="white" strokeWidth="1" />
-        <circle cx="320" cy="60" r="145" fill="none" stroke="white" strokeWidth="0.5" />
-        <line x1="0" y1="150" x2="400" y2="150" stroke="white" strokeWidth="0.5" strokeDasharray="4 4" />
-        <line x1="200" y1="0" x2="200" y2="300" stroke="white" strokeWidth="0.5" strokeDasharray="4 4" />
-      </svg>
-      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/55 to-transparent p-4">
-        <span className="text-white/88 text-[13px] font-bold">{label}</span>
+    <div className="relative w-full h-full overflow-hidden group" style={{ background: `linear-gradient(135deg,${c1},${c2})` }}>
+      {/* 网格纹理 */}
+      <div className="absolute inset-0 opacity-[0.04]"
+        style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px)', backgroundSize: '50px 50px' }} />
+      {/* 装饰圆 */}
+      <div className="absolute top-0 right-0 w-40 h-40 rounded-full blur-[60px] opacity-20 group-hover:opacity-30 transition-opacity duration-500"
+        style={{ background: 'radial-gradient(circle, #0052D9, transparent)', transform: 'translate(40%, -40%)' }} />
+      {/* 图标 */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-8 group-hover:opacity-15 transition-opacity duration-400">
+        {icon && React.cloneElement(icon as React.ReactElement, { size: 48, className: 'text-white' })}
+      </div>
+      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent p-5">
+        <span className="text-white/90 text-[14px] font-bold tracking-tight">{label}</span>
+        <div className="mt-2 flex items-center gap-1 text-[#6baeff] text-[11px] font-bold opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-300">
+          <span>了解更多</span><ArrowUpRight size={11} />
+        </div>
       </div>
     </div>
   )
@@ -339,54 +353,61 @@ const BusinessCardBg = ({ label, idx }: { label: string; idx: number }) => {
 
 const NewsPlaceholder = ({ type, className = '' }: { type: string; className?: string }) => {
   const cfgs: Record<string, { from: string; to: string; el: React.ReactNode }> = {
-    expo: { from: '#1e2535', to: '#111827', el: <svg viewBox="0 0 400 240" className="w-full h-full opacity-18"><rect x="40" y="60" width="80" height="120" rx="4" fill="white" /><rect x="160" y="40" width="80" height="140" rx="4" fill="white" /><rect x="280" y="70" width="80" height="110" rx="4" fill="white" /><line x1="0" y1="200" x2="400" y2="200" stroke="white" strokeWidth="2" /></svg> },
-    data: { from: '#0c1e4a', to: '#0e1830', el: <svg viewBox="0 0 400 240" className="w-full h-full opacity-22"><polyline points="20,180 80,100 140,130 200,70 260,110 320,60 380,90" fill="none" stroke="white" strokeWidth="2" />{[80,140,200,260,320].map((x,i)=><circle key={i} cx={x} cy={[100,130,70,110,60][i]} r="5" fill="white"/>)}</svg> },
-    ai: { from: '#1a0838', to: '#180840', el: <svg viewBox="0 0 400 240" className="w-full h-full opacity-18"><circle cx="200" cy="120" r="70" fill="none" stroke="white" strokeWidth="1.5"/><circle cx="200" cy="120" r="45" fill="none" stroke="white" strokeWidth="1"/><circle cx="200" cy="120" r="20" fill="white" opacity="0.3"/></svg> },
+    expo: { from: '#1a2135', to: '#0f1525', el: <svg viewBox="0 0 400 240" className="w-full h-full opacity-15"><rect x="40" y="60" width="70" height="120" rx="4" fill="white" /><rect x="150" y="40" width="70" height="140" rx="4" fill="white" /><rect x="260" y="70" width="70" height="110" rx="4" fill="white" /><line x1="0" y1="200" x2="400" y2="200" stroke="white" strokeWidth="2" /></svg> },
+    data: { from: '#0c1e45', to: '#0d1630', el: <svg viewBox="0 0 400 240" className="w-full h-full opacity-18"><polyline points="20,180 80,100 140,130 200,70 260,110 320,60 380,90" fill="none" stroke="white" strokeWidth="2" />{[80,140,200,260,320].map((x,i)=><circle key={i} cx={x} cy={[100,130,70,110,60][i]} r="4" fill="white"/>)}</svg> },
+    ai: { from: '#180838', to: '#15083a', el: <svg viewBox="0 0 400 240" className="w-full h-full opacity-15"><circle cx="200" cy="120" r="65" fill="none" stroke="white" strokeWidth="1.5"/><circle cx="200" cy="120" r="40" fill="none" stroke="white" strokeWidth="1"/><circle cx="200" cy="120" r="18" fill="white" opacity="0.25"/></svg> },
   }
   const cfg = cfgs[type] || cfgs.expo
   return (
-    <div className={`flex items-center justify-center overflow-hidden ${className}`}
+    <div className={`relative flex items-center justify-center overflow-hidden ${className}`}
       style={{ background: `linear-gradient(135deg,${cfg.from},${cfg.to})` }}>
       {cfg.el}
+      {/* hover 渐变遮罩 */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400" />
     </div>
   )
 }
 
 const EsgPlaceholder = () => (
-  <div className="w-full h-full relative overflow-hidden bg-gradient-to-br from-slate-100 via-blue-50 to-slate-200">
-    <svg viewBox="0 0 600 700" className="absolute inset-0 w-full h-full opacity-50" preserveAspectRatio="xMidYMid slice">
-      <rect x="140" y="190" width="130" height="480" rx="4" fill="#b8ccee" opacity="0.6" />
-      <rect x="290" y="100" width="170" height="570" rx="4" fill="#c0d4f0" opacity="0.7" />
-      <rect x="480" y="240" width="100" height="430" rx="4" fill="#aabce8" opacity="0.5" />
-      {Array.from({length:8}).map((_,row)=>[160,308,495].map((x,col)=>(
-        <rect key={`${row}-${col}`} x={x} y={230+row*52} width={col===1?32:22} height={22} rx="2" fill="rgba(0,82,217,0.12)" />
+  <div className="w-full h-full relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #f0f4ff 0%, #e8efff 30%, #dce6fc 60%, #f5f7ff 100%)' }}>
+    <svg viewBox="0 0 600 700" className="absolute inset-0 w-full h-full opacity-40" preserveAspectRatio="xMidYMid slice">
+      <rect x="140" y="200" width="130" height="460" rx="4" fill="#b8ccee" opacity="0.6" />
+      <rect x="290" y="110" width="170" height="550" rx="4" fill="#c0d4f0" opacity="0.7" />
+      <rect x="480" y="250" width="100" height="410" rx="4" fill="#aabce8" opacity="0.5" />
+      {Array.from({length:7}).map((_,row)=>[160,308,495].map((x,col)=>(
+        <rect key={`${row}-${col}`} x={x} y={240+row*48} width={col===1?30:20} height={20} rx="2" fill="rgba(0,82,217,0.1)" />
       )))}
-      <rect x="0" y="665" width="600" height="35" fill="#a0b8dc" opacity="0.4"/>
-      <circle cx="190" cy="665" r="32" fill="#5a9e3c" opacity="0.45"/>
-      <circle cx="410" cy="660" r="44" fill="#3e8a28" opacity="0.38"/>
+      <rect x="0" y="665" width="600" height="35" fill="#a0b8dc" opacity="0.35"/>
+      <circle cx="190" cy="665" r="30" fill="#10B981" opacity="0.4"/>
+      <circle cx="410" cy="660" r="42" fill="#059669" opacity="0.32"/>
     </svg>
-    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/55 to-transparent px-7 py-6">
-      <p className="text-white text-[13px] font-bold">智慧楼宇 · Smart Buildings</p>
-      <p className="text-white/55 text-[11px] mt-1">可持续城市垂直交通解决方案</p>
+    {/* 腾讯蓝装饰点 */}
+    <div className="absolute top-6 left-6 bg-white/90 backdrop-blur-sm rounded-xl px-4 py-3 shadow-lg border border-white/50">
+      <p className="text-[10px] font-black text-[#0052D9] tracking-[0.2em] uppercase">Smart Building</p>
+      <p className="text-[13px] font-bold text-gray-800 mt-0.5">2026 · ESG</p>
+    </div>
+    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/45 via-black/10 to-transparent px-7 py-6">
+      <p className="text-white text-[14px] font-bold">智慧楼宇 · Smart Buildings</p>
+      <p className="text-white/50 text-[12px] mt-1">可持续城市垂直交通解决方案</p>
     </div>
   </div>
 )
 
 /* ================================================================
-   Stagger Reveal — 子项逐一进入
+   Stagger Reveal — 腾讯风格渐进式入场
 ================================================================ */
 const staggerContainer = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.1, delayChildren: 0.05 } },
+  show: { transition: { staggerChildren: 0.08, delayChildren: 0.05 } },
 }
 const staggerItem = {
-  hidden: { opacity: 0, y: 32 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.72, ease: [0.22, 1, 0.36, 1] } },
+  hidden: { opacity: 0, y: 36, scale: 0.98 },
+  show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] } },
 }
 
 const StaggerGrid = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => {
   const ref = useRef(null)
-  const inView = useInView(ref, { once: true, margin: '-50px' })
+  const inView = useInView(ref, { once: true, margin: '-60px' })
   return (
     <motion.div ref={ref} variants={staggerContainer} initial="hidden" animate={inView ? 'show' : 'hidden'} className={className}>
       {children}
@@ -394,44 +415,56 @@ const StaggerGrid = ({ children, className = '' }: { children: React.ReactNode; 
   )
 }
 
-const Reveal = ({ children, delay = 0, className = '' }: { children: React.ReactNode; delay?: number; className?: string }) => {
+const Reveal = ({ children, delay = 0, className = '', direction = 'up' }: { children: React.ReactNode; delay?: number; className?: string; direction?: 'up' | 'left' | 'right' }) => {
   const ref = useRef(null)
-  const inView = useInView(ref, { once: true, margin: '-55px' })
+  const inView = useInView(ref, { once: true, margin: '-60px' })
+  const dirMap = { up: { y: 28 }, left: { x: -28 }, right: { x: 28 } }
   return (
     <motion.div ref={ref} className={className}
-      initial={{ opacity: 0, y: 26 }} animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.72, ease: [0.22, 1, 0.36, 1], delay }}>
+      initial={{ opacity: 0, ...dirMap[direction] }}
+      animate={inView ? { opacity: 1, x: 0, y: 0 } : {}}
+      transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94], delay }}>
       {children}
     </motion.div>
   )
 }
 
 /* ================================================================
-   数字统计 CountUp 组件
+   数字统计 CountUp — 腾讯蓝风格
 ================================================================ */
 const StatCard = ({ icon, value, suffix, prefix, label }: {
   icon: React.ReactNode; value: number; suffix: string; prefix?: string; label: string
 }) => {
-  const { val, ref } = useCountUp(value, 1.6)
+  const { val, ref } = useCountUp(value, 1.8)
   return (
     <motion.div ref={ref} variants={staggerItem}
-      className="group flex flex-col items-center gap-3 px-6 py-8 rounded-2xl bg-white/5 hover:bg-white/8 border border-white/8 hover:border-white/15 transition-all duration-400 cursor-default"
+      className="group flex flex-col items-center gap-4 px-6 py-10 rounded-2xl
+        bg-white/[0.04] hover:bg-white/[0.07]
+        border border-white/[0.06] hover:border-[#0052D9]/25
+        transition-all duration-500 cursor-default
+        hover:shadow-[0_8px_40px_rgba(0,82,217,0.15)]"
     >
-      <div className="w-10 h-10 rounded-xl bg-[#0052D9]/20 text-[#6baeff] flex items-center justify-center mb-1 group-hover:bg-[#0052D9]/35 transition-all">
-        {React.cloneElement(icon as React.ReactElement, { size: 18 })}
-      </div>
-      <div className="text-[36px] font-[900] text-white tracking-tight leading-none tabular-nums">
-        {prefix && <span className="text-[#6baeff] mr-0.5">{prefix}</span>}
+      <motion.div
+        whileHover={{ rotate: 10, scale: 1.1 }}
+        className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#0052D9]/25 to-[#0052D9]/10
+          text-[#6baeff] flex items-center justify-center
+          group-hover:from-[#0052D9]/40 group-hover:to-[#0052D9]/20 group-hover:text-white
+          transition-all duration-400"
+      >
+        {React.cloneElement(icon as React.ReactElement, { size: 20 })}
+      </motion.div>
+      <div className="text-[40px] font-[800] text-white tracking-tight leading-none tabular-nums">
+        {prefix && <span className="text-[#6baeff] mr-1 text-[28px]">{prefix}</span>}
         {val.toLocaleString()}
-        <span className="text-[#0052D9] ml-0.5">{suffix}</span>
+        <span className="text-[#0052D9] ml-1 text-[24px]">{suffix}</span>
       </div>
-      <p className="text-white/35 text-[12px] font-bold tracking-wide text-center">{label}</p>
+      <p className="text-white/30 text-[13px] font-semibold tracking-wide text-center">{label}</p>
     </motion.div>
   )
 }
 
 /* ================================================================
-   主组件
+   主组件 — 腾讯风格重构
 ================================================================ */
 const App: React.FC<IMainProps> = ({ params }: any) => {
   const router = useRouter()
@@ -450,31 +483,30 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
   /* Parallax */
   const heroRef = useRef(null)
   const { scrollYProgress: heroScroll } = useScroll({ target: heroRef, offset: ['start start', 'end start'] })
-  const heroTextY = useTransform(heroScroll, [0, 1], [0, 80])
-  const heroOpacity = useTransform(heroScroll, [0, 0.6], [1, 0])
+  const heroTextY = useTransform(heroScroll, [0, 1], [0, 90])
+  const heroOpacity = useTransform(heroScroll, [0, 0.55], [1, 0])
+  const heroScale = useTransform(heroScroll, [0, 1], [1, 1.04])
 
   const t = content[lang]
 
   useEffect(() => {
-    const h = () => setScrolled(window.scrollY > 50)
-    window.addEventListener('scroll', h)
+    const h = () => setScrolled(window.scrollY > 60)
+    window.addEventListener('scroll', h, { passive: true })
     return () => window.removeEventListener('scroll', h)
   }, [])
 
-  useEffect(() => { document.title = 'Smart Guard - 连接安全 · 预见未来智能' }, [])
+  useEffect(() => { document.title = 'Smart Guard AI - 连接安全 · 预见未来' }, [])
 
   // 注入 Dify 气泡
   useEffect(() => {
-    // 1. 样式
     if (!document.getElementById('dify-bubble-style')) {
       const style = document.createElement('style')
       style.id = 'dify-bubble-style'
       style.textContent =
-        '#dify-chatbot-bubble-button{background-color:#0052D9!important}' +
-        '#dify-chatbot-bubble-window{width:24rem!important;height:40rem!important}'
+        '#dify-chatbot-bubble-button{background-color:#0052D9!important;box-shadow:0 4px 20px rgba(0,82,217,0.4)!important}' +
+        '#dify-chatbot-bubble-window{width:24rem!important;height:40rem!important;border-radius:16px!important;overflow:hidden!important}'
       document.head.appendChild(style)
     }
-    // 2. config
     ;(window as any).difyChatbotConfig = {
       token: 'uYxYNUj5uBiqYwhE',
       baseUrl: window.location.origin + '/dify-beta',
@@ -482,8 +514,6 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
       systemVariables: {},
       userVariables: {},
     }
-    // 3. 用 fetch 把脚本内容取回来当 inline script 执行
-    //    这样 document.currentScript 不为 null，Dify 能正确读到 id
     if (!document.getElementById('uYxYNUj5uBiqYwhE')) {
       fetch(window.location.origin + '/dify-beta/embed.min.js')
         .then((r) => r.text())
@@ -502,8 +532,8 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
     if (progressTimer.current) clearInterval(progressTimer.current)
     if (slideTimer.current) clearInterval(slideTimer.current)
     setSlideProgress(0)
-    const total = 5200
-    const tick = 60
+    const total = 6000
+    const tick = 50
     let elapsed = 0
     progressTimer.current = setInterval(() => {
       elapsed += tick
@@ -541,7 +571,7 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
   if (isChatting) {
     return (
       <div className="relative">
-        <div className="fixed top-0 left-0 right-0 z-[300] bg-amber-50 border-b border-amber-200 text-amber-800 text-sm font-bold px-4 py-2 text-center">
+        <div className="fixed top-0 left-0 right-0 z-[300] bg-gradient-to-r from-amber-50 via-amber-100/80 to-amber-50 border-b border-amber-200/60 text-amber-700 text-sm font-semibold px-4 py-2.5 text-center backdrop-blur-md">
           ⚠ 本页面内容由 AI 生成，仅供工业演示、教学交流与技术测试参考，不构成正式维保建议或商业交付。
         </div>
         <div className="pt-10"><Main params={params} /></div>
@@ -550,54 +580,103 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
   }
 
   return (
-    <div className="min-h-screen bg-white text-[#1d1d1f] font-sans antialiased">
+    <div className="min-h-screen bg-[#F8FAFC] text-[#1E293B] font-sans antialiased selection:bg-[#0052D9]/20 selection:text-[#0052D9]">
+      <style jsx global>{`
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap');
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif; }
+        @media (prefers-reduced-motion: reduce) {
+          *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+        }
+      `}</style>
 
       {/* ============================================================
-          导航栏
+          导航栏 — 腾讯风格：简洁、半透明、左侧Logo + 右侧CTA
       ============================================================ */}
-      <nav
+      <motion.nav
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}
         className={`fixed w-full z-[100] transition-all duration-500 ${
-          scrolled || activeMenu ? 'bg-white/96 backdrop-blur-2xl shadow-[0_1px_0_rgba(0,0,0,0.06)]' : 'bg-transparent'
+          scrolled || activeMenu
+            ? 'bg-white/85 backdrop-blur-2xl shadow-[0_1px_0_rgba(0,0,0,0.05),0_4px_20px_rgba(0,0,0,0.03)]'
+            : 'bg-transparent'
         }`}
         onMouseLeave={() => { setActiveMenu(null); setLangMenuOpen(false) }}
       >
-        <div className="max-w-[1400px] mx-auto px-8 lg:px-12 flex justify-between items-center relative z-[101] py-5">
-          <div className="flex items-center gap-14">
+        <div className="max-w-[1400px] mx-auto px-8 lg:px-14 flex justify-between items-center relative z-[101] py-4">
+          <div className="flex items-center gap-16">
+            {/* Logo */}
             <motion.div onClick={() => router.push('/')}
-              whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
-              className="text-[19px] font-[900] text-[#0052D9] tracking-tighter uppercase cursor-pointer flex items-center gap-3">
-              Smart Guard
-              <span className="w-[1px] h-4 bg-gray-200" />
-              <span className="text-[11px] tracking-[0.3em] text-gray-400 font-black">AI</span>
+              whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
+              className="flex items-center gap-3 cursor-pointer">
+              <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#0052D9] to-[#2563EB] flex items-center justify-center shadow-[0_2px_12px_rgba(0,82,217,0.4)]">
+                <ShieldCheck size={18} className="text-white" />
+              </div>
+              <div>
+                <span className={`text-[17px] font-[800] tracking-tight transition-colors duration-300 ${scrolled || activeMenu ? 'text-[#0F172A]' : 'text-white'}`}>
+                  Smart Guard
+                </span>
+                <span className={`text-[10px] tracking-[0.35em] font-black ml-2 transition-colors duration-300 ${scrolled || activeMenu ? 'text-[#0052D9]' : 'text-white/50'}`}>
+                  AI
+                </span>
+              </div>
             </motion.div>
-            <div className="hidden lg:flex items-center gap-10">
+
+            {/* 导航链接 */}
+            <div className="hidden lg:flex items-center gap-1">
               {t.nav.map((item) => (
-                <div key={item.id} className="relative cursor-pointer py-2" onMouseEnter={() => setActiveMenu(item.id)}>
-                  <span className={`text-[14px] font-bold transition-colors duration-300 ${
-                    activeMenu === item.id ? 'text-[#0052D9]' : scrolled || activeMenu ? 'text-gray-600 hover:text-[#0052D9]' : 'text-white/85 hover:text-white'
-                  }`}>{item.label}</span>
-                  {activeMenu === item.id && <motion.div layoutId="nav-line" className="absolute -bottom-[22px] left-0 right-0 h-[3px] bg-[#0052D9]" />}
+                <div key={item.id} className="relative cursor-pointer px-4 py-2" onMouseEnter={() => setActiveMenu(item.id)}>
+                  <span className={`text-[14px] font-semibold transition-all duration-300 ${
+                    activeMenu === item.id
+                      ? 'text-[#0052D9]'
+                      : scrolled || activeMenu
+                        ? 'text-[#475569] hover:text-[#0052D9]'
+                        : 'text-white/75 hover:text-white'
+                  }`}>
+                    {item.label}
+                  </span>
+                  {activeMenu === item.id && (
+                    <motion.div layoutId="nav-underline" className="absolute -bottom-1 left-2 right-2 h-[2px] bg-gradient-to-r from-[#0052D9] to-[#3B82F6] rounded-full" />
+                  )}
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="flex items-center gap-5">
-            <div className="hidden md:flex px-3 py-1 rounded-full bg-amber-100 text-amber-700 text-[10px] font-black tracking-widest uppercase">
-              Demo / AI Generated
+          {/* 右侧 */}
+          <div className="flex items-center gap-4">
+            {/* Demo 标记 */}
+            <div className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-100/80 to-amber-50 border border-amber-200/50 text-amber-600 text-[10px] font-bold tracking-widest uppercase">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+              Demo
             </div>
+
+            {/* 语言切换 */}
             <div className="relative">
               <button onMouseEnter={() => setLangMenuOpen(true)}
-                className={`flex items-center gap-2 text-[13px] font-bold transition-colors ${scrolled || activeMenu ? 'text-gray-500 hover:text-[#0052D9]' : 'text-white/65 hover:text-white'}`}>
-                <Globe size={15} />{t.common.langName}
+                className={`flex items-center gap-1.5 text-[13px] font-semibold transition-colors px-2 py-1.5 rounded-lg hover:bg-white/10 ${
+                  scrolled || activeMenu ? 'text-[#64748B] hover:text-[#0052D9]' : 'text-white/60 hover:text-white'
+                }`}>
+                <Globe size={14} />
+                {t.common.langName}
               </button>
               <AnimatePresence>
                 {langMenuOpen && (
-                  <motion.div initial={{ opacity: 0, y: 8, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 8, scale: 0.96 }}
-                    className="absolute right-0 mt-4 w-32 bg-white shadow-2xl rounded-xl border border-gray-100 py-2 overflow-hidden">
+                  <motion.div
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                    transition={{ duration: 0.2, ease: 'easeOut' }}
+                    className="absolute right-0 mt-3 w-36 bg-white/95 backdrop-blur-xl shadow-[0_16px_48px_rgba(0,0,0,0.12)] rounded-xl border border-gray-100 py-2 overflow-hidden"
+                  >
                     {(['zh_cn', 'zh_tw', 'en'] as LangType[]).map((l) => (
                       <div key={l} onClick={() => { setLang(l); setLangMenuOpen(false); setBizTab(0) }}
-                        className={`px-4 py-2.5 text-[13px] font-medium cursor-pointer hover:bg-blue-50 transition-colors ${lang === l ? 'text-[#0052D9]' : 'text-gray-600'}`}>
+                        className={`px-4 py-2.5 text-[13px] font-semibold cursor-pointer transition-all duration-200 ${
+                          lang === l
+                            ? 'text-[#0052D9] bg-[#EDF2FD]'
+                            : 'text-[#475569] hover:bg-[#F1F5F9] hover:text-[#0052D9]'
+                        }`}>
                         {content[l].common.langName}
                       </div>
                     ))}
@@ -606,37 +685,47 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
               </AnimatePresence>
             </div>
 
-            {/* 闪光CTA按钮 */}
+            {/* CTA 按钮 — 腾讯蓝渐变 */}
             <motion.button onClick={() => setIsChatting(true)}
-              whileHover={{ scale: 1.04, boxShadow: '0 0 24px rgba(0,82,217,0.4)' }}
+              whileHover={{ scale: 1.03, boxShadow: '0 4px 24px rgba(0,82,217,0.45)' }}
               whileTap={{ scale: 0.96 }}
-              className="relative bg-[#0052D9] text-white px-6 py-2.5 rounded-full text-[12px] font-black overflow-hidden"
+              className="relative bg-gradient-to-r from-[#0052D9] to-[#2563EB] text-white px-5 py-2.5 rounded-full text-[13px] font-bold tracking-wide shadow-[0_2px_12px_rgba(0,82,217,0.3)] overflow-hidden"
             >
-              <span className="relative z-10">{t.common.start}</span>
-              {/* shimmer */}
+              <span className="relative z-10 flex items-center gap-1.5">
+                {t.common.start}
+                <ArrowRight size={13} />
+              </span>
+              {/* shimmer 光泽 */}
               <motion.span
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full"
-                animate={{ translateX: ['−100%', '200%'] }}
-                transition={{ repeat: Infinity, duration: 2.5, ease: 'linear', repeatDelay: 1.5 }}
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                style={{ skewX: '-20deg' }}
+                animate={{ x: ['-150%', '150%'] }}
+                transition={{ repeat: Infinity, duration: 3, ease: 'linear', repeatDelay: 2 }}
               />
             </motion.button>
           </div>
         </div>
 
+        {/* 下拉菜单 */}
         <AnimatePresence>
           {activeMenu && (
-            <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
-              className="absolute top-full left-0 w-full bg-white border-t border-gray-50 overflow-hidden shadow-2xl">
-              <div className="max-w-[1400px] mx-auto px-8 lg:px-12 py-10 grid grid-cols-4 gap-12">
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+              className="absolute top-full left-0 w-full bg-white/97 backdrop-blur-2xl border-t border-gray-100 overflow-hidden shadow-[0_16px_48px_rgba(0,0,0,0.06)]"
+            >
+              <div className="max-w-[1400px] mx-auto px-8 lg:px-14 py-10 grid grid-cols-4 gap-14">
                 {t.nav.find((n) => n.id === activeMenu)?.columns.map((col, idx) => (
                   <div key={idx} className="space-y-5">
-                    <h4 className="text-[11px] font-black text-gray-400 tracking-widest uppercase">{col.title}</h4>
+                    <h4 className="text-[11px] font-black text-[#94A3B8] tracking-[0.2em] uppercase">{col.title}</h4>
                     <ul className="space-y-3">
                       {col.links.map((link, lIdx) => (
                         <li key={lIdx} onClick={() => handleLinkClick(link)}
-                          className="text-[15px] font-bold text-gray-700 hover:text-[#0052D9] transition-colors flex items-center group cursor-pointer">
+                          className="text-[15px] font-semibold text-[#334155] hover:text-[#0052D9] transition-all duration-200 flex items-center group cursor-pointer">
                           {link}
-                          <ChevronRight className="w-4 h-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                          <ChevronRight className="w-4 h-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-200 text-[#0052D9]" />
                         </li>
                       ))}
                     </ul>
@@ -646,139 +735,167 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
             </motion.div>
           )}
         </AnimatePresence>
-      </nav>
+      </motion.nav>
 
       {/* ============================================================
-          Hero 轮播  (视差 + 进度条)
+          Hero 轮播区 — 腾讯科技深色背景 + 流畅切换
       ============================================================ */}
-      <section ref={heroRef} className="relative w-full h-screen overflow-hidden bg-[#060a12]">
+      <section ref={heroRef} className="relative w-full h-screen overflow-hidden bg-[#060B1A]">
+        {/* 背景切换 */}
         <AnimatePresence initial={false} custom={slideDir}>
           <motion.div key={slide} custom={slideDir}
             variants={{
-              enter: (d: number) => ({ x: d > 0 ? '7%' : '-7%', opacity: 0, scale: 1.04 }),
+              enter: (d: number) => ({ x: d > 0 ? '5%' : '-5%', opacity: 0, scale: 1.03 }),
               center: { x: 0, opacity: 1, scale: 1 },
-              exit: (d: number) => ({ x: d > 0 ? '-7%' : '7%', opacity: 0, scale: 0.97 }),
+              exit: (d: number) => ({ x: d > 0 ? '-5%' : '5%', opacity: 0, scale: 0.98 }),
             }}
             initial="enter" animate="center" exit="exit"
-            transition={{ duration: 1.0, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 1.2, ease: [0.25, 0.46, 0.45, 0.94] }}
             className="absolute inset-0"
           >
             <CarouselBg visual={t.carousel[slide].visual} />
           </motion.div>
         </AnimatePresence>
 
-        {/* 视差文字 */}
-        <motion.div style={{ y: heroTextY, opacity: heroOpacity }}
-          className="relative z-10 h-full flex flex-col justify-center px-12 lg:px-20" style2={{ maxWidth: 700 }}>
+        {/* 视差文字层 */}
+        <motion.div style={{ y: heroTextY, opacity: heroOpacity, scale: heroScale }}
+          className="relative z-10 h-full flex flex-col justify-center px-12 lg:px-20 max-w-[720px]">
           <AnimatePresence mode="wait">
             <motion.div key={`txt-${slide}`}
-              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -14 }}
-              transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-              className="max-w-[640px]"
+              initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }}
+              transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
             >
-              <motion.p
-                initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1, duration: 0.5 }}
-                className="text-[#6baeff] text-[11px] font-black tracking-[0.28em] uppercase mb-6 flex items-center gap-3"
+              {/* 眉标 */}
+              <motion.div
+                initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.12, duration: 0.5 }}
+                className="flex items-center gap-3 mb-7"
               >
-                <span className="w-8 h-[1px] bg-[#0052D9]" />
-                {t.carousel[slide].eyebrow}
-              </motion.p>
-              <h1 className="text-white text-[50px] lg:text-[64px] font-[300] leading-[1.16] tracking-[-0.01em] mb-6 whitespace-pre-line">
+                <span className="w-10 h-[1.5px] bg-gradient-to-r from-[#0052D9] to-transparent rounded-full" />
+                <span className="text-[#6baeff] text-[11px] font-black tracking-[0.3em] uppercase">
+                  {t.carousel[slide].eyebrow}
+                </span>
+              </motion.div>
+
+              {/* 大标题 */}
+              <h1 className="text-white text-[52px] lg:text-[68px] font-[300] leading-[1.12] tracking-[-0.02em] mb-7 whitespace-pre-line"
+                style={{ fontFamily: "'Inter', 'Noto Sans SC', sans-serif" }}>
                 {t.carousel[slide].title}
               </h1>
-              <p className="text-white/42 text-[15px] leading-relaxed mb-10 max-w-[420px]">
+
+              {/* 描述 */}
+              <p className="text-white/35 text-[16px] leading-relaxed mb-12 max-w-[440px]">
                 {t.carousel[slide].sub}
               </p>
+
+              {/* CTA */}
               <motion.button onClick={() => setIsChatting(true)}
-                whileHover={{ x: 4 }}
-                className="flex items-center gap-3 text-white text-[14px] font-medium group w-fit"
+                whileHover={{ x: 5 }}
+                className="flex items-center gap-3 text-white text-[15px] font-semibold group w-fit"
               >
-                <span className="w-9 h-9 rounded-full border border-white/30 flex items-center justify-center group-hover:bg-white/12 group-hover:border-white/60 transition-all">
-                  <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
-                </span>
+                <motion.span
+                  whileHover={{ scale: 1.1, borderColor: 'rgba(255,255,255,0.5)' }}
+                  className="w-10 h-10 rounded-full border border-white/25 flex items-center justify-center bg-white/5 group-hover:bg-white/12 transition-all duration-300">
+                  <ArrowRight size={15} className="group-hover:translate-x-0.5 transition-transform" />
+                </motion.span>
                 {t.common.start}
               </motion.button>
             </motion.div>
           </AnimatePresence>
         </motion.div>
 
-        {/* 底部控制 + 进度条 */}
-        <div className="absolute bottom-8 left-12 lg:left-20 right-12 lg:right-20 z-20 flex items-end justify-between">
-          <div className="flex items-center gap-3">
+        {/* 底部控制器 */}
+        <div className="absolute bottom-10 left-12 lg:left-20 right-12 lg:right-20 z-20 flex items-end justify-between">
+          <div className="flex items-center gap-2.5">
             <motion.button onClick={() => gotoSlide((slide - 1 + t.carousel.length) % t.carousel.length)}
-              whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}
-              className="w-9 h-9 rounded-full border border-white/20 flex items-center justify-center text-white/50 hover:text-white hover:border-white/55 transition-all">
+              whileHover={{ scale: 1.1, borderColor: 'rgba(255,255,255,0.5)' }}
+              whileTap={{ scale: 0.9 }}
+              className="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center text-white/40 hover:text-white hover:border-white/40 transition-all">
               <ArrowLeft size={14} />
             </motion.button>
             <motion.button onClick={() => gotoSlide((slide + 1) % t.carousel.length)}
-              whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}
-              className="w-9 h-9 rounded-full border border-white/20 flex items-center justify-center text-white/50 hover:text-white hover:border-white/55 transition-all">
+              whileHover={{ scale: 1.1, borderColor: 'rgba(255,255,255,0.5)' }}
+              whileTap={{ scale: 0.9 }}
+              className="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center text-white/40 hover:text-white hover:border-white/40 transition-all">
               <ArrowRight size={14} />
             </motion.button>
           </div>
 
-          {/* 进度圆点组 */}
-          <div className="flex items-center gap-3">
+          {/* 进度指示器 */}
+          <div className="flex items-center gap-2.5">
             {t.carousel.map((_, i) => (
               <button key={i} onClick={() => gotoSlide(i)} className="relative flex items-center justify-center">
                 {i === slide ? (
-                  <div className="relative w-8 h-2 rounded-full bg-white/15 overflow-hidden">
-                    <motion.div className="absolute inset-y-0 left-0 bg-[#0052D9] rounded-full"
-                      style={{ width: `${slideProgress * 100}%` }} />
+                  <div className="relative w-10 h-1.5 rounded-full bg-white/10 overflow-hidden">
+                    <motion.div className="absolute inset-y-0 left-0 bg-gradient-to-r from-[#0052D9] to-[#3B82F6] rounded-full"
+                      style={{ width: `${slideProgress * 100}%` }}
+                      layout
+                    />
                   </div>
                 ) : (
-                  <div className={`rounded-full transition-all duration-300 w-2 h-2 ${i < slide ? 'bg-[#0052D9]/60' : 'bg-white/25 hover:bg-white/50'}`} />
+                  <div className={`w-1.5 h-1.5 rounded-full transition-all duration-500 ${
+                    i < slide ? 'bg-[#0052D9]/50' : 'bg-white/20 hover:bg-white/45'
+                  }`} />
                 )}
               </button>
             ))}
           </div>
         </div>
 
-        <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/8 to-transparent" />
+        {/* 底部渐变线 */}
+        <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#0052D9]/20 to-transparent" />
       </section>
 
       {/* ============================================================
-          功能三卡 (3D 倾斜 + 光晕边框)
+          功能三卡 — 腾讯风格：玻璃态 + 腾讯蓝渐变边框
       ============================================================ */}
-      <section className="py-28 px-12 max-w-[1400px] mx-auto">
-        <Reveal className="flex flex-col items-start mb-16">
-          <h2 className="text-[34px] lg:text-[42px] font-[300] tracking-[-0.02em] text-[#1d1d1f] mb-5">
+      <section className="relative py-32 px-8 lg:px-14 max-w-[1400px] mx-auto">
+        {/* 背景装饰 */}
+        <div className="absolute top-0 right-0 w-[400px] h-[400px] rounded-full blur-[150px] opacity-4 pointer-events-none"
+          style={{ background: 'radial-gradient(circle, #0052D9, transparent)' }} />
+
+        <Reveal className="flex flex-col items-start mb-18">
+          <h2 className="text-[36px] lg:text-[44px] font-[300] tracking-[-0.02em] text-[#0F172A] mb-4">
             {t.features.title}
           </h2>
-          <div className="w-10 h-[3px] bg-[#0052D9] rounded-full" />
+          <div className="w-12 h-[3px] bg-gradient-to-r from-[#0052D9] to-transparent rounded-full" />
         </Reveal>
 
-        <StaggerGrid className="grid md:grid-cols-3 gap-5">
+        <StaggerGrid className="grid md:grid-cols-3 gap-6">
           {t.features.list.map((f, i) => (
             <motion.div key={i} variants={staggerItem}>
-              <TiltCard intensity={8} className="group h-full">
-                <div className="relative h-full p-10 bg-[#F7F9FE] rounded-3xl border border-transparent
-                  hover:border-[#0052D9]/15 hover:bg-white hover:shadow-[0_8px_40px_rgba(0,82,217,0.1)]
+              <TiltCard intensity={6} className="group h-full">
+                <div className="relative h-full p-10 rounded-2xl
+                  bg-white border border-[#E2E8F0]
+                  hover:border-[#0052D9]/20 hover:bg-white
+                  hover:shadow-[0_16px_60px_rgba(0,82,217,0.08)]
                   transition-all duration-500 cursor-pointer overflow-hidden"
                 >
-                  {/* 顶部光晕条 */}
-                  <div className="absolute top-0 left-8 right-8 h-[2px] rounded-full bg-gradient-to-r from-transparent via-[#0052D9]/0 to-transparent group-hover:via-[#0052D9]/60 transition-all duration-700" />
+                  {/* 顶部渐变条 */}
+                  <div className="absolute top-0 left-8 right-8 h-[2px] rounded-full bg-gradient-to-r from-transparent via-[#0052D9]/0 to-transparent group-hover:via-[#0052D9]/40 transition-all duration-700" />
 
-                  {/* 角落装饰 */}
-                  <div className="absolute top-4 right-4 w-16 h-16 rounded-full blur-2xl bg-[#0052D9]/0 group-hover:bg-[#0052D9]/8 transition-all duration-500" />
+                  {/* 背景光晕 */}
+                  <div className="absolute -top-20 -right-20 w-40 h-40 rounded-full blur-[80px] opacity-0 group-hover:opacity-8 transition-opacity duration-500"
+                    style={{ background: `radial-gradient(circle, ${f.accent}, transparent)` }} />
 
+                  {/* 图标 */}
                   <motion.div
-                    whileHover={{ y: -3, rotate: 5 }}
-                    transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                    className="w-12 h-12 bg-white text-[#0052D9] rounded-xl flex items-center justify-center mb-7
-                      shadow-sm group-hover:bg-[#0052D9] group-hover:text-white group-hover:shadow-[0_4px_20px_rgba(0,82,217,0.35)]
-                      transition-all duration-400"
-                    style={{ transformStyle: 'preserve-3d', translateZ: 20 }}
+                    whileHover={{ y: -4, rotate: 8 }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 18 }}
+                    className="w-14 h-14 bg-gradient-to-br from-[#EDF2FD] to-[#F8FAFC] rounded-2xl flex items-center justify-center mb-7
+                      text-[#0052D9] group-hover:bg-gradient-to-br group-hover:from-[#0052D9] group-hover:to-[#2563EB]
+                      group-hover:text-white group-hover:shadow-[0_8px_30px_rgba(0,82,217,0.3)]
+                      transition-all duration-400 border border-[#E2E8F0] group-hover:border-transparent"
+                    style={{ transformStyle: 'preserve-3d', translateZ: 25 }}
                   >
-                    {React.cloneElement(f.icon as React.ReactElement, { size: 20 })}
+                    {React.cloneElement(f.icon as React.ReactElement, { size: 22 })}
                   </motion.div>
 
-                  <h3 className="text-[20px] font-bold mb-3 tracking-tight text-gray-900">{f.t}</h3>
-                  <p className="text-gray-400 text-[13px] leading-relaxed">{f.d}</p>
+                  <h3 className="text-[20px] font-bold mb-3 tracking-tight text-[#0F172A]">{f.t}</h3>
+                  <p className="text-[#64748B] text-[14px] leading-relaxed">{f.d}</p>
 
                   {/* 底部箭头 */}
                   <div className="mt-6 flex items-center gap-1.5 text-[#0052D9] text-[12px] font-bold opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-                    {t.common.more} <ArrowRight size={11} />
+                    {t.common.more} <ArrowRight size={12} />
                   </div>
                 </div>
               </TiltCard>
@@ -788,11 +905,17 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
       </section>
 
       {/* ============================================================
-          数字统计条
+          数字统计条 — 深色腾讯蓝背景
       ============================================================ */}
-      <section className="w-full bg-[#1b1f2e] py-14 px-8 lg:px-12">
-        <div className="max-w-[1400px] mx-auto">
-          <StaggerGrid className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <section className="w-full bg-[#0F172A] py-16 px-8 lg:px-14 relative overflow-hidden">
+        {/* 背景纹理 */}
+        <div className="absolute inset-0 opacity-[0.015]"
+          style={{ backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.5) 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full blur-[140px] opacity-8"
+          style={{ background: 'radial-gradient(circle, #0052D9, transparent)' }} />
+
+        <div className="max-w-[1400px] mx-auto relative z-10">
+          <StaggerGrid className="grid grid-cols-2 md:grid-cols-4 gap-5">
             {t.stats.map((s, i) => (
               <StatCard key={i} icon={s.icon} value={s.value} suffix={s.suffix} prefix={s.prefix} label={s.label} />
             ))}
@@ -801,34 +924,43 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
       </section>
 
       {/* ============================================================
-          业务板块  (Tab + 2×2 卡片网格)
+          业务板块 — Tab + 2×2 卡片网格
       ============================================================ */}
-      <section className="w-full bg-[#1e2230] overflow-hidden">
-        <div className="max-w-[1400px] mx-auto grid lg:grid-cols-[400px_1fr]">
+      <section className="w-full bg-[#0B1120] overflow-hidden relative">
+        <div className="absolute inset-0 opacity-[0.015]"
+          style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.2) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
 
-          {/* 左：Tab */}
-          <div className="flex flex-col justify-center px-12 lg:px-14 py-20 lg:py-24">
-            <Reveal>
-              <p className="text-white/18 text-[10px] font-black tracking-[0.32em] uppercase mb-9">{t.business.label}</p>
+        <div className="max-w-[1400px] mx-auto grid lg:grid-cols-[420px_1fr] relative z-10">
+          {/* 左：Tab 导航 */}
+          <div className="flex flex-col justify-center px-12 lg:px-16 py-24">
+            <Reveal direction="left">
+              <p className="text-white/15 text-[10px] font-black tracking-[0.35em] uppercase mb-10">{t.business.label}</p>
             </Reveal>
-            <div className="space-y-1.5">
+            <div className="space-y-1">
               {t.business.tabs.map((tab, i) => (
-                <Reveal key={tab.id} delay={i * 0.06}>
+                <Reveal key={tab.id} delay={i * 0.08} direction="left">
                   <motion.button onClick={() => setBizTab(i)}
-                    whileHover={{ x: bizTab === i ? 0 : 4 }}
-                    className={`w-full text-left px-5 py-5 rounded-xl transition-all duration-300 group flex flex-col ${
+                    whileHover={{ x: bizTab === i ? 0 : 5 }}
+                    className={`w-full text-left px-6 py-5 rounded-xl transition-all duration-400 group flex flex-col ${
                       bizTab === i
-                        ? 'bg-white/[0.06] border-l-[3px] border-[#0052D9]'
+                        ? 'bg-white/[0.06] border-l-[3px] border-[#0052D9] shadow-[0_4px_20px_rgba(0,82,217,0.08)]'
                         : 'border-l-[3px] border-transparent hover:bg-white/[0.03]'
                     }`}>
-                    <span className={`text-[16px] font-bold leading-tight transition-colors ${bizTab === i ? 'text-white' : 'text-white/38 group-hover:text-white/65'}`}>
+                    <span className={`text-[16px] font-bold leading-tight transition-all duration-300 ${
+                      bizTab === i ? 'text-white' : 'text-white/35 group-hover:text-white/60'
+                    }`}>
                       {tab.title}
                     </span>
                     <AnimatePresence>
                       {bizTab === i && (
-                        <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.28 }}>
-                          <span className="text-[12px] text-white/38 block mt-1.5">{tab.sub}</span>
-                          <span className="flex items-center gap-2 text-[11px] text-[#6baeff] mt-3 font-bold">
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.3, ease: 'easeOut' }}
+                        >
+                          <span className="text-[12px] text-white/35 block mt-2">{tab.sub}</span>
+                          <span className="flex items-center gap-2 text-[12px] text-[#6baeff] mt-3 font-bold">
                             {t.common.learnMore} <ArrowRight size={11} />
                           </span>
                         </motion.div>
@@ -843,25 +975,23 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
           {/* 右：2×2 图片网格 */}
           <AnimatePresence mode="wait">
             <motion.div key={`biz-${bizTab}`}
-              initial={{ opacity: 0, x: 18 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -18 }}
-              transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-              className="grid grid-cols-2 min-h-[480px]"
+              initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -24 }}
+              transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+              className="grid grid-cols-2 min-h-[520px]"
             >
               {t.business.tabs[bizTab].cards.map((card, i) => (
                 <motion.div key={i}
                   className="relative overflow-hidden group cursor-pointer border border-white/[0.04]"
-                  whileHover={{ scale: 1.01, zIndex: 2 }}
-                  transition={{ duration: 0.3 }}
+                  whileHover={{ scale: 1.015, zIndex: 2 }}
+                  transition={{ duration: 0.35, ease: 'easeOut' }}
                 >
-                  <BusinessCardBg label={card.label} idx={i} />
-                  {/* hover 覆盖层 */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#0052D9]/0 to-[#0052D9]/0 group-hover:from-[#0052D9]/10 group-hover:to-[#003aaa]/15 transition-all duration-400" />
-                  {/* 扫光 */}
+                  <BusinessCardBg label={card.label} icon={card.icon} idx={i} />
+                  {/* hover 扫光 */}
                   <motion.div
-                    className="absolute inset-0 bg-gradient-to-br from-white/0 via-white/5 to-white/0 opacity-0 group-hover:opacity-100"
-                    initial={{ x: '-100%', y: '-100%' }}
-                    whileHover={{ x: '100%', y: '100%' }}
-                    transition={{ duration: 0.7, ease: 'easeOut' }}
+                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                    style={{ background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.05) 45%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0) 55%)' }}
+                    animate={{}}
+                    whileHover={{ backgroundPosition: ['200% 0', '-200% 0'] }}
                   />
                 </motion.div>
               ))}
@@ -873,30 +1003,43 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
       {/* ============================================================
           三联快速入口 + ESG 左图右文
       ============================================================ */}
-      <section className="w-full">
-        <div className="max-w-[1400px] mx-auto px-8 lg:px-12 py-14">
-          <StaggerGrid className="grid grid-cols-3 gap-4">
+      <section className="w-full bg-white">
+        {/* 快速入口 */}
+        <div className="max-w-[1400px] mx-auto px-8 lg:px-14 py-16">
+          <StaggerGrid className="grid grid-cols-3 gap-5">
             {t.entrances.map((item, i) => {
-              const colors = ['#0052D9', '#1e3060', '#2a2050']
+              const colors = [
+                'linear-gradient(135deg, #0052D9, #2563EB)',
+                'linear-gradient(135deg, #1E3A5F, #0F2744)',
+                'linear-gradient(135deg, #2D1B69, #1A1040)',
+              ]
               return (
                 <motion.div key={i} variants={staggerItem}>
-                  <TiltCard intensity={6}>
-                    <motion.div whileHover={{ y: -3 }} transition={{ type: 'spring', stiffness: 300, damping: 22 }}
-                      className="relative h-[150px] rounded-2xl overflow-hidden cursor-pointer group"
+                  <TiltCard intensity={5}>
+                    <motion.div whileHover={{ y: -5 }} transition={{ type: 'spring', stiffness: 300, damping: 22 }}
+                      className="relative h-[160px] rounded-2xl overflow-hidden cursor-pointer group"
                       style={{ background: colors[i] }}
                     >
-                      <svg viewBox="0 0 400 150" className="absolute inset-0 w-full h-full opacity-[0.08]" preserveAspectRatio="xMidYMid slice">
-                        <line x1="0" y1="75" x2="400" y2="75" stroke="white" strokeWidth="70" opacity="0.3" />
-                      </svg>
-                      <div className="absolute inset-0 flex items-center justify-center">
+                      {/* 装饰 */}
+                      <div className="absolute inset-0 opacity-[0.06]"
+                        style={{ backgroundImage: 'radial-gradient(circle at 30% 50%, white 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
+                      <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-[50px] opacity-20"
+                        style={{ background: 'white', transform: 'translate(40%, -40%)' }} />
+
+                      {/* 内容 */}
+                      <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+                        <div className="text-white/30 group-hover:text-white/60 transition-colors duration-300">
+                          {React.cloneElement(item.icon as React.ReactElement, { size: 28 })}
+                        </div>
                         <span className="text-white text-[17px] font-bold tracking-tight group-hover:scale-105 transition-transform duration-300">
                           {item.label}
                         </span>
                       </div>
-                      <div className="absolute bottom-4 right-4 w-6 h-6 rounded-full border border-white/25 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        <ArrowRight size={11} className="text-white" />
+
+                      {/* 箭头 */}
+                      <div className="absolute bottom-4 right-4 w-7 h-7 rounded-full border border-white/20 flex items-center justify-center opacity-0 group-hover:opacity-100 translate-x-1 group-hover:translate-x-0 transition-all duration-300">
+                        <ArrowUpRight size={12} className="text-white" />
                       </div>
-                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300" />
                     </motion.div>
                   </TiltCard>
                 </motion.div>
@@ -905,35 +1048,33 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
           </StaggerGrid>
         </div>
 
-        {/* 左图右文 */}
-        <div className="max-w-[1400px] mx-auto px-8 lg:px-12 pb-24">
-          <div className="grid lg:grid-cols-2 gap-14 items-center">
-            <Reveal>
+        {/* 左图右文 — ESG */}
+        <div className="max-w-[1400px] mx-auto px-8 lg:px-14 pb-28">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <Reveal direction="left">
               <motion.div
                 whileHover={{ scale: 1.01 }} transition={{ duration: 0.5 }}
-                className="relative rounded-3xl overflow-hidden shadow-[0_24px_80px_rgba(0,0,0,0.12)]" style={{ height: 480 }}
+                className="relative rounded-3xl overflow-hidden shadow-[0_24px_80px_rgba(0,0,0,0.08)] border border-[#E2E8F0]"
+                style={{ height: 480 }}
               >
                 <EsgPlaceholder />
-                {/* 角落徽章 */}
-                <div className="absolute top-5 left-5 bg-white/90 backdrop-blur-sm rounded-xl px-4 py-2.5 shadow-lg">
-                  <p className="text-[10px] font-black text-[#0052D9] tracking-widest uppercase">Smart Building</p>
-                  <p className="text-[13px] font-bold text-gray-900 mt-0.5">2026 · ESG</p>
-                </div>
               </motion.div>
             </Reveal>
 
-            <Reveal delay={0.15} className="flex flex-col justify-center">
-              <p className="text-[#0052D9] text-[10px] font-black tracking-[0.32em] uppercase mb-5 flex items-center gap-3">
-                <span className="w-6 h-[1px] bg-[#0052D9]" />
-                {t.esg.eyebrow}
-              </p>
-              <h2 className="text-[38px] lg:text-[48px] font-[300] leading-[1.18] tracking-[-0.02em] text-[#1d1d1f] mb-6 whitespace-pre-line">
+            <Reveal delay={0.15} direction="right" className="flex flex-col justify-center">
+              <div className="flex items-center gap-3 mb-5">
+                <span className="w-8 h-[2px] bg-gradient-to-r from-[#0052D9] to-transparent rounded-full" />
+                <p className="text-[#0052D9] text-[11px] font-black tracking-[0.3em] uppercase">
+                  {t.esg.eyebrow}
+                </p>
+              </div>
+              <h2 className="text-[40px] lg:text-[50px] font-[300] leading-[1.16] tracking-[-0.02em] text-[#0F172A] mb-6 whitespace-pre-line">
                 {t.esg.title}
               </h2>
-              <p className="text-gray-400 text-[15px] leading-relaxed mb-10 max-w-[400px]">{t.esg.sub}</p>
-              <motion.button whileHover={{ x: 5 }} className="flex items-center gap-3 text-[#0052D9] text-[13px] font-bold group w-fit">
-                <span className="w-9 h-9 rounded-full border border-[#0052D9]/30 flex items-center justify-center group-hover:bg-[#0052D9]/8 group-hover:border-[#0052D9]/60 transition-all">
-                  <ArrowRight size={13} className="group-hover:translate-x-0.5 transition-transform" />
+              <p className="text-[#64748B] text-[16px] leading-relaxed mb-10 max-w-[420px]">{t.esg.sub}</p>
+              <motion.button whileHover={{ x: 5 }} className="flex items-center gap-3 text-[#0052D9] text-[14px] font-bold group w-fit">
+                <span className="w-10 h-10 rounded-full border border-[#0052D9]/25 flex items-center justify-center group-hover:bg-[#0052D9]/6 group-hover:border-[#0052D9]/50 transition-all">
+                  <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
                 </span>
                 {t.common.learnMore}
               </motion.button>
@@ -943,19 +1084,19 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
       </section>
 
       {/* ============================================================
-          最新动态 (带 hover 图片缩放 + 卡片上浮)
+          最新动态 — 腾讯风格新闻卡片
       ============================================================ */}
-      <section className="w-full">
-        {/* 深色横幅 */}
-        <div className="bg-[#1b1e23]" style={{
-          backgroundImage: `repeating-linear-gradient(90deg,transparent,transparent 80px,rgba(255,255,255,0.02) 80px,rgba(255,255,255,0.02) 81px),repeating-linear-gradient(0deg,transparent,transparent 80px,rgba(255,255,255,0.02) 80px,rgba(255,255,255,0.02) 81px)`,
-        }}>
-          <div className="max-w-[1400px] mx-auto px-8 lg:px-12 py-8 flex items-center justify-between">
-            <Reveal>
-              <h2 className="text-[25px] lg:text-[28px] font-bold text-white tracking-tight">{t.news.title}</h2>
+      <section className="w-full bg-[#F8FAFC]">
+        {/* 标题栏 */}
+        <div className="bg-[#0F172A] relative overflow-hidden">
+          <div className="absolute inset-0 opacity-[0.02]"
+            style={{ backgroundImage: 'linear-gradient(45deg, rgba(255,255,255,0.2) 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
+          <div className="max-w-[1400px] mx-auto px-8 lg:px-14 py-10 flex items-center justify-between relative z-10">
+            <Reveal direction="left">
+              <h2 className="text-[26px] lg:text-[30px] font-bold text-white tracking-tight">{t.news.title}</h2>
             </Reveal>
-            <Reveal delay={0.08}>
-              <motion.button whileHover={{ x: 3 }} className="flex items-center gap-2 text-[12px] font-bold text-gray-400 hover:text-white transition-colors group">
+            <Reveal delay={0.08} direction="right">
+              <motion.button whileHover={{ x: 3 }} className="flex items-center gap-2 text-[13px] font-bold text-white/45 hover:text-white transition-colors group">
                 {t.news.viewAll} <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
               </motion.button>
             </Reveal>
@@ -963,29 +1104,28 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
         </div>
 
         {/* Featured 双栏 */}
-        <div className="max-w-[1400px] mx-auto px-8 lg:px-12">
-          <div className="grid lg:grid-cols-[1fr_390px] border-b border-gray-100">
-
+        <div className="max-w-[1400px] mx-auto px-8 lg:px-14">
+          <div className="grid lg:grid-cols-[1fr_400px] border-b border-[#E2E8F0]">
             {/* 大卡 */}
-            <Reveal className="group cursor-pointer border-r border-gray-100">
-              <motion.div whileHover={{ scale: 1.005 }} transition={{ duration: 0.4 }}>
-                <div className="overflow-hidden h-[260px] lg:h-[320px]">
-                  <motion.div className="w-full h-full" whileHover={{ scale: 1.05 }} transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}>
+            <Reveal direction="left" className="group cursor-pointer border-r border-[#E2E8F0]">
+              <motion.div whileHover={{ scale: 1.003 }} transition={{ duration: 0.4 }}>
+                <div className="overflow-hidden h-[270px] lg:h-[340px]">
+                  <motion.div className="w-full h-full" whileHover={{ scale: 1.06 }} transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}>
                     <NewsPlaceholder type="data" className="w-full h-full" />
                   </motion.div>
                 </div>
-                <div className="p-8 lg:p-9">
+                <div className="p-8 lg:p-10">
                   <div className="flex items-center gap-3 mb-4">
-                    <span className="inline-flex items-center gap-1.5 text-[10px] font-black text-[#0052D9] tracking-widest uppercase border border-[#0052D9]/28 rounded px-2.5 py-1 bg-[#EDF2FD]">
-                      <Calendar size={8} /> {t.news.featured.date}
+                    <span className="inline-flex items-center gap-1.5 text-[10px] font-black text-[#0052D9] tracking-widest uppercase border border-[#0052D9]/20 rounded-lg px-2.5 py-1 bg-[#EDF2FD]">
+                      <Calendar size={9} /> {t.news.featured.date}
                     </span>
-                    <span className="text-[10px] font-black text-gray-400 tracking-widest uppercase">{t.news.featured.tag}</span>
+                    <span className="text-[10px] font-black text-[#94A3B8] tracking-widest uppercase">{t.news.featured.tag}</span>
                   </div>
-                  <h3 className="text-[20px] lg:text-[22px] font-bold leading-tight text-gray-900 mb-3 group-hover:text-[#0052D9] transition-colors duration-300">
+                  <h3 className="text-[20px] lg:text-[22px] font-bold leading-tight text-[#0F172A] mb-3 group-hover:text-[#0052D9] transition-colors duration-300">
                     {t.news.featured.title}
                   </h3>
-                  <p className="text-gray-400 text-[13px] leading-relaxed max-w-2xl">{t.news.featured.desc}</p>
-                  <motion.div whileHover={{ x: 3 }} className="mt-5 flex items-center gap-2 text-[#0052D9] text-[11px] font-bold">
+                  <p className="text-[#64748B] text-[14px] leading-relaxed max-w-2xl">{t.news.featured.desc}</p>
+                  <motion.div whileHover={{ x: 3 }} className="mt-5 flex items-center gap-2 text-[#0052D9] text-[12px] font-bold">
                     {t.common.more} <ArrowRight size={11} />
                   </motion.div>
                 </div>
@@ -993,24 +1133,24 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
             </Reveal>
 
             {/* 高亮卡 */}
-            <Reveal delay={0.1} className="group cursor-pointer">
-              <motion.div whileHover={{ scale: 1.005 }} transition={{ duration: 0.4 }} className="h-full flex flex-col">
-                <div className="overflow-hidden h-[190px]">
-                  <motion.div className="w-full h-full" whileHover={{ scale: 1.06 }} transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}>
+            <Reveal delay={0.1} direction="right" className="group cursor-pointer">
+              <motion.div whileHover={{ scale: 1.003 }} transition={{ duration: 0.4 }} className="h-full flex flex-col">
+                <div className="overflow-hidden h-[200px]">
+                  <motion.div className="w-full h-full" whileHover={{ scale: 1.07 }} transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}>
                     <NewsPlaceholder type="expo" className="w-full h-full" />
                   </motion.div>
                 </div>
-                <div className="flex-1 p-7 bg-[#EDF2FD] group-hover:bg-[#e5ecfb] transition-colors duration-300">
+                <div className="flex-1 p-7 bg-gradient-to-br from-[#EDF2FD] to-[#F0F5FF] group-hover:from-[#E5EFFD] group-hover:to-[#E8F0FE] transition-all duration-400">
                   <div className="flex items-center gap-3 mb-3">
-                    <span className="inline-flex items-center gap-1 text-[10px] font-black text-[#0052D9] tracking-widest uppercase border border-[#0052D9]/28 rounded px-2 py-0.5 bg-white/55">
-                      <Calendar size={8} /> {t.news.highlight.date}
+                    <span className="inline-flex items-center gap-1 text-[10px] font-black text-[#0052D9] tracking-widest uppercase border border-[#0052D9]/20 rounded-lg px-2 py-0.5 bg-white/60">
+                      <Calendar size={9} /> {t.news.highlight.date}
                     </span>
-                    <span className="text-[10px] font-black text-[#0052D9]/45 tracking-widest uppercase">{t.news.highlight.tag}</span>
+                    <span className="text-[10px] font-black text-[#0052D9]/40 tracking-widest uppercase">{t.news.highlight.tag}</span>
                   </div>
-                  <h3 className="text-[16px] font-bold leading-snug text-[#0d2d6e] mb-2 group-hover:text-[#0052D9] transition-colors">
+                  <h3 className="text-[16px] font-bold leading-snug text-[#0C2D6B] mb-2 group-hover:text-[#0052D9] transition-colors">
                     {t.news.highlight.title}
                   </h3>
-                  <p className="text-[#0052D9]/50 text-[12px] leading-relaxed">{t.news.highlight.desc}</p>
+                  <p className="text-[#0052D9]/45 text-[13px] leading-relaxed">{t.news.highlight.desc}</p>
                 </div>
               </motion.div>
             </Reveal>
@@ -1018,26 +1158,30 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
         </div>
 
         {/* 三列小卡 */}
-        <div className="max-w-[1400px] mx-auto px-8 lg:px-12 pb-20">
-          <StaggerGrid className="grid md:grid-cols-3 border-b border-gray-100">
+        <div className="max-w-[1400px] mx-auto px-8 lg:px-14 pb-24">
+          <StaggerGrid className="grid md:grid-cols-3 border-b border-[#E2E8F0]">
             {t.news.grid.map((item, i) => (
               <motion.div key={i} variants={staggerItem}
-                className={`group cursor-pointer ${i < 2 ? 'border-r border-gray-100' : ''}`}>
-                <motion.div whileHover={{ y: -4, boxShadow: '0 12px 40px rgba(0,82,217,0.08)' }} transition={{ duration: 0.35 }}>
-                  <div className="overflow-hidden h-[175px]">
-                    <motion.div className="w-full h-full" whileHover={{ scale: 1.07 }} transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}>
+                className={`group cursor-pointer ${i < 2 ? 'border-r border-[#E2E8F0]' : ''}`}>
+                <motion.div
+                  whileHover={{ y: -6, boxShadow: '0 16px 48px rgba(0,82,217,0.06)' }}
+                  transition={{ duration: 0.35 }}>
+                  <div className="overflow-hidden h-[180px]">
+                    <motion.div className="w-full h-full" whileHover={{ scale: 1.08 }} transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}>
                       <NewsPlaceholder type={item.img} className="w-full h-full" />
                     </motion.div>
                   </div>
                   <div className="p-6 pb-7">
-                    <div className="flex items-center gap-2 mb-2.5">
-                      <span className="inline-flex items-center gap-1 text-[9px] font-black text-[#0052D9] tracking-widest uppercase border border-[#0052D9]/18 rounded px-1.5 py-0.5 bg-[#EDF2FD]">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="inline-flex items-center gap-1 text-[9px] font-black text-[#0052D9] tracking-widest uppercase border border-[#0052D9]/15 rounded px-2 py-0.5 bg-[#EDF2FD]">
                         <Calendar size={7} /> {item.date}
                       </span>
-                      <span className="text-[9px] font-black text-gray-400 tracking-widest uppercase">{item.tag}</span>
+                      <span className="text-[9px] font-black text-[#94A3B8] tracking-widest uppercase">{item.tag}</span>
                     </div>
-                    <h4 className="text-[14px] font-bold leading-snug text-gray-900 mb-1.5 group-hover:text-[#0052D9] transition-colors line-clamp-2">{item.title}</h4>
-                    <p className="text-gray-400 text-[12px] leading-relaxed line-clamp-2">{item.desc}</p>
+                    <h4 className="text-[14px] font-bold leading-snug text-[#0F172A] mb-2 group-hover:text-[#0052D9] transition-colors line-clamp-2">
+                      {item.title}
+                    </h4>
+                    <p className="text-[#64748B] text-[13px] leading-relaxed line-clamp-2">{item.desc}</p>
                     <div className="mt-3 flex items-center gap-1 text-[#0052D9] text-[11px] font-bold opacity-0 group-hover:opacity-100 transition-all">
                       {t.common.more} <ArrowRight size={10} />
                     </div>
@@ -1051,45 +1195,69 @@ const App: React.FC<IMainProps> = ({ params }: any) => {
 
       {/* Dify 气泡由下方 useEffect 注入 */}
 
-
       {/* ============================================================
-          页脚
+          页脚 — 腾讯风格深色页脚
       ============================================================ */}
-      <footer className="bg-[#1b1e23] text-white pt-18 pb-12 px-8 lg:px-12">
-        <div className="max-w-[1400px] mx-auto">
-          <div className="grid lg:grid-cols-12 gap-14 border-b border-white/5 pb-12 mb-10">
-            <div className="lg:col-span-4 space-y-5">
-              <div className="text-[19px] font-black tracking-tighter italic text-[#0052D9]">SMART GUARD AI</div>
-              <p className="text-gray-500 max-w-xs text-[13px] leading-relaxed">
+      <footer className="bg-[#0B1120] text-white pt-20 pb-10 px-8 lg:px-14 relative overflow-hidden">
+        {/* 顶部渐变装饰 */}
+        <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#0052D9]/30 to-transparent" />
+        <div className="absolute top-0 right-0 w-[300px] h-[300px] rounded-full blur-[120px] opacity-5"
+          style={{ background: 'radial-gradient(circle, #0052D9, transparent)' }} />
+
+        <div className="max-w-[1400px] mx-auto relative z-10">
+          <div className="grid lg:grid-cols-12 gap-14 border-b border-white/[0.06] pb-14 mb-10">
+            <div className="lg:col-span-5 space-y-5">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#0052D9] to-[#2563EB] flex items-center justify-center">
+                  <ShieldCheck size={18} className="text-white" />
+                </div>
+                <span className="text-[20px] font-black tracking-tight text-[#0052D9]">SMART GUARD AI</span>
+              </div>
+              <p className="text-[#64748B] max-w-xs text-[14px] leading-relaxed">
                 连接安全，预见未来。致力于打造更智能、更透明的城市垂直交通监控体系。
               </p>
             </div>
-            <div className="lg:col-span-8 grid grid-cols-2 sm:grid-cols-3 gap-10">
+            <div className="lg:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-10">
               <div className="space-y-4">
-                <h4 className="text-white/18 font-black tracking-[0.2em] text-[10px] uppercase">合规文档</h4>
-                <ul className="space-y-3 text-gray-400 text-[13px]">
-                  <li className="hover:text-white cursor-pointer flex items-center gap-2 transition-colors"><Lock size={12} />{t.footer.links[0]}</li>
-                  <li className="hover:text-white cursor-pointer flex items-center gap-2 transition-colors"><FileText size={12} />{t.footer.links[1]}</li>
+                <h4 className="text-white/15 font-black tracking-[0.25em] text-[10px] uppercase">合规文档</h4>
+                <ul className="space-y-3 text-[#64748B] text-[13px]">
+                  <li className="hover:text-white cursor-pointer flex items-center gap-2 transition-colors duration-200"><Lock size={12} />{t.footer.links[0]}</li>
+                  <li className="hover:text-white cursor-pointer flex items-center gap-2 transition-colors duration-200"><FileText size={12} />{t.footer.links[1]}</li>
+                </ul>
+              </div>
+              <div className="space-y-4">
+                <h4 className="text-white/15 font-black tracking-[0.25em] text-[10px] uppercase">快速链接</h4>
+                <ul className="space-y-3 text-[#64748B] text-[13px]">
+                  <li className="hover:text-white cursor-pointer transition-colors duration-200">关于我们</li>
+                  <li className="hover:text-white cursor-pointer transition-colors duration-200">技术文档</li>
+                  <li className="hover:text-white cursor-pointer transition-colors duration-200">加入我们</li>
+                </ul>
+              </div>
+              <div className="space-y-4">
+                <h4 className="text-white/15 font-black tracking-[0.25em] text-[10px] uppercase">联系我们</h4>
+                <ul className="space-y-3 text-[#64748B] text-[13px]">
+                  <li className="hover:text-white cursor-pointer transition-colors duration-200">contact@smartguard.ai</li>
+                  <li className="hover:text-white cursor-pointer transition-colors duration-200">技术支持</li>
                 </ul>
               </div>
             </div>
           </div>
 
-          <div className="text-[11px] text-gray-600 leading-relaxed max-w-3xl">
+          <div className="text-[12px] text-[#475569] leading-relaxed max-w-3xl mb-8">
             本系统为 AI 与 IoT 技术演示版本，当前用于工业场景研究、教学展示及展会交流。页面中的部分文本、诊断建议由人工智能模型生成，仅供参考。系统不直接参与电梯控制，不构成正式商业交付或维保依据。
           </div>
 
-          <div className="flex flex-col lg:flex-row justify-between items-center gap-5 mt-9">
-            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[11px] text-gray-600">
+          <div className="flex flex-col lg:flex-row justify-between items-center gap-5">
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[12px] text-[#475569]">
               <span>{t.footer.copy}</span>
               <a href="https://beian.miit.gov.cn/" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">粤ICP备2026055050号</a>
               <a href="https://beian.mps.gov.cn/#/query/webSearch?code=44010602009999" target="_blank" rel="noreferrer" className="flex items-center gap-1.5 hover:text-white transition-colors">
-                <img src="https://beian.mps.gov.cn/web/assets/logo01.6189a29f.png" alt="公安备案" className="w-3.5 h-3.5 object-contain opacity-55" />
+                <img src="https://beian.mps.gov.cn/web/assets/logo01.6189a29f.png" alt="公安备案" className="w-3.5 h-3.5 object-contain opacity-40" />
                 粤公网安备 44010502004025号
               </a>
             </div>
-            <div className="px-3 py-1 border border-white/5 rounded text-white/18 text-[9px] font-black tracking-widest uppercase flex items-center gap-2">
-              <span className="w-1 h-1 bg-blue-500 rounded-full animate-pulse" />
+            <div className="flex items-center gap-2 px-3 py-1.5 border border-white/[0.06] rounded-lg text-white/15 text-[10px] font-black tracking-widest uppercase">
+              <span className="w-1.5 h-1.5 bg-[#0052D9] rounded-full animate-pulse" />
               {t.footer.demo}
             </div>
           </div>
